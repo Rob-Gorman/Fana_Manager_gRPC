@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+	"sovereign/data"
 
 	"github.com/gorilla/mux"
 )
@@ -18,7 +19,18 @@ func NewServer() *Server {
 }
 
 func (s *Server) routes() {
-	s.HandleFunc("/", s.getFlagData()).Methods("GET")
+	s.HandleFunc("/", s.getMongoData()).Methods("GET")
+}
+
+func (s *Server) getMongoData() http.HandlerFunc {
+	query := data.ConnectDB()
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(query); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
 }
 
 func (s *Server) getFlagData() http.HandlerFunc {
