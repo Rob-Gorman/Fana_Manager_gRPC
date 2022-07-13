@@ -14,9 +14,10 @@ import (
 func GetFlags(db *mongo.Client) http.HandlerFunc {
 	flagsCollection := configs.GetCollection(db, "flags")
 	ctx, _ := utils.StandardContext()
+	lookup := flagAudPopulate()
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		cur, err := flagsCollection.Find(ctx, bson.D{})
+		cur, err := flagsCollection.Aggregate(ctx, mongo.Pipeline{lookup})
 		utils.HandleErr(err, "Cannot find Flags Collection")
 
 		var flags []responses.FlagResponse
@@ -28,4 +29,17 @@ func GetFlags(db *mongo.Client) http.HandlerFunc {
 			return
 		}
 	}
+}
+
+func flagAudPopulate() (lookup bson.D) {
+	lookup = bson.D{
+		{"$lookup", bson.D{
+			{"from", "audiences"},
+			{"localField", "audiences"},
+			{"foreignField", "_id"},
+			{"as", "aggregated"},
+		}},
+	}
+
+	return lookup
 }
