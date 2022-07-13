@@ -5,15 +5,13 @@ import (
 	"net/http"
 
 	"sovereign/api"
-	"sovereign/data"
-	"sovereign/utils"
+	"sovereign/configs"
 )
 
 func main() {
-	utils.LoadDotEnv()
-	data.ConnectDB()
+	configs.LoadDotEnv()
 	srv := api.NewServer()
-	PORT := utils.Port()
-	fmt.Printf("\nServing following flag configuration on PORT %d:\n%v\n", PORT, *(srv.Ruleset))
+	PORT := configs.Port()
+	fmt.Printf("\nServing following flag configuration on PORT %d\n", PORT)
 	http.ListenAndServe(fmt.Sprintf(":%d", PORT), srv)
 }
