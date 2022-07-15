@@ -4,32 +4,26 @@ import (
 	"fmt"
 	"sovereign/utils"
 
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	// "go.mongodb.org/mongo-driver/mongo/readpref"
+	"gorm.io/driver/postgres"
+	_ "gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
-func ConnectClient() *mongo.Client {
-	uri := DBURI()
-	client, err := mongo.NewClient(options.Client().ApplyURI(uri))
-	utils.HandleErr(err, "Error initializing Mongo client.")
+var DB *gorm.DB
 
-	ctx, _ := utils.StandardContext()
-	// defer cancel()
-
-	err = client.Connect(ctx)
-	utils.HandleErr(err, "Error connecting to Mongo client after initialization")
-
-	err = client.Ping(ctx, nil)
-	utils.HandleErr(err, "Error pinging Mongo Client")
-
-	fmt.Println("Connected to MongoDB")
-
-	return client
+func DBConnect() *gorm.DB {
+	dbUri := dbConnStr()
+	DB, err := gorm.Open(postgres.Open(dbUri), &gorm.Config{})
+	utils.HandleErr(err, "Could not connect to the string")
+	return DB
 }
 
-func GetCollection(client *mongo.Client, collectionName string) *mongo.Collection {
-	dbName := DBName()
-	db := client.Database(dbName)
-	return db.Collection(collectionName)
+func dbConnStr() string {
+	variables := getEnvVars("DB_HOST", "DB_USER", "DB_NAME", "DB_PW", "DB_PORT")
+	dbUri := fmt.Sprintf(
+		"host=%s user=%s dbname=%s sslmode=disable password=%s port=%s",
+		variables...,
+	)
+
+	return dbUri
 }

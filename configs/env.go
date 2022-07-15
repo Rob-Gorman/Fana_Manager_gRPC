@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"strconv"
 
 	"sovereign/utils"
 
@@ -16,38 +15,23 @@ func LoadDotEnv() {
 	utils.HandleErr(err, "Error loading .env file")
 }
 
-func Port() int {
-	envKey := "PORT"
-	portString, ok := os.LookupEnv(envKey)
-	if !ok {
-		return 8080
-	}
-
-	port, err := strconv.Atoi(portString)
-	errmsg := missingEnvVarMsg(envKey)
-	utils.HandleErr(err, errmsg)
-
-	return port
-}
-
-func DBURI() string {
-	envKey := "DB_URI"
-	uri, ok := os.LookupEnv(envKey)
+func getEnvVar(envKey string) string {
+	val, ok := os.LookupEnv(envKey)
 	if !ok {
 		errmsg := missingEnvVarMsg(envKey)
 		utils.HandleErr(errors.New("missing .env key"), errmsg)
 	}
-	return uri
+	return val
 }
 
-func DBName() string {
-	envKey := "DB_NAME"
-	db, ok := os.LookupEnv(envKey)
-	if !ok {
-		errmsg := missingEnvVarMsg(envKey)
-		utils.HandleErr(errors.New("missing .env key"), errmsg)
+// return type []interface... expected by Sprintf
+// (Does NOT want type []string...)
+func getEnvVars(envVars ...string) (result []interface{}) {
+	for _, envKey := range envVars {
+		val := getEnvVar(envKey)
+		result = append(result, val)
 	}
-	return db
+	return result
 }
 
 func missingEnvVarMsg(variableName string) string {
