@@ -32,3 +32,7 @@ psql -h localhost -p 5432 -U postgres -d postgres -a -f /home/rjg/capstone/proje
 
 
 https://app.diagrams.net/#G1GawNf-pdLUuXlt-w1ViFff-rzzkpnlUd
+
+GORM hooks: model (struct) methods with pre-defined names that are invoked whenever the method name's associated CRUD action is executed
+
+didn't want to deal with NULL types
