@@ -13,12 +13,23 @@ var DB *gorm.DB
 
 func Init() *gorm.DB {
 	dbUri := configs.DBConnStr()
-	DB, err := gorm.Open(postgres.Open(dbUri), &gorm.Config{})
+	DB, err := gorm.Open(postgres.New(postgres.Config{
+		DSN:                  dbUri,
+		PreferSimpleProtocol: true,
+	}), &gorm.Config{})
 	utils.HandleErr(err, "Could not connect to DB at URI")
 
-	DB.AutoMigrate(&models.Flag{})
-	DB.AutoMigrate(&models.Audience{})
-	DB.AutoMigrate(&models.Attribute{})
-	DB.AutoMigrate(&models.Condition{})
+	refreshSchema(DB)
 	return DB
+}
+
+func refreshSchema(db *gorm.DB) {
+	var tables []interface{}
+	tables = append(tables, &models.Flag{}, &models.Audience{}, &models.Attribute{}, &models.Condition{})
+
+	db.Migrator().DropTable(tables...)
+	db.Migrator().DropTable("flag_audiences")
+
+	db.AutoMigrate(tables...)
+	seedDB(db)
 }
