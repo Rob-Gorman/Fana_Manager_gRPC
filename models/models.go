@@ -4,6 +4,11 @@ import (
 	"gorm.io/gorm"
 )
 
+// getting flag_audiences right with just GORM tags was brutal
+// settled on flag_id and audience_id
+// looking into flag_key and audience_key instead
+// not sure if that matters in real flow of our system though
+
 type Flag struct {
 	gorm.Model
 	Key         string     `gorm:"type:varchar(30); UNIQUE; NOT NULL"`
@@ -27,9 +32,10 @@ type Attribute struct {
 }
 
 type Condition struct {
-	ID          uint `gorm:"primaryKey"`
-	AudienceID  uint
-	AttributeID uint `gorm:"foreignKey:ID; references:Key"`
-	Operator    string
-	Vals        string `gorm:"default:'[]';not null"`
+	ID           uint `gorm:"primaryKey"`
+	AudienceID   uint
+	AttributeKey string
+	Attribute    Attribute `gorm:"foreignKey:AttributeKey; references:Key"`
+	Operator     string
+	Vals         string `gorm:"default:'[]';not null"`
 }

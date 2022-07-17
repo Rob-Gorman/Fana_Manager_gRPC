@@ -11,7 +11,7 @@ func seedDB(db *gorm.DB) {
 	seedFlags(db)
 	seedAttributes(db)
 	seedAudiences(db)
-	seedFlagAuds(db)
+	seedFlagAuds(db) // see this function for tricker query implementation
 }
 
 func seedFlags(db *gorm.DB) {
@@ -37,49 +37,64 @@ func seedAudiences(db *gorm.DB) {
 		Key: "california_students",
 		Conditions: []models.Condition{
 			{
-				AttributeID: 1,
-				Operator:    "EQ",
-				Vals:        "california",
+				AttributeKey: "state", // this references the actual attribute! WOOT
+				Operator:     "EQ",
+				Vals:         "california",
 			},
 			{
-				AttributeID: 2,
-				Operator:    "EQ",
-				Vals:        "true",
+				AttributeKey: "student",
+				Operator:     "EQ",
+				Vals:         "true",
+			},
+		},
+	}
+	beta_test := models.Audience{
+		Key: "beta_testers",
+		Conditions: []models.Condition{
+			{
+				AttributeKey: "beta",
+				Operator:     "EQ",
+				Vals:         "true",
 			},
 		},
 	}
 
-	db.Create(&ca_stu)
+	auds := []models.Audience{ca_stu, beta_test}
+	db.Create(&auds)
 }
 
 func seedFlagAuds(db *gorm.DB) {
-	var caliStuAud models.Audience
-	db.Where("key = ?", "california_students").First(&caliStuAud)
+	// we're trying to add audiences to a flag (see ERD)
+	// This function uses 3 DB queries to add audiences to a flag
+	// (or rather, to add rows to the flag_audiences join table)
+	// 1 fetch flag being updated (this is the perspective of GORM)
+	// 1 fetch audience(s) being applied to that flag
+	// 1 insert to apply the association between those two objects (i.e., add a row) in the flag_audiences join
+	// there might be better ways to do it, but gotta build the API now
 
-	var singleFlag models.Flag
-	db.First(&singleFlag)
-	fmt.Println(singleFlag.Key)
-	// type flagAud struct {
-	// 	flagID      uint
-	// 	audienceKey string
-	// }
-	// var insVal flagAud
-	// insVal := flagAud{
-	// 	flagID:      singleFlag.ID,
-	// 	audienceKey: "california_students",
-	// }
-	// db.Table("flag_audiences").Create(&insVal)
-	// db.Model(&singleFlag).Association("Audiences").Append("audiences", db.Model(&models.Audience{}).Select("key").Where("audiences.key = ?", "california_students"))
-	// db.Model(&singleFlag).Association("Audiences").Append(&caliStuAud)
-	// UPDATE "users" SET "company_name" = (SELECT name FROM companies WHERE companies.id = users.company_id);
+	// actually, this particular function updates two flags with multiple audiences
+	// but the flow remains
+	var firstFlag, lastFlag models.Flag // initialize targets for query results
+	// SELECT * FROM flags ORDER BY id LIMIT 1
+	// i.e., get the fist flag (by id)
+	db.First(&firstFlag) // results _MARSHALLED_ into a Flag object firstFlag
+	// SELECT * FROM flags ORDER BY id DESC LIMIT 1
+	// i.e., get the last flag (by id)
+	db.Last(&lastFlag)
 
-	// fmt.Println("aud Key?", caliStuAud.Key)
+	var auds []models.Audience // initialize slice of Audiences for query result
+	// SELECT * FROM audiences LIMIT 2
+	db.Limit(2).Find(&auds) // auds now holds a slice of 2 Audience objects
 
-	db.Model(&singleFlag).Association("Audiences")
-	singleFlag.Audiences = []models.Audience{caliStuAud}
-	db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&singleFlag)
-	db.First(&singleFlag)
-	fmt.Println(singleFlag.Audiences[0].Key) // HOLY FUCKING SHIT YES GOD YES
+	// this is just for logging, show what our results are
+	for i, aud := range auds {
+		fmt.Println("Item num", i, aud.Key) // printing out the _key_
+	}
 
-	// db.Save(&singleFlag)
+	firstFlag.Audiences = []models.Audience{auds[0]}
+	lastFlag.Audiences = []models.Audience{auds[1]}
+
+	// this line was the needle in the haystack of their docs to make this work:
+	db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&[]models.Flag{firstFlag, lastFlag})
+	fmt.Println(lastFlag.Audiences[0].Key)
 }
