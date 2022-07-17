@@ -40,8 +40,8 @@ type User struct {
 ## Models
 [Models docs](https://gorm.io/docs/models.html)
 Models are just Go structs. GORM (and EVERY DB package in Go) uses them to represent tables.
-GORM offers a shim that translates them to SQL schema and associated qualities.
-Tags are used for constrains and foreign references
+GORM's framework basically translates these structs to SQL schema and associated qualities.
+*Tags are used for constrains and foreign references*
 *However* a lot of _implied_ functionality via syntactic sugar for SQL conventions:
 - ID is primary key (don't need this, see below)
 - field and struct names are CamelCase in Go, but translated to snake_case in postgres

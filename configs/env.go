@@ -37,3 +37,13 @@ func getEnvVars(envVars ...string) (result []interface{}) {
 func missingEnvVarMsg(variableName string) string {
 	return fmt.Sprintf("No %s variable found in environment. Verify .env file.", variableName)
 }
+
+func DBConnStr() string {
+	variables := getEnvVars("DB_HOST", "DB_USER", "DB_NAME", "DB_PW", "DB_PORT")
+	dbUri := fmt.Sprintf(
+		"host=%s user=%s dbname=%s sslmode=disable password=%s port=%s",
+		variables...,
+	)
+
+	return dbUri
+}
