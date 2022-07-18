@@ -13,6 +13,7 @@ type Flag struct {
 	gorm.Model
 	Key         string     `gorm:"type:varchar(30); UNIQUE; NOT NULL"`
 	DisplayName string     `gorm:"type:varchar(30)"`
+	SDKkey      string     `gorm:"type:varchar(30)"`
 	Audiences   []Audience `gorm:"many2many:flag_audiences; joinForeignKey:FlagID;joinReferences:AudienceID"`
 }
 

@@ -31,3 +31,10 @@ func NoRecordResponse(w http.ResponseWriter, r *http.Request, err error) {
 	w.WriteHeader(http.StatusNotFound)
 	w.Write([]byte(err.Error()))
 }
+
+func ProcessNameToKeyDisplayName(name string) (key, display string) {
+	// TODO
+
+	key, display = name, name
+	return key, display
+}
