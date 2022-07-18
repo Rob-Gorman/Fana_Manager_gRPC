@@ -7,4 +7,5 @@ func (s *Server) dashboardRoutes() {
 	s.HandleFunc("/audiences", s.H.GetAllAudiences).Methods("GET")
 	s.HandleFunc("/audiences/{id}", s.H.GetAudience).Methods("GET")
 	s.HandleFunc("/attributes", s.H.GetAllAttributes).Methods("GET")
+	s.HandleFunc("/attributes", s.H.CreateAttribute).Methods("POST")
 }
