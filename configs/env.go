@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"sovereign/utils"
+	"manager/utils"
 
 	"github.com/joho/godotenv"
 )

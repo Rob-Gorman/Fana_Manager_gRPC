@@ -8,9 +8,9 @@ sudo docker run -d \
 	-v /home/rjg/capstone/project/pgdata:/var/lib/postgresql/data \
 	postgres
 ```
-The above downloads the image, and runs it locally (in detached mode)
+The above downloads the image, and runs it locally (in detached mode).
 
-It also creates a _mount_ with the `-v` flag.
+It also creates a _mount_ with the `-v` flag. _Choose this path to match a location that makes sense on your machine_.
 This is the location on your local machine where the container stores it's data.
 
 Get into the container to load the seed data
@@ -20,19 +20,16 @@ interactive shell command:
 sudo docker exec -it mvp /bin/bash
 ```
 
-From inside the container, build the schema:
+From inside the container, you can of course access psql this way:
 ```bash
-psql -U postgres -d postgres < /var/lib/postgresql/data/buildschema.sql
+psql -U postgres 
 ```
-This all references the specified location on the container, which is _mounted_ to the specified storage (volume) on your local machine we specified with the `-v` flag when running the image
+All the data references the specified location on the container, which is _mounted_ to the specified storage (volume) on your local machine we specified with the `-v` flag when running the image
 
+You can access the DB remotely from your _local_ instance of psql like this:
 ```bash
-psql -h localhost -p 5432 -U postgres -d postgres -a -f /home/rjg/capstone/project/pgdata/buildschema.sql
+psql -h localhost -p 5432 -U postgres
 ```
 
-
+ERD:
 https://app.diagrams.net/#G1GawNf-pdLUuXlt-w1ViFff-rzzkpnlUd
-
-GORM hooks: model (struct) methods with pre-defined names that are invoked whenever the method name's associated CRUD action is executed
-
-didn't want to deal with NULL types

@@ -1,9 +1,9 @@
 package db
 
 import (
-	"sovereign/configs"
-	"sovereign/models"
-	"sovereign/utils"
+	"manager/configs"
+	"manager/models"
+	"manager/utils"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

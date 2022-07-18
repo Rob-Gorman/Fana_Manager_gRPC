@@ -2,10 +2,13 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+	"os"
 
-	"sovereign/configs"
-	"sovereign/db"
-	"sovereign/utils"
+	"manager/api"
+	"manager/configs"
+	"manager/db"
+	"manager/utils"
 )
 
 func main() {
@@ -21,8 +24,8 @@ func main() {
 	closeable, err := db.DB()
 	utils.HandleErr(err, "can't close won't close")
 	closeable.Close()
-	// srv := api.NewServer()
-	// PORT := configs.Port()
+	srv := api.NewServer()
+	PORT := os.Getenv("PORT")
 	// fmt.Printf("\nServing following flag configuration on PORT %d\n", PORT)
-	// http.ListenAndServe(fmt.Sprintf(":%d", PORT), srv)
+	http.ListenAndServe(fmt.Sprintf(":%s", PORT), srv)
 }

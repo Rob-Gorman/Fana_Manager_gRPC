@@ -1,20 +1,20 @@
 package api
 
 import (
-	"sovereign/configs"
+	"manager/db"
+	"manager/handlers"
 
 	"github.com/gorilla/mux"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type Server struct {
 	*mux.Router
-	DB *mongo.Client
+	H handlers.Handler
 }
 
 func NewServer() *Server {
 	s := &Server{
-		DB:     configs.ConnectClient(),
+		H:      handlers.New(db.Init()),
 		Router: mux.NewRouter(),
 	}
 
@@ -23,7 +23,8 @@ func NewServer() *Server {
 }
 
 func (s *Server) routes() {
-	s.FlagRoutes()
+	s.dashboardRoutes()
+	// s.providerRoutes()
 }
 
 // func (s *Server) getMongoData() http.HandlerFunc {

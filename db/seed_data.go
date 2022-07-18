@@ -2,7 +2,7 @@ package db
 
 import (
 	"fmt"
-	"sovereign/models"
+	"manager/models"
 
 	"gorm.io/gorm"
 )
