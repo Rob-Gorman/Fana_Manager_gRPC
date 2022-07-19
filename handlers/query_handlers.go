@@ -13,6 +13,7 @@ import (
 func (h Handler) GetAllFlags(w http.ResponseWriter, r *http.Request) {
 	var flags []models.Flag
 
+	// SELECT * FROM flags;
 	result := h.DB.Find(&flags)
 
 	if result.Error != nil {

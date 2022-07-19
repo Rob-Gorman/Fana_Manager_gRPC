@@ -33,7 +33,7 @@ Worth mentioning, any field can have a type of another struct, even self-referen
 type User struct {
   ID           uint
   Name         string
-  Friends     *[]User  // pointers not all that relevant in this project, i think
+  Friends     []User  // pointers not all that relevant in this project, i think
 }
 ```
 

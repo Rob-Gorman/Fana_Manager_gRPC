@@ -59,6 +59,7 @@ func seedAudiences(db *gorm.DB) {
 		},
 	}
 
+	// db.Create(&ca_stu) // could just do this for a single audience
 	auds := []models.Audience{ca_stu, beta_test}
 	db.Create(&auds)
 }
@@ -87,9 +88,9 @@ func seedFlagAuds(db *gorm.DB) {
 	db.Limit(2).Find(&auds) // auds now holds a slice of 2 Audience objects
 
 	// this is just for logging, show what our results are
-	for i, aud := range auds {
-		fmt.Println("Item num", i, aud.Key) // printing out the _key_
-	}
+	// for i, aud := range auds {
+	// 	fmt.Println("Item num", i, aud.Key) // printing out the _key_
+	// }
 
 	firstFlag.Audiences = []models.Audience{auds[0]}
 	lastFlag.Audiences = []models.Audience{auds[1]}
