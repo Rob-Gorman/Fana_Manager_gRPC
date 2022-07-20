@@ -20,7 +20,12 @@ func (h Handler) GetAllFlags(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(result.Error)
 	}
 
-	utils.PayloadResponse(w, r, flags)
+	var response []models.FlagNoAudsResponse
+	for ind, _ := range flags {
+		response = append(response, models.FlagNoAudsResponse{Flag: &flags[ind]})
+	}
+
+	utils.PayloadResponse(w, r, &response)
 	// w.Header().Add("Content-Type", "application/json")
 	// w.WriteHeader(http.StatusOK)
 	// json.NewEncoder(w).Encode(flags)
