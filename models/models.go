@@ -11,11 +11,11 @@ import (
 
 type Flag struct {
 	gorm.Model
-	Key         string     `gorm:"type:varchar(30); UNIQUE; NOT NULL"`
-	DisplayName string     `gorm:"type:varchar(30)"`
-	SDKkey      string     `gorm:"type:varchar(30)"`
-	Status      bool       `gorm:"default:false; NOT NULL"`
-	Audiences   []Audience `gorm:"many2many:flag_audiences; joinForeignKey:FlagID;joinReferences:AudienceID"`
+	Key         string     `json:"key" gorm:"type:varchar(30); UNIQUE; NOT NULL"`
+	DisplayName string     `json:"displayName" gorm:"type:varchar(30)"`
+	SDKkey      string     `json:"sdkKey" gorm:"type:varchar(30)"`
+	Status      bool       `json:"status" gorm:"default:false; NOT NULL"`
+	Audiences   []Audience `json:"audiences" gorm:"many2many:flag_audiences; joinForeignKey:FlagID;joinReferences:AudienceID"`
 }
 
 type Audience struct {
