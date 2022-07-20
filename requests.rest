@@ -1,0 +1,150 @@
+POST http://localhost:6000/attributes HTTP/1.1
+content-type: application/json
+
+{
+    "name": "state",
+    "attrType": "STR"
+}
+
+###
+
+POST http://localhost:6000/attributes HTTP/1.1
+content-type: application/json
+
+{
+    "name": "student",
+    "attrType": "BOOL"
+}
+
+###
+
+POST http://localhost:6000/attributes HTTP/1.1
+content-type: application/json
+
+{
+    "name": "beta",
+    "attrType": "BOOL"
+}
+
+###
+
+POST http://localhost:6000/attributes HTTP/1.1
+content-type: application/json
+
+{
+    "name": "age",
+    "attrType": "NUM"
+}
+
+###
+
+POST http://localhost:6000/audiences HTTP/1.1
+content-type: application/json
+
+{
+    "name": "california_students",
+    "combine": "ALL",
+    "conditions": [
+        {
+        "attribute": "state",
+        "operator": "EQ",
+        "value": "california" // value varchar(240)
+        },
+        {
+        "attribute": "student",
+        "operator": "EQ",
+        "value": "true"
+        }        
+    ]
+}
+
+###
+
+POST http://localhost:6000/audiences HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Beta Testers",
+    "combine": "ANY",
+    "conditions": [
+        {
+        "attribute": "state",
+        "operator": "EQ",
+        "value": "california"
+        },
+        {
+        "attribute": "beta",
+        "operator": "EQ",
+        "value": "true"
+        }        
+    ]
+}
+
+###
+
+POST http://localhost:6000/audiences HTTP/1.1
+content-type: application/json
+
+{
+    "name": "california_students",
+    "combine": "ALL",
+    "conditions": [
+        {
+        "attribute": "state",
+        "operator": "EQ",
+        "value": "california"
+        },
+        {
+        "attribute": "student",
+        "operator": "EQ",
+        "value": "true"
+        }        
+    ]
+}
+
+###
+
+POST http://localhost:6000/flags HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Fake Flag 1",
+    "sdkKey": "beta_sdk_0",
+    "audiences": ["california_students", "beta_testers"]
+}
+
+###
+
+POST http://localhost:6000/flags HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Inauthentic Flag 2",
+    "sdkKey": "beta_sdk_0",
+    "audiences": ["california_students", "beta_testers"]
+}
+
+###
+
+PATCH http://localhost:6000/flags/fake_flag_1/toggle HTTP/1.1
+
+###
+
+PATCH http://localhost:6000/flags/2 HTTP/1.1
+content-type: application/json
+
+{
+    "status": true
+}
+
+###
+
+GET http://localhost:6000/flags HTTP/1.1
+
+###
+
+GET http://localhost:6000/attributes HTTP/1.1
+
+###
+
+GET http://localhost:6000/audiences HTTP/1.1

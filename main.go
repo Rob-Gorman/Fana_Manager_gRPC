@@ -14,6 +14,6 @@ func main() {
 	srv := api.NewServer()
 	fmt.Println("Connected to postgres!")
 	PORT := os.Getenv("PORT")
-	// fmt.Printf("\nServing following flag configuration on PORT %d\n", PORT)
+	fmt.Printf("\nServing following flag configuration on PORT %s\n", PORT)
 	http.ListenAndServe(fmt.Sprintf(":%s", PORT), srv)
 }
