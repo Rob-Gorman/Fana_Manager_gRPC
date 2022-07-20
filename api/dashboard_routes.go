@@ -1,8 +1,7 @@
 package api
 
-import "github.com/gorilla/mux"
 
-func (s *Server) dashboardRoutes() *mux.Route {
+func (s *Server) dashboardRoutes() {
 	s.HandleFunc("/api/flags", s.H.GetAllFlags).Methods("GET")
 	s.HandleFunc("/api/flags", s.H.CreateFlag).Methods("POST")
 	s.HandleFunc("/api/flags/{id}", s.H.GetFlag).Methods("GET")

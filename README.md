@@ -1,4 +1,10 @@
 # Go Web Services
+## Launching
+Launch the manager (from the root folder of the Go program, where main.go is):
+```go
+go mod tidy
+go run main.go
+```
 ## (It's Express)
 Like `import express from 'express'`, `app = express()`, and `app.use(routes)`
 The patterns are really, really similar for Go web services.
