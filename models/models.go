@@ -15,7 +15,7 @@ type Flag struct {
 	ID          uint           `json:"id" gorm:"primarykey"`
 	Key         string         `json:"key" gorm:"type:varchar(30); UNIQUE; NOT NULL"`
 	DisplayName string         `json:"displayName" gorm:"type:varchar(30)"`
-	Sdkkey      string         `json:"sdkKey" gorm:"type:varchar(30)"`
+	Sdkkey      string         `json:"sdkKey" gorm:"type:varchar(30);default:'not_used_sdk_key'"`
 	Status      bool           `json:"status" gorm:"default:false; NOT NULL"`
 	Audiences   []Audience     `json:"audiences" gorm:"many2many:flag_audiences; joinForeignKey:FlagID;joinReferences:AudienceID"`
 	CreatedAt   time.Time      `json:"created_at"`
@@ -43,11 +43,11 @@ type Attribute struct {
 }
 
 type Condition struct {
-	ID           uint `json:"id" gorm:"primaryKey"`
-	AudienceID   uint
-	Negate       bool      `json:"negate" gorm:"default:false"`
-	AttributeKey string    `json:"attributeKey"`
-	Attribute    Attribute `json:"attribute" gorm:"foreignKey:AttributeKey; references:Key"`
-	Operator     string    `json:"operator" gorm:"default:'EQ'"`
-	Vals         string    `json:"vals" gorm:"default:'[]';not null"`
+	ID          uint      `json:"id" gorm:"primaryKey"`
+	AudienceID  uint      `json:"audienceID"`
+	Negate      bool      `json:"negate" gorm:"default:false"`
+	AttributeID uint      `json:"attributeID"`
+	Attribute   Attribute `json:"attribute,omitempty" gorm:"foreignKey:AttributeID; references:ID"`
+	Operator    string    `json:"operator" gorm:"default:'EQ'"`
+	Vals        string    `json:"vals" gorm:"default:'[]';not null"`
 }

@@ -29,3 +29,8 @@ func UpdatedResponse(w http.ResponseWriter, r *http.Request, payload interface{}
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(payload)
 }
+
+func BadRequestResponse(w http.ResponseWriter, r *http.Request, err error) {
+	w.WriteHeader(http.StatusBadRequest)
+	w.Write([]byte(err.Error()))
+}

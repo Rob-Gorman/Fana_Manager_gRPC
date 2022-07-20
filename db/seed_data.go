@@ -12,6 +12,7 @@ func seedDB(db *gorm.DB) {
 	seedAttributes(db)
 	seedAudiences(db)
 	seedFlagAuds(db) // see this function for tricker query implementation
+	seedLogs(db)
 }
 
 func seedFlags(db *gorm.DB) {
@@ -37,14 +38,14 @@ func seedAudiences(db *gorm.DB) {
 		Key: "california_students",
 		Conditions: []models.Condition{
 			{
-				AttributeKey: "state", // this references the actual attribute! WOOT
-				Operator:     "EQ",
-				Vals:         "california",
+				AttributeID: 1, // this references the actual attribute! WOOT
+				Operator:    "EQ",
+				Vals:        "california",
 			},
 			{
-				AttributeKey: "student",
-				Operator:     "EQ",
-				Vals:         "true",
+				AttributeID: 2,
+				Operator:    "EQ",
+				Vals:        "true",
 			},
 		},
 	}
@@ -52,9 +53,9 @@ func seedAudiences(db *gorm.DB) {
 		Key: "beta_testers",
 		Conditions: []models.Condition{
 			{
-				AttributeKey: "beta",
-				Operator:     "EQ",
-				Vals:         "true",
+				AttributeID: 3,
+				Operator:    "EQ",
+				Vals:        "true",
 			},
 		},
 	}
@@ -98,4 +99,23 @@ func seedFlagAuds(db *gorm.DB) {
 	// this line was the needle in the haystack of their docs to make this work:
 	db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&[]models.Flag{firstFlag, lastFlag})
 	fmt.Println(lastFlag.Audiences[0].Key)
+}
+
+func seedLogs(db *gorm.DB) {
+	var flagLogs = []models.FlagLog{
+		{FlagID: 1, EventDesc: "We plant'n seeds"},
+		{FlagID: 1, EventDesc: "Fr a bountiful harvest"},
+		{FlagID: 2, EventDesc: ":blobsweat"},
+		{FlagID: 2, EventDesc: "ahhhhhhhhhhh"},
+	}
+	db.Create(&flagLogs)
+
+	var audLogs = []models.AudienceLog{
+		{AudienceID: 1, EventDesc: "changed some stuff"},
+		{AudienceID: 1, EventDesc: "reverted it"},
+		{AudienceID: 2, EventDesc: "reverted it"},
+		{AudienceID: 2, EventDesc: "git rebase"},
+	}
+
+	db.Create(&audLogs)
 }

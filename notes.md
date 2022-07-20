@@ -28,8 +28,5 @@ All the data references the specified location on the container, which is _mount
 
 You can access the DB remotely from your _local_ instance of psql like this:
 ```bash
-psql -h localhost -p 5432 -U postgres
+psql -h localhost -p5432 -U postgres
 ```
-
-ERD:
-https://app.diagrams.net/#G1GawNf-pdLUuXlt-w1ViFff-rzzkpnlUd
