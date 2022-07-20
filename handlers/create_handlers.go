@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"manager/models"
 	"manager/utils"
@@ -14,7 +15,7 @@ func (h Handler) CreateFlag(w http.ResponseWriter, r *http.Request) {
 	// to assign to the field in the `json.Unmarshal` method
 	type flagPost struct {
 		Name      string   `json:"name"`
-		SdkKey    string   `json:"sdkKey"`
+		Sdkkey    string   `json:"sdkKey"`
 		Audiences []string `json:"audiences"`
 	}
 
@@ -42,7 +43,9 @@ func (h Handler) CreateFlag(w http.ResponseWriter, r *http.Request) {
 	var flag models.Flag
 	flag.Audiences = dbAuds
 	flag.Key, flag.DisplayName = utils.ProcessNameToKeyDisplayName(flagReq.Name)
-	flag.SDKkey = flagReq.SdkKey
+	flag.Sdkkey = flagReq.Sdkkey
+
+	fmt.Printf("sdkkey req: %s\nsdkkey object: %s\n", flagReq.Sdkkey, flag.Sdkkey)
 
 	// Append to the Flags table
 	// result := h.DB.Preload("Audiences").Create(&flag)
@@ -53,8 +56,10 @@ func (h Handler) CreateFlag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	response := models.FlagResponse{Flag: &flag}
+
 	// Send a 201 created response
-	utils.PayloadResponse(w, r, &flag)
+	utils.PayloadResponse(w, r, &response)
 }
 
 func (h Handler) CreateAttribute(w http.ResponseWriter, r *http.Request) {

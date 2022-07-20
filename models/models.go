@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"gorm.io/gorm"
 )
 
@@ -10,12 +12,15 @@ import (
 // not sure if that matters in real flow of our system though
 
 type Flag struct {
-	gorm.Model
-	Key         string     `json:"key" gorm:"type:varchar(30); UNIQUE; NOT NULL"`
-	DisplayName string     `json:"displayName" gorm:"type:varchar(30)"`
-	SDKkey      string     `json:"sdkKey" gorm:"type:varchar(30)"`
-	Status      bool       `json:"status" gorm:"default:false; NOT NULL"`
-	Audiences   []Audience `json:"audiences" gorm:"many2many:flag_audiences; joinForeignKey:FlagID;joinReferences:AudienceID"`
+	ID          uint           `json:"id" gorm:"primarykey"`
+	Key         string         `json:"key" gorm:"type:varchar(30); UNIQUE; NOT NULL"`
+	DisplayName string         `json:"displayName" gorm:"type:varchar(30)"`
+	Sdkkey      string         `json:"sdkKey" gorm:"type:varchar(30)"`
+	Status      bool           `json:"status" gorm:"default:false; NOT NULL"`
+	Audiences   []Audience     `json:"audiences" gorm:"many2many:flag_audiences; joinForeignKey:FlagID;joinReferences:AudienceID"`
+	CreatedAt   time.Time      `json:"created_at"`
+	UpdatedAt   time.Time      `json:"updated_at"`
+	DeletedAt   gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
 }
 
 type Audience struct {
@@ -27,10 +32,11 @@ type Audience struct {
 }
 
 type Attribute struct {
-	ID          uint   `gorm:"primaryKey"`
-	Key         string `gorm:"type:varchar(30); UNIQUE; NOT NULL"`
-	Type        string `gorm:"type:varchar(10)"`
-	DisplayName string `gorm:"type:varchar(30)"`
+	ID          uint      `json:"id" gorm:"primaryKey"`
+	Key         string    `json:"key" gorm:"type:varchar(30); UNIQUE; NOT NULL"`
+	Type        string    `json:"type" gorm:"type:varchar(10)"`
+	DisplayName string    `json:"displayName" gorm:"type:varchar(30)"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 type Condition struct {

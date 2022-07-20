@@ -1,0 +1,3 @@
+package publisher
+import "fmt"
+

@@ -1,6 +1,5 @@
 package api
 
-
 func (s *Server) dashboardRoutes() {
 	s.HandleFunc("/api/flags", s.H.GetAllFlags).Methods("GET")
 	s.HandleFunc("/api/flags", s.H.CreateFlag).Methods("POST")
