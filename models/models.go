@@ -27,6 +27,7 @@ type Audience struct {
 	ID          uint           `json:"id" gorm:"primarykey"`
 	DisplayName string         `json:"displayName" gorm:"type:varchar(30)"`
 	Key         string         `json:"key" gorm:"type:varchar(30); UNIQUE; NOT NULL"`
+	Combine     string         `json:"combine" gorm:"default:'ANY'"`
 	Flags       []Flag         `json:"flags" gorm:"many2many:flag_audiences; foreignKey:ID"`
 	Conditions  []Condition    `json:"conditions"`
 	CreatedAt   time.Time      `json:"created_at"`

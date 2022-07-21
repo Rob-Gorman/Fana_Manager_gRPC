@@ -10,39 +10,39 @@ import (
 )
 
 func (h Handler) CreateFlag(w http.ResponseWriter, r *http.Request) {
-	// shape of request payload
-	// the JSON tags identify what part of the incoming payload
-	// to assign to the field in the `json.Unmarshal` method
+	// TAKES AUDIENCE KEYS; NOT ID'S
 	type flagPost struct {
-		Name      string   `json:"name"`
-		Sdkkey    string   `json:"sdkKey"`
-		Audiences []string `json:"audiences"`
+		Key         string   `json:"key"`
+		DisplayName string   `json:"displayName"`
+		Sdkkey      string   `json:"sdkKey"`
+		Audiences   []string `json:"audiences,omitempty"`
 	}
 
+	var auds []models.Audience
 	var flagReq flagPost
+
 	// Read to request body
 	defer r.Body.Close()
-	body, err := ioutil.ReadAll(r.Body)
-
-	if err != nil {
-		utils.HandleErr(err, "should put a bad request error here")
-		return
-	}
+	body, _ := ioutil.ReadAll(r.Body)
 
 	// this translates the body into the flagPost form
 	// using the json tags from the struct definition
-	err = json.Unmarshal(body, &flagReq)
-	utils.HandleErr(err, "our unmarshalling sucks")
+	err := json.Unmarshal(body, &flagReq)
+	if err != nil {
+		utils.BadRequestResponse(w, r, err)
+		return
+	}
 
-	// get audience objects to insert join reference
-	// (GORM model for flags expects Audience objects, not key strings)
-	var dbAuds []models.Audience
-	h.DB.Where("key in ?", flagReq.Audiences).Find(&dbAuds)
+	h.DB.Where("key in ?", flagReq.Audiences).Find(&auds, flagReq.Audiences)
 
-	// h.DB.Association("Audiences")
-	var flag models.Flag
-	flag.Audiences = dbAuds
-	flag.Key, flag.DisplayName = utils.ProcessNameToKeyDisplayName(flagReq.Name)
+	flag := models.Flag{
+		Audiences:   auds,
+		Key:         flagReq.Key,
+		DisplayName: flagReq.DisplayName,
+		Sdkkey:      flagReq.Sdkkey,
+	}
+	flag.Audiences = auds
+	flag.Key, flag.DisplayName = utils.ProcessNameToKeyDisplayName(flagReq.Key)
 	flag.Sdkkey = flagReq.Sdkkey
 
 	fmt.Printf("sdkkey req: %s\nsdkkey object: %s\n", flagReq.Sdkkey, flag.Sdkkey)
@@ -52,7 +52,7 @@ func (h Handler) CreateFlag(w http.ResponseWriter, r *http.Request) {
 	result := h.DB.Save(&flag)
 
 	if result.Error != nil {
-		utils.HandleErr(result.Error, "should put a failed to create")
+		utils.UnavailableResponse(w, r, err)
 		return
 	}
 
