@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"manager/models"
 	"manager/utils"
@@ -21,19 +20,16 @@ func (h Handler) CreateFlag(w http.ResponseWriter, r *http.Request) {
 	var auds []models.Audience
 	var flagReq flagPost
 
-	// Read to request body
 	defer r.Body.Close()
 	body, _ := ioutil.ReadAll(r.Body)
 
-	// this translates the body into the flagPost form
-	// using the json tags from the struct definition
 	err := json.Unmarshal(body, &flagReq)
 	if err != nil {
 		utils.BadRequestResponse(w, r, err)
 		return
 	}
 
-	h.DB.Where("key in ?", flagReq.Audiences).Find(&auds, flagReq.Audiences)
+	h.DB.Where("key in (?)", flagReq.Audiences).Find(&auds)
 
 	flag := models.Flag{
 		Audiences:   auds,
@@ -41,14 +37,6 @@ func (h Handler) CreateFlag(w http.ResponseWriter, r *http.Request) {
 		DisplayName: flagReq.DisplayName,
 		Sdkkey:      flagReq.Sdkkey,
 	}
-	flag.Audiences = auds
-	flag.Key, flag.DisplayName = utils.ProcessNameToKeyDisplayName(flagReq.Key)
-	flag.Sdkkey = flagReq.Sdkkey
-
-	fmt.Printf("sdkkey req: %s\nsdkkey object: %s\n", flagReq.Sdkkey, flag.Sdkkey)
-
-	// Append to the Flags table
-	// result := h.DB.Preload("Audiences").Create(&flag)
 	result := h.DB.Save(&flag)
 
 	if result.Error != nil {
@@ -56,10 +44,7 @@ func (h Handler) CreateFlag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := models.FlagResponse{Flag: &flag}
-
-	// Send a 201 created response
-	utils.PayloadResponse(w, r, &response)
+	w.WriteHeader(http.StatusOK)
 }
 
 func (h Handler) CreateAttribute(w http.ResponseWriter, r *http.Request) {

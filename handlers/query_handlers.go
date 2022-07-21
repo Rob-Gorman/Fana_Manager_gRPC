@@ -72,15 +72,19 @@ func (h Handler) GetFlag(w http.ResponseWriter, r *http.Request) {
 	utils.HandleErr(err, "string conv went south")
 
 	var flag models.Flag
+	var auds []models.AudienceNoCondsResponse
 
-	result := h.DB.Preload("Audiences").First(&flag, id)
-
-	if result.Error != nil {
-		utils.NoRecordResponse(w, r, result.Error)
-		return
+	h.DB.Preload("Audiences").Find(&flag, id)
+	for ind, _ := range flag.Audiences {
+		auds = append(auds, models.AudienceNoCondsResponse{Audience: &flag.Audiences[ind]})
 	}
 
-	utils.PayloadResponse(w, r, flag)
+	// if result.Error != nil {
+	// 	utils.NoRecordResponse(w, r, result.Error)
+	// 	return
+	// }
+
+	utils.PayloadResponse(w, r, &models.FlagResponse{Flag: &flag, Audiences: auds})
 }
 
 func (h Handler) GetAudience(w http.ResponseWriter, r *http.Request) {

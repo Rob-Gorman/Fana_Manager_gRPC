@@ -17,8 +17,9 @@ type omit bool // this is a custom type to make the code intent more obvious
 
 type FlagResponse struct {
 	*Flag
-	SdkKey    omit `json:"sdkKey,omitempty"`
-	DeletedAt omit `json:"deleted_at,omitempty"`
+	Audiences []AudienceNoCondsResponse `json:"audiences"`
+	SdkKey    omit                      `json:"sdkKey,omitempty"`
+	DeletedAt omit                      `json:"deleted_at,omitempty"`
 }
 
 type FlagNoAudsResponse struct {
