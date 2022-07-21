@@ -2,7 +2,7 @@ POST http://localhost:6000/api/attributes HTTP/1.1
 content-type: application/json
 
 {
-    "name": "state",
+    "key": "country",
     "attrType": "STR"
 }
 
@@ -12,7 +12,7 @@ POST http://localhost:6000/api/attributes HTTP/1.1
 content-type: application/json
 
 {
-    "name": "student",
+    "key": "employed",
     "attrType": "BOOL"
 }
 
@@ -22,7 +22,7 @@ POST http://localhost:6000/api/attributes HTTP/1.1
 content-type: application/json
 
 {
-    "name": "beta",
+    "key": "omega",
     "attrType": "BOOL"
 }
 
@@ -32,7 +32,7 @@ POST http://localhost:6000/api/attributes HTTP/1.1
 content-type: application/json
 
 {
-    "name": "age",
+    "key": "age",
     "attrType": "NUM"
 }
 
@@ -42,18 +42,18 @@ POST http://localhost:6000/api/audiences HTTP/1.1
 content-type: application/json
 
 {
-    "name": "california_students",
+    "key": "texas_students",
     "combine": "ALL",
     "conditions": [
         {
-        "attribute": "state",
+        "attributeID": 1,
         "operator": "EQ",
-        "value": "california" // value varchar(240)
+        "vals": "texas"
         },
         {
-        "attribute": "student",
+        "attributeID": 2,
         "operator": "EQ",
-        "value": "true"
+        "vals": "true"
         }        
     ]
 }
@@ -68,14 +68,14 @@ content-type: application/json
     "combine": "ANY",
     "conditions": [
         {
-        "attribute": "state",
+        "attribute": 1,
         "operator": "EQ",
-        "value": "california"
+        "vals": "california"
         },
         {
-        "attribute": "beta",
+        "attribute": 3,
         "operator": "EQ",
-        "value": "true"
+        "vals": "true"
         }        
     ]
 }
@@ -92,12 +92,12 @@ content-type: application/json
         {
         "attribute": "state",
         "operator": "EQ",
-        "value": "california"
+        "vals": "california"
         },
         {
         "attribute": "student",
         "operator": "EQ",
-        "value": "true"
+        "vals": "true"
         }        
     ]
 }
@@ -110,7 +110,7 @@ content-type: application/json
 {
     "name": "Fake Flag 1",
     "sdkKey": "beta_sdk_0",
-    "audiences": ["california_students", "beta_testers"]
+    "audiences": [1, 2]
 }
 
 ###
@@ -121,7 +121,7 @@ content-type: application/json
 {
     "name": "Inauthentic Flag 2",
     "sdkKey": "beta_sdk_0",
-    "audiences": ["california_students", "beta_testers"]
+    "audiences": [1, 2]
 }
 
 ###
@@ -143,8 +143,20 @@ GET http://localhost:6000/api/flags HTTP/1.1
 
 ###
 
+GET http://localhost:6000/api/flags/2 HTTP/1.1
+
+###
+
 GET http://localhost:6000/api/attributes HTTP/1.1
 
 ###
 
+GET http://localhost:6000/api/attributes/1 HTTP/1.1
+
+###
+
 GET http://localhost:6000/api/audiences HTTP/1.1
+
+###
+
+GET http://localhost:6000/api/audiences/1 HTTP/1.1

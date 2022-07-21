@@ -25,3 +25,16 @@ type FlagNoAudsResponse struct {
 	DeletedAt omit `json:"deleted_at,omitempty"`
 	Audiences omit `json:"audiences,omitempty"`
 }
+
+type AudienceResponse struct {
+	*Audience
+	Flags     omit `json:"flags,omitempty"`
+	DeletedAt omit `json:"deleted_at,omitempty"`
+}
+
+type AudienceNoCondsResponse struct {
+	*Audience
+	Flags      omit `json:"flags,omitempty"`
+	DeletedAt  omit `json:"deleted_at,omitempty"`
+	Conditions omit `json:"conditions,omitempty"`
+}

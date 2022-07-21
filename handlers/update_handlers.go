@@ -8,6 +8,9 @@ import (
 	"manager/publisher"
 	"manager/utils"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
@@ -28,12 +31,15 @@ func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 
 	if err != nil {
-		utils.HandleErr(err, "should put a bad request error here")
+		utils.NoRecordResponse(w, r, err)
 		return
 	}
 
 	err = json.Unmarshal(body, &flagReq)
-	utils.HandleErr(err, "our unmarshalling sucks")
+	if err != nil {
+		utils.BadRequestResponse(w, r, err)
+		return
+	}
 
 	// get audience objects to insert join reference
 	// (GORM model for flags expects Audience objects, not key strings)
@@ -60,4 +66,32 @@ func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 
 	// Send a 201 created response
 	utils.UpdatedResponse(w, r, &updatedFlag)
+}
+
+func (h Handler) ToggleFlag(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	utils.HandleErr(err, "string conv went south")
+
+	type toggle struct {
+		Status bool
+	}
+	var togglef toggle
+
+	body, err := ioutil.ReadAll(r.Body)
+
+	if err != nil {
+		utils.BadRequestResponse(w, r, err)
+		return
+	}
+
+	err = json.Unmarshal(body, &togglef)
+	var flag models.Flag
+	result := h.DB.Model(&flag).Where("id = ?", id).Updates(map[string]interface{}{"status": togglef.Status})
+	if result.Error != nil {
+		utils.NoRecordResponse(w, r, result.Error)
+		return
+	}
+
+	utils.UpdatedResponse(w, r, &flag)
 }

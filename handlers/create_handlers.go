@@ -96,28 +96,39 @@ func (h Handler) CreateAttribute(w http.ResponseWriter, r *http.Request) {
 	utils.CreatedResponse(w, r, &attr)
 }
 
-// func (h Handler) CreateAudience(w http.ResponseWriter, r *http.Request) {
-// 	type attrPost struct {
-// 		Name string `json:"name"`
-// 		Type string `json:"attrType"`
-// 	}
+func (h Handler) CreateAudience(w http.ResponseWriter, r *http.Request) {
+	type condPost struct {
+		AttributeID uint   `json:"attributeID"`
+		Operator    string `json:"operator"`
+		Vals        string `json:"vals"`
+	}
 
-// 	var attrReq attrPost
-// 	defer r.Body.Close()
-// 	body, err := ioutil.ReadAll(r.Body)
+	type audPost struct {
+		Key        string     `json:"key"`
+		Combine    string     `json:"combine"`
+		Conditions []condPost `json:"conditions"`
+	}
 
-// 	if err != nil {
-// 		utils.HandleErr(err, "should put a bad request error here")
-// 		return
-// 	}
+	var audReq audPost
+	var aud models.Audience
+	// var conds []models.Condition
 
-// 	err = json.Unmarshal(body, &attrReq)
-// 	utils.HandleErr(err, "problem unmarshalling, what do?")
+	defer r.Body.Close()
+	body, err := ioutil.ReadAll(r.Body)
 
-// 	var attr models.Attribute
-// 	attr.Key, attr.DisplayName = utils.ProcessNameToKeyDisplayName(attrReq.Name)
-// 	attr.Type = attrReq.Type
-// 	h.DB.Save(&attr)
+	if err != nil {
+		utils.HandleErr(err, "should put a bad request error here")
+		return
+	}
 
-// 	utils.CreatedResponse(w, r, &attr)
-// }
+	err = json.Unmarshal(body, &audReq)
+	utils.HandleErr(err, "problem unmarshalling, what do?")
+
+	// var aud models.Attribute
+	aud.Key, aud.DisplayName = utils.ProcessNameToKeyDisplayName(aud.Key)
+	// aud.Type = audReq.Type
+	h.DB.Model(&aud).Save(&audReq)
+
+	// utils.CreatedResponse(w, r, &models.AudienceResponse{Audience: &audReq})
+	utils.CreatedResponse(w, r, &audReq)
+}

@@ -28,7 +28,14 @@ func refreshSchema(db *gorm.DB) {
 	// re-creates them with the defined schema
 	// and seeds some data
 	var tables []interface{}
-	tables = append(tables, &models.Flag{}, &models.Audience{}, &models.Attribute{}, &models.Condition{})
+	tables = append(tables,
+		&models.Flag{},
+		&models.Audience{},
+		&models.Attribute{},
+		&models.Condition{},
+		&models.FlagLog{},
+		&models.AudienceLog{},
+	)
 
 	// drop all relevant tables
 	db.Migrator().DropTable(tables...)

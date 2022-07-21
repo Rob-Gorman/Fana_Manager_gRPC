@@ -11,7 +11,8 @@ import (
 )
 
 func (h Handler) GetAllFlags(w http.ResponseWriter, r *http.Request) {
-
+	// TODO TODO TODO: *********************************************
+	// need to populate the audiences with a _response_ object
 	var flags []models.Flag
 
 	// SELECT * FROM flags;
@@ -34,7 +35,11 @@ func (h Handler) GetAllFlags(w http.ResponseWriter, r *http.Request) {
 
 // result := h.DB.Preload("Audiences").Find(&flags)
 func (h Handler) GetAllAudiences(w http.ResponseWriter, r *http.Request) {
+	// TODO TODO TODO: *********************************************
+	// need to populate the conds with a _response_ object (need to populate attrs?)
+	// need also to populate flag id's?
 	var auds []models.Audience
+	var respAuds []models.AudienceResponse
 
 	result := h.DB.Preload("Conditions").Find(&auds)
 
@@ -42,7 +47,11 @@ func (h Handler) GetAllAudiences(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(result.Error)
 	}
 
-	utils.PayloadResponse(w, r, auds)
+	for ind, _ := range auds {
+		respAuds = append(respAuds, models.AudienceResponse{Audience: &auds[ind]})
+	}
+
+	utils.PayloadResponse(w, r, respAuds)
 }
 
 func (h Handler) GetAllAttributes(w http.ResponseWriter, r *http.Request) {
