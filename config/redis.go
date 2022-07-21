@@ -1,33 +1,24 @@
-package main
-//  import (
-// 	// "fmt"
-// 	"log"
-// 	"context"
-// 	"encoding/json"
-// 	"manager/config"
-//  )
-//  var ctx = context.Background()
+package config
 
-//  func publishTo(channel string, message []byte)  {
-// 	err := config.Redis.Publish(ctx, channel, message).Err()
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// }
+import (
+	"github.com/go-redis/redis/v8"
+)
 
-// func encode(message string) []byte {
-// 	json, err := json.Marshal(message)
-// 	if err != nil {
-// 		log.Println(err)
-// 	}
+var Redis *redis.Client
 
-// 	return json
-// }
-// type Channel struct {
-// 	Name string
-// }
+func CreateRedisClient() {
+	opt, err := redis.ParseURL("redis://localhost:6364/0")
+	if err != nil {
+		panic(err)
+	}
+
+	redis := redis.NewClient(opt)
+	Redis = redis
+}
+
 
 // type Publisher struct {
+// 	*redis.Client
 // 	// can add more here
 // }
 // func Init() *Publisher {

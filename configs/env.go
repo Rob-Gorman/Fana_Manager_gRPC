@@ -15,7 +15,7 @@ func LoadDotEnv() {
 	utils.HandleErr(err, "Error loading .env file")
 }
 
-func getEnvVar(envKey string) string {
+func GetEnvVar(envKey string) string {
 	val, ok := os.LookupEnv(envKey)
 	if !ok {
 		errmsg := missingEnvVarMsg(envKey)
@@ -28,7 +28,7 @@ func getEnvVar(envKey string) string {
 // (Does NOT want type []string...)
 func getEnvVars(envVars ...string) (result []interface{}) {
 	for _, envKey := range envVars {
-		val := getEnvVar(envKey)
+		val := GetEnvVar(envKey)
 		result = append(result, val)
 	}
 	return result
