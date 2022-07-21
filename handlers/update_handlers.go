@@ -1,14 +1,17 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"manager/models"
+	"manager/publisher"
 	"manager/utils"
 	"net/http"
 )
 
 func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
+
 	// shape of request payload
 	// the JSON tags identify what part of the incoming payload
 	// to assign to the field in the `json.Unmarshal` method
@@ -48,6 +51,12 @@ func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 		utils.HandleErr(result.Error, "should put a failed to update")
 		return
 	}
+
+	byteArray, err := json.MarshalIndent(&updatedFlag, "", "  ")
+	if err != nil {
+		utils.HandleErr(err, "our unmarshalling sucks")
+	}
+	publisher.Redis.Publish(context.TODO(), "flag-update-channel", byteArray)
 
 	// Send a 201 created response
 	utils.UpdatedResponse(w, r, &updatedFlag)

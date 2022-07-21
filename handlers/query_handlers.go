@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
 	"fmt"
 	"manager/models"
 	"manager/utils"
@@ -12,6 +11,7 @@ import (
 )
 
 func (h Handler) GetAllFlags(w http.ResponseWriter, r *http.Request) {
+
 	var flags []models.Flag
 
 	// SELECT * FROM flags;
@@ -26,20 +26,10 @@ func (h Handler) GetAllFlags(w http.ResponseWriter, r *http.Request) {
 		response = append(response, models.FlagNoAudsResponse{Flag: &flags[ind]})
 	}
 
-	// checking conversion of []byte to string. i think it's p easy
-	
-		fmt.Printf("before marshal %v\n", result)
-		payload, err := json.Marshal(&flags)
-		if err != nil {
-			panic(err)
-		}
-		fmt.Printf("after marshal %v\n", payload)
-		// publisher.Pub.PublishTo("flag-toggle-channel", string(payload))
-
 	utils.PayloadResponse(w, r, &response)
 	// w.Header().Add("Content-Type", "application/json")
 	// w.WriteHeader(http.StatusOK)
-	// json.NewEncoder(w).Encode(flags)
+	// json.NewEncoder(w).Encode(flags) // need a new target for w
 }
 
 // result := h.DB.Preload("Audiences").Find(&flags)

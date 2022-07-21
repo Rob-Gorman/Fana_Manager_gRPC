@@ -7,6 +7,8 @@ import (
 	"manager/models"
 	"manager/utils"
 	"net/http"
+	"manager/publisher"
+	"context"
 )
 
 func (h Handler) CreateFlag(w http.ResponseWriter, r *http.Request) {
@@ -55,6 +57,12 @@ func (h Handler) CreateFlag(w http.ResponseWriter, r *http.Request) {
 		utils.HandleErr(result.Error, "should put a failed to create")
 		return
 	}
+
+	byteArray, err := json.MarshalIndent(&flag, "", "  ")
+	if err != nil {
+		utils.HandleErr(err, "our unmarshalling sucks")
+	}
+	publisher.Redis.Publish(context.TODO(), "flag-update-channel", byteArray)
 
 	response := models.FlagResponse{Flag: &flag}
 
