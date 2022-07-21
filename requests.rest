@@ -126,11 +126,16 @@ content-type: application/json
 
 ###
 
-PATCH http://localhost:6000/api/flags/fake_flag_1/toggle HTTP/1.1
+PATCH http://localhost:6000/api/flags/1/toggle HTTP/1.1
+content-type: application/json
+
+{
+    "status": true
+}
 
 ###
 
-PATCH http://localhost:6000/api/flags/2 HTTP/1.1
+PATCH http://localhost:6000/api/flags/2/toggle HTTP/1.1
 content-type: application/json
 
 {
