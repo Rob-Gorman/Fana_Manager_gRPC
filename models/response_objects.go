@@ -40,4 +40,5 @@ type AudienceNoCondsResponse struct {
 	Flags      omit `json:"flags,omitempty"`
 	DeletedAt  omit `json:"deleted_at,omitempty"`
 	Conditions omit `json:"conditions,omitempty"`
+	Combine    omit `json:"combine,omitempty"`
 }

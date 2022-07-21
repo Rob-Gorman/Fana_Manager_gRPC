@@ -3,6 +3,7 @@ content-type: application/json
 
 {
     "key": "country",
+    "displayName": "Country",
     "attrType": "STR"
 }
 
@@ -13,6 +14,7 @@ content-type: application/json
 
 {
     "key": "employed",
+    "displayName": "Employeeeet",
     "attrType": "BOOL"
 }
 
@@ -23,6 +25,7 @@ content-type: application/json
 
 {
     "key": "omega",
+    "displayName": "300 Diver",
     "attrType": "BOOL"
 }
 
@@ -33,6 +36,7 @@ content-type: application/json
 
 {
     "key": "age",
+    "displayName": "Age",
     "attrType": "NUM"
 }
 
@@ -43,6 +47,7 @@ content-type: application/json
 
 {
     "key": "texas_students",
+    "diaplayName": "TX Students",
     "combine": "ALL",
     "conditions": [
         {
@@ -64,7 +69,8 @@ POST http://localhost:6000/api/audiences HTTP/1.1
 content-type: application/json
 
 {
-    "key": "Beta Testers",
+    "key": "nors",
+    "diaplayName": "Norwegians",
     "combine": "ANY",
     "conditions": [
         {
@@ -87,6 +93,7 @@ content-type: application/json
 
 {
     "key": "cali_students",
+    "diaplayName": "CA Students",
     "combine": "ALL",
     "conditions": [
         {
@@ -108,9 +115,10 @@ POST http://localhost:6000/api/flags HTTP/1.1
 content-type: application/json
 
 {
-    "key": "Fake Flag 1",
+    "key": "fake-flag-2",
+    "displayName": "Fake Flag 2",
     "sdkKey": "beta_sdk_0",
-    "audiences": ["cali_students", "beta_testers"]
+    "audiences": ["california_students", "beta_testers"]
 }
 
 ###
@@ -119,10 +127,19 @@ POST http://localhost:6000/api/flags HTTP/1.1
 content-type: application/json
 
 {
-    "key": "Inauthentic_Flag_2",
+    "key": "inauthentic_flag_2",
     "displayName": "Inauthentic Flag 2",
     "sdkKey": "beta_sdk_0",
-    "audiences": [1, 2]
+    "audiences": ["california_students", "beta_testers"]
+}
+
+###
+
+PATCH http://localhost:6000/api/flags/1 HTTP/1.1
+content-type: application/json
+
+{
+    "audiences": ["california_students", "beta_testers"]
 }
 
 ###
@@ -157,7 +174,7 @@ GET http://localhost:6000/api/attributes HTTP/1.1
 
 ###
 
-GET http://localhost:6000/api/attributes/1 HTTP/1.1
+# GET http://localhost:6000/api/attributes/1 HTTP/1.1
 
 ###
 

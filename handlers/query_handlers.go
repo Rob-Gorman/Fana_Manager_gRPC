@@ -39,7 +39,7 @@ func (h Handler) GetAllAudiences(w http.ResponseWriter, r *http.Request) {
 	// need to populate the conds with a _response_ object (need to populate attrs?)
 	// need also to populate flag id's?
 	var auds []models.Audience
-	var respAuds []models.AudienceResponse
+	var respAuds []models.AudienceNoCondsResponse
 
 	result := h.DB.Preload("Conditions").Find(&auds)
 
@@ -48,7 +48,7 @@ func (h Handler) GetAllAudiences(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for ind, _ := range auds {
-		respAuds = append(respAuds, models.AudienceResponse{Audience: &auds[ind]})
+		respAuds = append(respAuds, models.AudienceNoCondsResponse{Audience: &auds[ind]})
 	}
 
 	utils.PayloadResponse(w, r, respAuds)

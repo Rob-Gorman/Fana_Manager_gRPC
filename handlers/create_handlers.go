@@ -49,8 +49,9 @@ func (h Handler) CreateFlag(w http.ResponseWriter, r *http.Request) {
 
 func (h Handler) CreateAttribute(w http.ResponseWriter, r *http.Request) {
 	type attrPost struct {
-		Key  string `json:"key"`
-		Type string `json:"attrType"`
+		Key         string `json:"key"`
+		DisplayName string `json:"displayName"`
+		Type        string `json:"attrType"`
 	}
 
 	var attrReq attrPost
@@ -65,9 +66,11 @@ func (h Handler) CreateAttribute(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(body, &attrReq)
 	utils.HandleErr(err, "problem unmarshalling, what do?")
 
-	var attr models.Attribute
-	attr.Key, attr.DisplayName = utils.ProcessNameToKeyDisplayName(attrReq.Key)
-	attr.Type = attrReq.Type
+	attr := models.Attribute{
+		Key:         attrReq.Key,
+		DisplayName: attrReq.DisplayName,
+		Type:        attrReq.Type,
+	}
 	h.DB.Save(&attr)
 
 	utils.CreatedResponse(w, r, &attr)

@@ -9,6 +9,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"gorm.io/gorm"
 )
 
 func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
@@ -16,47 +17,59 @@ func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 	// the JSON tags identify what part of the incoming payload
 	// to assign to the field in the `json.Unmarshal` method
 	type flagUpdate struct {
-		Name   string `json:"name"`
-		SdkKey string `json:"sdkKey"`
-		Status bool   `json:"status"`
-		// Audiences []string `json:"audiences"`
+		Key         string   `json:"key"`
+		DisplayName string   `json:"displayName"`
+		SdkKey      string   `json:"sdkKey"`
+		Audiences   []string `json:"audiences"`
 	}
 
 	var flagReq flagUpdate
-	// Read to request body
+	var auds []models.Audience
+
 	defer r.Body.Close()
-	body, err := ioutil.ReadAll(r.Body)
+	body, _ := ioutil.ReadAll(r.Body)
 
-	if err != nil {
-		utils.NoRecordResponse(w, r, err)
-		return
-	}
-
-	err = json.Unmarshal(body, &flagReq)
+	err := json.Unmarshal(body, &flagReq)
 	if err != nil {
 		utils.BadRequestResponse(w, r, err)
 		return
 	}
 
-	// get audience objects to insert join reference
-	// (GORM model for flags expects Audience objects, not key strings)
-	// var dbAuds []models.Audience
-	// h.DB.Where("key in ?", flagReq.Audiences).Find(&dbAuds)
+	result := h.DB.Where("key in (?)", flagReq.Audiences).Find(&auds)
+	if result.Error != nil {
+		utils.BadRequestResponse(w, r, result.Error)
+		return
+	}
 
-	// h.DB.Association("Audiences")
-	var updatedFlag models.Flag
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	utils.HandleErr(err, "string conv went south")
 
-	// update the table `updatedFlag` belongs to with the
-	// fields existent in flagReq object (these have to map accurately)
-	result := h.DB.Model(&updatedFlag).Updates(&flagReq)
+	var flag models.Flag
+	h.DB.First(&flag, id)
+	flag.Audiences = auds
+	flag.DisplayName = flagReq.DisplayName
+	flag.Key = flagReq.Key
+	flag.Sdkkey = flagReq.SdkKey
+
+	h.DB.Model(&flag).Association("Audiences")
+	h.DB.Model(&flag).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&flag)
 
 	if result.Error != nil {
 		utils.HandleErr(result.Error, "should put a failed to update")
 		return
 	}
 
-	// Send a 201 created response
-	utils.UpdatedResponse(w, r, &updatedFlag)
+	h.DB.Preload("Audiences").First(&flag, id)
+	var respAuds []models.AudienceNoCondsResponse
+	for ind, _ := range flag.Audiences {
+		respAuds = append(respAuds, models.AudienceNoCondsResponse{Audience: &flag.Audiences[ind]})
+	}
+	response := models.FlagResponse{
+		Flag:      &flag,
+		Audiences: respAuds,
+	}
+	utils.UpdatedResponse(w, r, &response)
 }
 
 func (h Handler) ToggleFlag(w http.ResponseWriter, r *http.Request) {
