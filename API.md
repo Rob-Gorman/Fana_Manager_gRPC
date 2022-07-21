@@ -52,6 +52,48 @@ Expected Response:
 ]
 ```
 
+### Get Single Audience
+
+GET /api/audiences/{id}
+
+Expected Response:
+```js
+{
+  "id": 1,
+  "displayName": "California Students",
+  "key": "california_students",
+  "combine": "ANY",
+  "created_at": "2022-07-21T16:32:43.229267Z",
+  "updated_at": "2022-07-21T16:32:43.234051Z",
+  "conditions": [
+    {
+      "id": 1,
+      "negate": false,
+      "operator": "EQ",
+      "vals": "california",
+      "attribute": {
+        "id": 1,
+        "key": "state",
+        "type": "STR",
+        "displayName": "State"
+      }
+    },
+    {
+      "id": 2,
+      "negate": false,
+      "operator": "EQ",
+      "vals": "true",
+      "attribute": {
+        "id": 2,
+        "key": "student",
+        "type": "BOOL",
+        "displayName": "Student"
+      }
+    }
+  ]
+}
+```
+
 ## Flags
 
 ### Get Flags

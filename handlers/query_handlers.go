@@ -93,15 +93,33 @@ func (h Handler) GetAudience(w http.ResponseWriter, r *http.Request) {
 	utils.HandleErr(err, "string conv went south")
 
 	var aud models.Audience
+	var conds []models.ConditionEmbedded
 
 	result := h.DB.Preload("Conditions").First(&aud, id)
+
+	for ind, _ := range aud.Conditions {
+		cond := aud.Conditions[ind]
+		var attr models.Attribute
+		h.DB.Find(&attr, cond.AttributeID)
+		h.DB.Find(&cond)
+		cond.Attribute = attr
+		conds = append(conds, models.ConditionEmbedded{
+			Condition: &cond,
+			Attribute: models.AttributeEmbedded{Attribute: &attr},
+		})
+	}
 
 	if result.Error != nil {
 		utils.NoRecordResponse(w, r, result.Error)
 		return
 	}
 
-	utils.PayloadResponse(w, r, aud)
+	response := models.AudienceResponse{
+		Audience:   &aud,
+		Conditions: conds,
+	}
+
+	utils.PayloadResponse(w, r, &response)
 }
 
 func (h Handler) GetAttribute(w http.ResponseWriter, r *http.Request) {
