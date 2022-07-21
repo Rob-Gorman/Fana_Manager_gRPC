@@ -8,6 +8,11 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"manager/cache"
+)
+
+var (
+	flagCache cache.FlagCache
 )
 
 func (h Handler) GetAllFlags(w http.ResponseWriter, r *http.Request) {
@@ -79,6 +84,10 @@ func (h Handler) GetFlag(w http.ResponseWriter, r *http.Request) {
 		utils.NoRecordResponse(w, r, result.Error)
 		return
 	}
+
+	// Store flag in cache, flag id as the key
+	fmt.Printf("Adding flag id %v to the cache:\n %v", vars["id"], &flag)
+	flagCache.Set(vars["id"], &flag)
 
 	utils.PayloadResponse(w, r, flag)
 }
