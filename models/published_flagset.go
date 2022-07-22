@@ -3,13 +3,12 @@ package models
 import (
 	"encoding/json"
 	"fmt"
+	"manager/db"
 	"strings"
-
-	"gorm.io/gorm"
 )
 
 type Flagset struct {
-	Sdkkeys map[string]bool     `json:"sdkKeys"`
+	Sdkkeys []string            `json:"sdkKeys"`
 	Flags   map[string]Flagrule `json:"flags"`
 }
 
@@ -30,9 +29,9 @@ type CondInst struct {
 	Negate    bool     `json:"negate"`
 }
 
-func BuildFlagset(db *gorm.DB) (fs *Flagset) {
-	sdks := buildSdkkeys(db)
-	flrules := buildFlagrules(db)
+func BuildFlagset() (fs *Flagset) {
+	sdks := buildSdkkeys()
+	flrules := buildFlagrules()
 
 	fs = &Flagset{Sdkkeys: *sdks, Flags: flrules}
 	result, _ := json.Marshal(&fs)
@@ -40,24 +39,24 @@ func BuildFlagset(db *gorm.DB) (fs *Flagset) {
 	return fs
 }
 
-func buildSdkkeys(db *gorm.DB) *map[string]bool {
+func buildSdkkeys() *[]string {
 	type SDK struct {
 		Key    string
 		Status bool
 	}
-	r := map[string]bool{}
+	r := []string{}
 
 	var sdks []SDK
-	db.Model(&Sdkkey{}).Select("key", "status").Find(&sdks)
+	db.DB.Model(Sdkkey{}).Select("key", "status").Find(&sdks)
 
 	for i, _ := range sdks {
-		r[sdks[i].Key] = sdks[i].Status
+		r = append(r, sdks[i].Key)
 	}
 
 	return &r
 }
 
-func buildFlagrules(db *gorm.DB) (frs map[string]Flagrule) {
+func buildFlagrules() (frs map[string]Flagrule) {
 	// type FlagMsg struct {
 	// 	ID     uint
 	// 	Status bool
@@ -65,15 +64,15 @@ func buildFlagrules(db *gorm.DB) (frs map[string]Flagrule) {
 	// }
 	var flags []Flag
 	frs = map[string]Flagrule{}
-	db.Model(&Flag{}).Select("id", "status").Find(&flags)
+	db.DB.Model(Flag{}).Select("id", "status").Find(&flags)
 
 	for ind, _ := range flags {
 		flag := Flag{}
 		flagrule := Flagrule{}
 		audiences := []Audset{}
-		db.Preload("Audiences").First(&flag, flags[ind].ID)
+		db.DB.Preload("Audiences").First(&flag, flags[ind].ID)
 		for i, _ := range flag.Audiences {
-			audiences = append(audiences, *buildAudrule(db, flag.Audiences[i]))
+			audiences = append(audiences, *buildAudrule(flag.Audiences[i]))
 		}
 		flagrule = Flagrule{
 			Status:    flag.Status,
@@ -91,11 +90,11 @@ func buildFlagrules(db *gorm.DB) (frs map[string]Flagrule) {
 	return frs
 }
 
-func buildAudrule(db *gorm.DB, aud Audience) (ar *Audset) {
-	db.Preload("Conditions").First(&aud)
+func buildAudrule(aud Audience) (ar *Audset) {
+	db.DB.Preload("Conditions").First(&aud)
 	conditions := []CondInst{}
 	for ind, _ := range aud.Conditions {
-		conditions = append(conditions, *buildCondinst(db, aud.Conditions[ind]))
+		conditions = append(conditions, *buildCondinst(aud.Conditions[ind]))
 	}
 	ar = &Audset{
 		Combine:    aud.Combine,
@@ -104,9 +103,9 @@ func buildAudrule(db *gorm.DB, aud Audience) (ar *Audset) {
 	return ar
 }
 
-func buildCondinst(db *gorm.DB, cond Condition) (ci *CondInst) {
+func buildCondinst(cond Condition) (ci *CondInst) {
 
-	db.Preload("Attribute").First(&cond)
+	db.DB.Preload("Attribute").First(&cond)
 	return &CondInst{
 		Attribute: cond.Attribute.Key,
 		Operator:  cond.Operator,

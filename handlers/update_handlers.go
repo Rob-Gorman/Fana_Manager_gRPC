@@ -46,7 +46,10 @@ func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
-	utils.HandleErr(err, "string conv went south")
+	if err != nil {
+		utils.BadRequestResponse(w, r, err)
+		return
+	}
 
 	var flag models.Flag
 	h.DB.First(&flag, id)
@@ -85,7 +88,11 @@ func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 
 func (h Handler) ToggleFlag(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id, _ := strconv.Atoi(vars["id"])
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		utils.BadRequestResponse(w, r, err)
+		return
+	}
 
 	togglef := struct {
 		Status bool `json:"status"`
@@ -93,7 +100,7 @@ func (h Handler) ToggleFlag(w http.ResponseWriter, r *http.Request) {
 
 	body, _ := ioutil.ReadAll(r.Body)
 
-	err := json.Unmarshal(body, &togglef)
+	err = json.Unmarshal(body, &togglef)
 
 	if err != nil {
 		utils.BadRequestResponse(w, r, err)

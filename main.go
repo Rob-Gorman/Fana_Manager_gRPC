@@ -7,11 +7,13 @@ import (
 	"manager/publisher"
 	"net/http" 
 	"os"
+	"manager/dev"
 )
 
 func main() {
 	configs.LoadDotEnv()
 	srv := api.NewServer()
+	dev.RefreshSchema(srv.H.DB)
 	fmt.Println("Connected to postgres!")
 	PORT := os.Getenv("PORT")
 	fmt.Printf("\nServing following flag configuration on PORT %s\n", PORT)

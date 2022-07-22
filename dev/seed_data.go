@@ -1,4 +1,4 @@
-package db
+package dev
 
 import (
 	"fmt"
@@ -7,14 +7,14 @@ import (
 	"gorm.io/gorm"
 )
 
-func seedDB(db *gorm.DB) {
+func SeedDB(db *gorm.DB) {
 	seedFlags(db)
 	seedAttributes(db)
 	seedAudiences(db)
 	seedFlagAuds(db) // see this function for tricker query implementation
 	seedLogs(db)
 	seedSdks(db)
-	models.BuildFlagset(db)
+	models.BuildFlagset()
 }
 
 func seedSdks(db *gorm.DB) {
