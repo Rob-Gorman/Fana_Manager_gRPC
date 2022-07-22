@@ -1,7 +1,7 @@
 package api
 
 import (
-	"manager/db"
+	"manager/database"
 	"manager/handlers"
 
 	"github.com/gorilla/mux"
@@ -16,7 +16,7 @@ type Server struct {
 
 func NewServer() *Server {
 	s := &Server{
-		H:      handlers.New(db.Init()),
+		H:      handlers.New(database.Init()),
 		Router: mux.NewRouter(),
 	}
 

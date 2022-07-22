@@ -14,7 +14,7 @@ func SeedDB(db *gorm.DB) {
 	seedFlagAuds(db) // see this function for tricker query implementation
 	seedLogs(db)
 	seedSdks(db)
-	models.BuildFlagset()
+	models.BuildFlagset(db)
 }
 
 func seedSdks(db *gorm.DB) {

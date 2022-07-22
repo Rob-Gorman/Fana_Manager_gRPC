@@ -13,18 +13,8 @@ import (
 )
 
 func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
-	// shape of request payload
-	// the JSON tags identify what part of the incoming payload
-	// to assign to the field in the `json.Unmarshal` method
-	type flagUpdate struct {
-		Key         string   `json:"key"`
-		DisplayName string   `json:"displayName"`
-		SdkKey      string   `json:"sdkKey"`
-		Audiences   []string `json:"audiences"`
-	}
-
-	var flagReq flagUpdate
-	var auds []models.Audience
+	// **** WIP ****
+	var flagReq models.FlagSubmit
 
 	defer r.Body.Close()
 	body, _ := ioutil.ReadAll(r.Body)
@@ -35,12 +25,6 @@ func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result := h.DB.Where("key in (?)", flagReq.Audiences).Find(&auds)
-	if result.Error != nil {
-		utils.BadRequestResponse(w, r, result.Error)
-		return
-	}
-
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
@@ -48,30 +32,23 @@ func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fr := FlagReqToFlag(flagReq, h)
 	var flag models.Flag
 	h.DB.First(&flag, id)
-	flag.Audiences = auds
-	flag.DisplayName = flagReq.DisplayName
-	flag.Key = flagReq.Key
-	flag.Sdkkey = flagReq.SdkKey
+	flag.Audiences = fr.Audiences
+	flag.DisplayName = fr.DisplayName
+	flag.Key = fr.Key
+	flag.Sdkkey = fr.Sdkkey
 
-	h.DB.Model(&flag).Association("Audiences")
-	h.DB.Model(&flag).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&flag)
+	h.DB.Model(&flag).Association("Audiences").Replace(flag.Audiences)
+	err = h.DB.Model(&flag).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&flag).Error
 
-	if result.Error != nil {
-		utils.HandleErr(result.Error, "should put a failed to update")
+	if err != nil {
+		utils.BadRequestResponse(w, r, err)
 		return
 	}
 
-	h.DB.Preload("Audiences").First(&flag, id)
-	var respAuds []models.AudienceNoCondsResponse
-	for ind, _ := range flag.Audiences {
-		respAuds = append(respAuds, models.AudienceNoCondsResponse{Audience: &flag.Audiences[ind]})
-	}
-	response := models.FlagResponse{
-		Flag:      &flag,
-		Audiences: respAuds,
-	}
+	response := FlagToFlagResponse(flag, h)
 	utils.UpdatedResponse(w, r, &response)
 }
 
@@ -108,4 +85,47 @@ func (h Handler) ToggleFlag(w http.ResponseWriter, r *http.Request) {
 	response := models.FlagNoAudsResponse{Flag: &flag}
 
 	utils.UpdatedResponse(w, r, &response)
+}
+
+func (h Handler) UpdateAudience(w http.ResponseWriter, r *http.Request) {
+	var req models.Audience
+
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		utils.BadRequestResponse(w, r, err)
+		return
+	}
+
+	defer r.Body.Close()
+	body, err := ioutil.ReadAll(r.Body)
+
+	if err != nil {
+		utils.BadRequestResponse(w, r, err)
+		return
+	}
+
+	err = json.Unmarshal(body, &req)
+	if err != nil {
+		utils.BadRequestResponse(w, r, err)
+		return
+	}
+
+	aud := BuildAudUpdate(req, id, h)
+
+	h.DB.Model(&aud).Association("Conditions").Replace(aud.Conditions)
+	err = h.DB.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&aud).Error
+	if err != nil {
+		utils.BadRequestResponse(w, r, err)
+		return
+	}
+
+	h.DB.Model(&models.Audience{}).Preload("Conditions").Find(&aud)
+
+	response := models.AudienceResponse{
+		Audience:   &aud,
+		Conditions: GetEmbeddedConds(aud, h.DB),
+	}
+
+	utils.CreatedResponse(w, r, &response)
 }

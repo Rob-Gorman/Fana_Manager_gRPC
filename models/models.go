@@ -38,7 +38,7 @@ type Audience struct {
 type Attribute struct {
 	ID          uint      `json:"id" gorm:"primaryKey"`
 	Key         string    `json:"key" gorm:"type:varchar(30); UNIQUE; NOT NULL"`
-	Type        string    `json:"type" gorm:"type:varchar(10)"`
+	Type        string    `json:"attrType" gorm:"type:varchar(10)"`
 	DisplayName string    `json:"displayName" gorm:"type:varchar(30)"`
 	CreatedAt   time.Time `json:"created_at"`
 }
@@ -50,7 +50,7 @@ type Condition struct {
 	AttributeID uint      `json:"attributeID"`
 	Attribute   Attribute `json:"attribute,omitempty" gorm:"foreignKey:AttributeID; references:ID"`
 	Operator    string    `json:"operator" gorm:"default:'EQ'"`
-	Vals        string    `json:"vals" gorm:"default:[];not null"`
+	Vals        string    `json:"vals" gorm:"default:'';not null"`
 }
 
 type Sdkkey struct {

@@ -3,8 +3,9 @@ package models
 import (
 	"encoding/json"
 	"fmt"
-	"manager/db"
 	"strings"
+
+	"gorm.io/gorm"
 )
 
 type Flagset struct {
@@ -18,8 +19,8 @@ type Flagrule struct {
 }
 
 type Audset struct {
-	Combine    string     `json:"combine"`
-	Conditions []CondInst `json:"conditions"`
+	Combine    string              `json:"combine"`
+	Conditions []ConditionEmbedded `json:"conditions"`
 }
 
 type CondInst struct {
@@ -29,87 +30,77 @@ type CondInst struct {
 	Negate    bool     `json:"negate"`
 }
 
-func BuildFlagset() (fs *Flagset) {
-	sdks := buildSdkkeys()
-	flrules := buildFlagrules()
+func BuildFlagset(db *gorm.DB) (fs *Flagset) {
+	sdks := buildSdkkeys(db)
+	flrules := buildFlagrules(db)
 
-	fs = &Flagset{Sdkkeys: *sdks, Flags: flrules}
+	fs = &Flagset{
+		Sdkkeys: *sdks,
+		Flags:   flrules,
+	}
 	result, _ := json.Marshal(&fs)
 	fmt.Println(string(result))
 	return fs
 }
 
-func buildSdkkeys() *[]string {
-	type SDK struct {
-		Key    string
-		Status bool
-	}
-	r := []string{}
+func buildSdkkeys(db *gorm.DB) *[]string {
+	var sdks []string
+	db.Model(Sdkkey{}).Select("key").Find(&sdks)
 
-	var sdks []SDK
-	db.DB.Model(Sdkkey{}).Select("key", "status").Find(&sdks)
-
-	for i, _ := range sdks {
-		r = append(r, sdks[i].Key)
-	}
-
-	return &r
+	return &sdks
 }
 
-func buildFlagrules() (frs map[string]Flagrule) {
-	// type FlagMsg struct {
-	// 	ID     uint
-	// 	Status bool
-	// 	// Audiences []Audience `gorm:"foreignKey:AudienceID; references:ID"`
-	// }
+func buildFlagrules(db *gorm.DB) (frs map[string]Flagrule) {
 	var flags []Flag
 	frs = map[string]Flagrule{}
-	db.DB.Model(Flag{}).Select("id", "status").Find(&flags)
+	db.Model(Flag{}).Select("id", "key", "status").Find(&flags)
 
 	for ind, _ := range flags {
 		flag := Flag{}
 		flagrule := Flagrule{}
 		audiences := []Audset{}
-		db.DB.Preload("Audiences").First(&flag, flags[ind].ID)
+		db.Preload("Audiences").First(&flag, flags[ind].ID)
 		for i, _ := range flag.Audiences {
-			audiences = append(audiences, *buildAudrule(flag.Audiences[i]))
+			audiences = append(audiences, *buildAudrule(flag.Audiences[i], db))
 		}
 		flagrule = Flagrule{
 			Status:    flag.Status,
 			Audiences: audiences,
 		}
+		printrule, _ := json.Marshal(&flagrule)
+		fmt.Printf("%s: %s\n\n\n", flags[ind].Key, string(printrule))
 
 		frs[flags[ind].Key] = flagrule
-
-		return frs
 	}
 
-	result, _ := json.Marshal(&flags)
+	result, _ := json.Marshal(&frs)
 	fmt.Println("FLAGS AS BUILDING", string(result))
 
 	return frs
 }
 
-func buildAudrule(aud Audience) (ar *Audset) {
-	db.DB.Preload("Conditions").First(&aud)
-	conditions := []CondInst{}
-	for ind, _ := range aud.Conditions {
-		conditions = append(conditions, *buildCondinst(aud.Conditions[ind]))
-	}
+func buildAudrule(aud Audience, db *gorm.DB) (ar *Audset) {
+	db.Preload("Conditions").First(&aud)
+	conds := getEmbeddedConds(aud, db)
 	ar = &Audset{
 		Combine:    aud.Combine,
-		Conditions: conditions,
+		Conditions: conds,
 	}
 	return ar
 }
 
-func buildCondinst(cond Condition) (ci *CondInst) {
-
-	db.DB.Preload("Attribute").First(&cond)
-	return &CondInst{
-		Attribute: cond.Attribute.Key,
-		Operator:  cond.Operator,
-		Vals:      strings.Split(cond.Vals, " "),
-		Negate:    cond.Negate,
+func getEmbeddedConds(aud Audience, db *gorm.DB) (conds []ConditionEmbedded) {
+	for ind, _ := range aud.Conditions {
+		cond := aud.Conditions[ind]
+		var attr Attribute
+		db.Find(&attr, cond.AttributeID)
+		db.Find(&cond)
+		cond.Attribute = attr
+		conds = append(conds, ConditionEmbedded{
+			Condition: &cond,
+			Attribute: attr.Key,
+			Vals:      strings.Split(cond.Vals, ", "),
+		})
 	}
+	return conds
 }

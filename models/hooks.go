@@ -8,7 +8,7 @@ import (
 )
 
 func (fl *Flag) AfterUpdate(db *gorm.DB) (err error) {
-	publishThis := BuildFlagset()
+	publishThis := BuildFlagset(db)
 	res, _ := json.Marshal(publishThis)
 	fmt.Println(string(res))
 	return nil
