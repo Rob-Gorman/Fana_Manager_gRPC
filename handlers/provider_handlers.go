@@ -6,6 +6,6 @@ import (
 )
 
 func (h Handler) GetFlagset(w http.ResponseWriter, r *http.Request) {
-	fs := api.BuildFlagset(h.DB)
+	fs := BuildFlagset(h.DB)
 	utils.PayloadResponse(w, r, &fs)
 }

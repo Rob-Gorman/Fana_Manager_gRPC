@@ -49,13 +49,13 @@ func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	response := FlagToFlagResponse(flag, h)
-  
-		byteArray, err := json.Marshal(&response)
-		if err != nil {
-			utils.HandleErr(err, "our unmarshalling sucks")
-		}
 
-		publisher.Redis.Publish(context.TODO(), "flag-update-channel", byteArray)
+	byteArray, err := json.Marshal(&response)
+	if err != nil {
+		utils.HandleErr(err, "our unmarshalling sucks")
+	}
+
+	publisher.Redis.Publish(context.TODO(), "flag-update-channel", byteArray)
 
 	utils.UpdatedResponse(w, r, &response)
 }

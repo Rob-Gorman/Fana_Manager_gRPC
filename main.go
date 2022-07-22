@@ -3,14 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"manager/api"
 	"manager/config"
 	"manager/configs"
-	"manager/publisher"
-	"net/http" 
-	"os"
 	"manager/dev"
+	"manager/publisher"
 	"net/http"
 	"os"
 )
