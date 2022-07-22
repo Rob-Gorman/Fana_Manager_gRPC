@@ -77,8 +77,9 @@ func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			utils.HandleErr(err, "our unmarshalling sucks")
 		}
-		
+
 		publisher.Redis.Publish(context.TODO(), "flag-update-channel", byteArray)
+
 	utils.UpdatedResponse(w, r, &response)
 }
 
@@ -109,6 +110,13 @@ func (h Handler) ToggleFlag(w http.ResponseWriter, r *http.Request) {
 
 	h.DB.First(&flag, id)
 	response := models.FlagNoAudsResponse{Flag: &flag}
+
+	byteArray, err := json.Marshal(&response)
+	if err != nil {
+		utils.HandleErr(err, "our unmarshalling sucks")
+	}
+
+	publisher.Redis.Publish(context.TODO(), "flag-toggle-channel", byteArray)
 
 	utils.UpdatedResponse(w, r, &response)
 }

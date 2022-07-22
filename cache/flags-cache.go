@@ -9,4 +9,5 @@ import (
 type FlagCache interface {
 	Set(key string, value *models.Flag) // set an array of 
 	Get(key string) *models.Flag // not needed? mgr never reads from cache
+	FlushAllAsync()
 }

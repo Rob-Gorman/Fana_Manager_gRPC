@@ -72,3 +72,9 @@ func (cache *redisCache) Get(key string) *models.Flag {
 	}
 	return &flag
 }
+// asynchronously flush all keys from cache 
+func (cache *redisCache) FlushAllAsync() {
+	client := cache.getClient()
+
+	client.FlushAllAsync(context.TODO())
+}

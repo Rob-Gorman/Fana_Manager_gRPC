@@ -136,6 +136,13 @@ func (h Handler) CreateAudience(w http.ResponseWriter, r *http.Request) {
 	// aud.Type = audReq.Type
 	h.DB.Model(&aud).Save(&audReq)
 
+	byteArray, err := json.Marshal(&aud)
+	if err != nil {
+		utils.HandleErr(err, "our unmarshalling sucks")
+	}
+
+	publisher.Redis.Publish(context.TODO(), "audience-update-channel", byteArray)
+
 	// utils.CreatedResponse(w, r, &models.AudienceResponse{Audience: &audReq})
 	utils.CreatedResponse(w, r, &audReq)
 }

@@ -36,6 +36,12 @@ func (h Handler) GetAllFlags(w http.ResponseWriter, r *http.Request) {
 	// w.Header().Add("Content-Type", "application/json")
 	// w.WriteHeader(http.StatusOK)
 	// json.NewEncoder(w).Encode(flags) // need a new target for w
+
+	// ****~~~ CACHING WORKFLOW ****~~~
+	// Flush cache 
+	// flagCache.FlushAllAsync()
+	// Store copy of data
+	// flagCache.Set("data", value) // `value` needs to match struct, not sure what it will be
 }
 
 // result := h.DB.Preload("Audiences").Find(&flags)
@@ -83,10 +89,6 @@ func (h Handler) GetFlag(w http.ResponseWriter, r *http.Request) {
 	for ind, _ := range flag.Audiences {
 		auds = append(auds, models.AudienceNoCondsResponse{Audience: &flag.Audiences[ind]})
 	}
-
-	// Store flag in cache, flag id as the key
-	fmt.Printf("\nAdding flag id %v to the cache:\n %v\n\n", vars["id"], flag)
-	flagCache.Set(vars["id"], &flag) // THIS LINE IS PROBLEMATIC ? trying to marshal then add a type flag to the cache. 
 
 	utils.PayloadResponse(w, r, &models.FlagResponse{Flag: &flag, Audiences: auds})
 }
