@@ -69,7 +69,10 @@ func (h Handler) GetAllAttributes(w http.ResponseWriter, r *http.Request) {
 func (h Handler) GetFlag(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
-	utils.HandleErr(err, "string conv went south")
+	if err != nil {
+		utils.BadRequestResponse(w, r, err)
+		return
+	}
 
 	var flag models.Flag
 	var auds []models.AudienceNoCondsResponse
@@ -90,7 +93,10 @@ func (h Handler) GetFlag(w http.ResponseWriter, r *http.Request) {
 func (h Handler) GetAudience(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
-	utils.HandleErr(err, "string conv went south")
+	if err != nil {
+		utils.BadRequestResponse(w, r, err)
+		return
+	}
 
 	var aud models.Audience
 	var conds []models.ConditionEmbedded
@@ -125,7 +131,10 @@ func (h Handler) GetAudience(w http.ResponseWriter, r *http.Request) {
 func (h Handler) GetAttribute(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
-	utils.HandleErr(err, "string conv went south")
+	if err != nil {
+		utils.BadRequestResponse(w, r, err)
+		return
+	}
 
 	var attr models.Attribute
 
