@@ -1,12 +1,15 @@
-package models
+package handlers
 
 import (
 	"encoding/json"
 	"fmt"
+	"manager/models"
 	"strings"
 
 	"gorm.io/gorm"
 )
+
+type omit bool
 
 type Flagset struct {
 	Sdkkeys []string            `json:"sdkKeys"`
@@ -21,8 +24,9 @@ type Audset struct {
 }
 
 type CondInst struct {
-	*ConditionEmbedded
-	Vals []string `json:"vals"`
+	*models.ConditionEmbedded
+	AttributeID omit     `json:"attributeID,omitempty"`
+	Vals        []string `json:"vals"`
 }
 
 func BuildFlagset(db *gorm.DB) (fs *Flagset) {
@@ -40,18 +44,18 @@ func BuildFlagset(db *gorm.DB) (fs *Flagset) {
 
 func buildSdkkeys(db *gorm.DB) *[]string {
 	var sdks []string
-	db.Model(Sdkkey{}).Select("key").Find(&sdks)
+	db.Model(models.Sdkkey{}).Select("key").Find(&sdks)
 
 	return &sdks
 }
 
 func buildFlagrules(db *gorm.DB) (frs map[string]Flagrule) {
-	var flags []Flag
+	var flags []models.Flag
 	frs = map[string]Flagrule{}
-	db.Model(Flag{}).Select("id", "key", "status").Find(&flags)
+	db.Model(models.Flag{}).Select("id", "key", "status").Find(&flags)
 
 	for ind, _ := range flags {
-		flag := Flag{}
+		flag := models.Flag{}
 		flagrule := Flagrule{}
 		db.Preload("Audiences").First(&flag, flags[ind].ID)
 		flagrule["status"] = flag.Status
@@ -72,7 +76,7 @@ func buildFlagrules(db *gorm.DB) (frs map[string]Flagrule) {
 	return frs
 }
 
-func buildAudrule(aud Audience, db *gorm.DB) (ar *Audset) {
+func buildAudrule(aud models.Audience, db *gorm.DB) (ar *Audset) {
 	db.Preload("Conditions").First(&aud)
 	conds := getEmbeddedConds(aud, db)
 	ar = &Audset{
@@ -82,16 +86,16 @@ func buildAudrule(aud Audience, db *gorm.DB) (ar *Audset) {
 	return ar
 }
 
-func getEmbeddedConds(aud Audience, db *gorm.DB) []CondInst {
+func getEmbeddedConds(aud models.Audience, db *gorm.DB) []CondInst {
 	conds := []CondInst{}
 	for ind, _ := range aud.Conditions {
 		cond := aud.Conditions[ind]
-		var attr Attribute
+		var attr models.Attribute
 		db.Find(&attr, cond.AttributeID)
 		db.Find(&cond)
 		cond.Attribute = attr
 		conds = append(conds, CondInst{
-			ConditionEmbedded: &ConditionEmbedded{
+			ConditionEmbedded: &models.ConditionEmbedded{
 				Condition: &cond,
 				Attribute: attr.Key,
 			},
