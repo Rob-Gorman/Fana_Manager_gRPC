@@ -133,7 +133,7 @@ content-type: application/json
     "key": "inauthentic_flag_2",
     "displayName": "Inauthentic Flag 2",
     "sdkKey": "beta_sdk_0",
-    "audiences": ["california_students", "beta_testers"]
+    "audiences": []
 }
 
 ###
@@ -178,7 +178,7 @@ GET http://localhost:6000/api/attributes HTTP/1.1
 
 ###
 
-# GET http://localhost:6000/api/attributes/1 HTTP/1.1
+GET http://localhost:6000/api/attributes/1 HTTP/1.1
 
 ###
 

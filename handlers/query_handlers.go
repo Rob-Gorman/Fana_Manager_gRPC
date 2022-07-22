@@ -11,33 +11,23 @@ import (
 )
 
 func (h Handler) GetAllFlags(w http.ResponseWriter, r *http.Request) {
-	// TODO TODO TODO: *********************************************
-	// need to populate the audiences with a _response_ object
 	var flags []models.Flag
 
-	// SELECT * FROM flags;
 	result := h.DB.Find(&flags)
 
 	if result.Error != nil {
 		fmt.Println(result.Error)
 	}
 
-	var response []models.FlagNoAudsResponse
+	response := []models.FlagNoAudsResponse{}
 	for ind, _ := range flags {
 		response = append(response, models.FlagNoAudsResponse{Flag: &flags[ind]})
 	}
 
 	utils.PayloadResponse(w, r, &response)
-	// w.Header().Add("Content-Type", "application/json")
-	// w.WriteHeader(http.StatusOK)
-	// json.NewEncoder(w).Encode(flags)
 }
 
-// result := h.DB.Preload("Audiences").Find(&flags)
 func (h Handler) GetAllAudiences(w http.ResponseWriter, r *http.Request) {
-	// TODO TODO TODO: *********************************************
-	// need to populate the conds with a _response_ object (need to populate attrs?)
-	// need also to populate flag id's?
 	var auds []models.Audience
 	var respAuds []models.AudienceNoCondsResponse
 
