@@ -1,9 +1,11 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"manager/models"
+	"manager/publisher"
 	"manager/utils"
 	"net/http"
 
@@ -32,7 +34,6 @@ func (h Handler) CreateFlag(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.DB.Preload("Audiences").Find(&flag)
-
 	respAuds := []models.AudienceNoCondsResponse{}
 
 	for ind, _ := range flag.Audiences {
@@ -45,7 +46,11 @@ func (h Handler) CreateFlag(w http.ResponseWriter, r *http.Request) {
 		Flag:      &flag,
 		Audiences: respAuds,
 	}
-
+byteArray, err := json.Marshal(&response)
+	if err != nil {
+		utils.HandleErr(err, "our unmarshalling sucks")
+	}
+	publisher.Redis.Publish(context.TODO(), "flag-update-channel", byteArray)
 	utils.CreatedResponse(w, r, &response)
 }
 
@@ -105,6 +110,13 @@ func (h Handler) CreateAudience(w http.ResponseWriter, r *http.Request) {
 		Audience:   &aud,
 		Conditions: GetEmbeddedConds(aud, h.DB),
 	}
+
+	byteArray, err := json.Marshal(&aud)
+	if err != nil {
+		utils.HandleErr(err, "our unmarshalling sucks")
+	}
+
+	publisher.Redis.Publish(context.TODO(), "audience-update-channel", byteArray)
 
 	utils.CreatedResponse(w, r, &response)
 }

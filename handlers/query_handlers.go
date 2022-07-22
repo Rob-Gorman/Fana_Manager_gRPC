@@ -9,6 +9,11 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"manager/cache"
+)
+
+var (
+	flagCache cache.FlagCache = cache.NewRedisCache("localhost:6379", 0, 1000000)
 )
 
 func (h Handler) GetAllFlags(w http.ResponseWriter, r *http.Request) {
@@ -21,6 +26,7 @@ func (h Handler) GetAllFlags(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response := []models.FlagNoAudsResponse{}
+
 	for ind, _ := range flags {
 		response = append(response, models.FlagNoAudsResponse{Flag: &flags[ind]})
 	}
@@ -36,6 +42,13 @@ func (h Handler) GetAllFlags(w http.ResponseWriter, r *http.Request) {
 	// publisher.Pub.PublishTo("flag-toggle-channel", string(payload))
 
 	utils.PayloadResponse(w, r, &response)
+
+	// ****~~~ CACHING WORKFLOW ****~~~
+	// Flush cache 
+	// flagCache.FlushAllAsync()
+	// Store copy of data
+	// flagCache.Set("data", value) // `value` needs to match struct, not sure what it will be
+
 }
 
 func (h Handler) GetAllAudiences(w http.ResponseWriter, r *http.Request) {

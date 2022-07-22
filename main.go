@@ -7,6 +7,9 @@ import (
 	"manager/api"
 	"manager/config"
 	"manager/configs"
+	"manager/publisher"
+	"net/http" 
+	"os"
 	"manager/dev"
 	"net/http"
 	"os"
@@ -54,28 +57,10 @@ func main() {
 	PORT := os.Getenv("PORT")
 	fmt.Printf("\nServing following flag configuration on PORT %s\n", PORT)
 
-	config.CreateRedisClient()
-	pong, err := config.Redis.Ping(ctx).Result()
-	fmt.Println(pong, err)
-
-	err = config.Redis.Set(ctx, "name", "otto", 0).Err()
-	if err != nil {
-		log.Fatal("redis not setting value", err)
-	}
-
-	val, err := config.Redis.Get(ctx, "name").Result()
-	if err != nil {
-		log.Fatal("redis not setting value", err)
-	}
-	fmt.Println("REDIS SETS VALUES:", val)
-
-	fmt.Printf("Redis %v\n", config.Redis) // yay! Redis<localhost:6364 db:0>
-
-	subscribeToChannel(channel) // ok PubSub(flag-toggle-channel)
-
-	// !!!!!!!!!!!!!!! nothing after this gets run  :((((
-	publishTo(channel, []byte("ello poppet 1"))
+	publisher.CreateRedisClient()
+	fmt.Printf("\nRedis publisher client connected at %s\n", publisher.Redis.Options().Addr)
 
 	fmt.Println("last line of main")
+
 	http.ListenAndServe(fmt.Sprintf(":%s", PORT), srv)
 }

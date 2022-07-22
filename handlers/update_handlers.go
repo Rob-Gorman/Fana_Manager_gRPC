@@ -1,9 +1,11 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"manager/models"
+	"manager/publisher"
 	"manager/utils"
 	"net/http"
 	"strconv"
@@ -13,8 +15,11 @@ import (
 )
 
 func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
+	var auds []models.Audience
+
 	// **** WIP ****
 	var flagReq models.FlagSubmit
+
 
 	defer r.Body.Close()
 	body, _ := ioutil.ReadAll(r.Body)
@@ -47,8 +52,15 @@ func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 		utils.BadRequestResponse(w, r, err)
 		return
 	}
-
 	response := FlagToFlagResponse(flag, h)
+  
+		byteArray, err := json.Marshal(&response)
+		if err != nil {
+			utils.HandleErr(err, "our unmarshalling sucks")
+		}
+
+		publisher.Redis.Publish(context.TODO(), "flag-update-channel", byteArray)
+
 	utils.UpdatedResponse(w, r, &response)
 }
 
@@ -83,6 +95,13 @@ func (h Handler) ToggleFlag(w http.ResponseWriter, r *http.Request) {
 
 	h.DB.First(&flag, id)
 	response := models.FlagNoAudsResponse{Flag: &flag}
+
+	byteArray, err := json.Marshal(&response)
+	if err != nil {
+		utils.HandleErr(err, "our unmarshalling sucks")
+	}
+
+	publisher.Redis.Publish(context.TODO(), "flag-toggle-channel", byteArray)
 
 	utils.UpdatedResponse(w, r, &response)
 }
