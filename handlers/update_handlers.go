@@ -15,11 +15,7 @@ import (
 )
 
 func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
-	var auds []models.Audience
-
-	// **** WIP ****
 	var flagReq models.FlagSubmit
-
 
 	defer r.Body.Close()
 	body, _ := ioutil.ReadAll(r.Body)

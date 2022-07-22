@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"manager/api"
 	"manager/utils"
 	"net/http"
 )
