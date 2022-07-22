@@ -9,7 +9,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetEmbeddedConds(aud models.Audience, db *gorm.DB) (conds []models.ConditionEmbedded) {
+func GetEmbeddedConds(aud models.Audience, db *gorm.DB) []models.ConditionEmbedded {
+	conds := []models.ConditionEmbedded{}
 	for ind, _ := range aud.Conditions {
 		cond := aud.Conditions[ind]
 		var attr models.Attribute
@@ -26,7 +27,7 @@ func GetEmbeddedConds(aud models.Audience, db *gorm.DB) (conds []models.Conditio
 }
 
 func FlagReqToFlag(flagReq models.FlagSubmit, h Handler) (flag models.Flag) {
-	var auds []models.Audience
+	auds := []models.Audience{}
 
 	h.DB.Where("key in (?)", flagReq.Audiences).Find(&auds)
 
@@ -43,7 +44,7 @@ func FlagReqToFlag(flagReq models.FlagSubmit, h Handler) (flag models.Flag) {
 
 func FlagToFlagResponse(flag models.Flag, h Handler) models.FlagResponse {
 	h.DB.Preload("Audiences").First(&flag)
-	var respAuds []models.AudienceNoCondsResponse
+	respAuds := []models.AudienceNoCondsResponse{}
 	for ind, _ := range flag.Audiences {
 		respAuds = append(respAuds, models.AudienceNoCondsResponse{Audience: &flag.Audiences[ind]})
 	}

@@ -19,3 +19,10 @@ type AudienceLog struct {
 	EventDesc  string    `json:"eventDesc"`
 	CreatedAt  time.Time `json:"created_at"`
 }
+
+type AttributeLog struct {
+	ID        uint      `json:"id" gorm:"primarykey"`
+	FlagID    uint      `json:"flagID"`
+	EventDesc string    `json:"eventDesc"`
+	CreatedAt time.Time `json:"created_at"`
+}

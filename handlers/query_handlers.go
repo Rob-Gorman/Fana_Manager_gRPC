@@ -75,7 +75,7 @@ func (h Handler) GetFlag(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var flag models.Flag
-	var auds []models.AudienceNoCondsResponse
+	auds := []models.AudienceNoCondsResponse{}
 
 	h.DB.Preload("Audiences").Find(&flag, id)
 	for ind, _ := range flag.Audiences {
