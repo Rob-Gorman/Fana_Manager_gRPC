@@ -4,35 +4,39 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"manager/configs"
 	"manager/models"
 	"time"
 
 	"github.com/go-redis/redis/v8"
 )
 
+// collection of fields
 type redisCache struct {
-	host string
-	db int //index between 0 and 15
+	host    string
+	db      int           //index between 0 and 15
 	expires time.Duration // expiration time for all elements in cache in seconds
 }
 
+// init creates a new instance of redisCache
 func NewRedisCache(host string, db int, exp time.Duration) FlagCache {
 	return &redisCache{
-		host: host,
-		db: db,
+		host:    host,
+		db:      db,
 		expires: exp,
 	}
 }
-// create a new redis client 
+
+// create a new redis client
 func (cache *redisCache) getClient() *redis.Client {
 	return redis.NewClient(&redis.Options{
-		Addr: cache.host,
+		Addr:     fmt.Sprintf("%s:%s", configs.GetEnvVar("REDIS_HOST"), configs.GetEnvVar("REDIS_PORT")),
 		Password: "",
-		DB: cache.db,
+		DB:       cache.db,
 	})
 }
 
-// associate flag json to the key
+// Implementation of Set - associate flag json to the key
 func (cache *redisCache) Set(key string, value *models.Flag) {
 	client := cache.getClient()
 
@@ -42,15 +46,17 @@ func (cache *redisCache) Set(key string, value *models.Flag) {
 		fmt.Println("Set from redis: marshalling error")
 		panic(err)
 	}
+
+	fmt.Printf("\npost marshalling: %v\n", json)
 	// set the key to marshalled data
 	client.Set(context.TODO(), key, json, cache.expires*time.Second)
- }
+}
 
- // get flag based on key
+// get flag based on key
 func (cache *redisCache) Get(key string) *models.Flag {
 	client := cache.getClient()
 
-// set the key to marshalled data
+	// set the key to marshalled data
 	val, err := client.Get(context.TODO(), key).Result()
 	if err != nil {
 		fmt.Println("Get from redis: couldn't get")
@@ -65,4 +71,4 @@ func (cache *redisCache) Get(key string) *models.Flag {
 		panic(err)
 	}
 	return &flag
- }
+}

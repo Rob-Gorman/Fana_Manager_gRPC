@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	flagCache cache.FlagCache
+	flagCache cache.FlagCache = cache.NewRedisCache("localhost:6379", 0, 1000000)
 )
 
 func (h Handler) GetAllFlags(w http.ResponseWriter, r *http.Request) {
@@ -86,8 +86,8 @@ func (h Handler) GetFlag(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Store flag in cache, flag id as the key
-	fmt.Printf("Adding flag id %v to the cache:\n %v", vars["id"], &flag)
-	flagCache.Set(vars["id"], &flag)
+	fmt.Printf("\nAdding flag id %v to the cache:\n %v\n\n", vars["id"], flag)
+	flagCache.Set(vars["id"], &flag) // THIS LINE IS PROBLEMATIC ? trying to marshal then add a type flag to the cache. 
 
 	utils.PayloadResponse(w, r, flag)
 }
