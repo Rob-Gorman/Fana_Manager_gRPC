@@ -44,7 +44,7 @@ func (h Handler) GetAllAudiences(w http.ResponseWriter, r *http.Request) {
 	// need to populate the conds with a _response_ object (need to populate attrs?)
 	// need also to populate flag id's?
 	var auds []models.Audience
-	var respAuds []models.AudienceResponse
+	var respAuds []models.AudienceNoCondsResponse
 
 	result := h.DB.Preload("Conditions").Find(&auds)
 
@@ -53,7 +53,7 @@ func (h Handler) GetAllAudiences(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for ind, _ := range auds {
-		respAuds = append(respAuds, models.AudienceResponse{Audience: &auds[ind]})
+		respAuds = append(respAuds, models.AudienceNoCondsResponse{Audience: &auds[ind]})
 	}
 
 	utils.PayloadResponse(w, r, respAuds)
@@ -77,19 +77,18 @@ func (h Handler) GetFlag(w http.ResponseWriter, r *http.Request) {
 	utils.HandleErr(err, "string conv went south")
 
 	var flag models.Flag
+	var auds []models.AudienceNoCondsResponse
 
-	result := h.DB.Preload("Audiences").First(&flag, id)
-
-	if result.Error != nil {
-		utils.NoRecordResponse(w, r, result.Error)
-		return
+	h.DB.Preload("Audiences").Find(&flag, id)
+	for ind, _ := range flag.Audiences {
+		auds = append(auds, models.AudienceNoCondsResponse{Audience: &flag.Audiences[ind]})
 	}
 
 	// Store flag in cache, flag id as the key
 	fmt.Printf("\nAdding flag id %v to the cache:\n %v\n\n", vars["id"], flag)
 	flagCache.Set(vars["id"], &flag) // THIS LINE IS PROBLEMATIC ? trying to marshal then add a type flag to the cache. 
 
-	utils.PayloadResponse(w, r, flag)
+	utils.PayloadResponse(w, r, &models.FlagResponse{Flag: &flag, Audiences: auds})
 }
 
 func (h Handler) GetAudience(w http.ResponseWriter, r *http.Request) {
@@ -98,15 +97,33 @@ func (h Handler) GetAudience(w http.ResponseWriter, r *http.Request) {
 	utils.HandleErr(err, "string conv went south")
 
 	var aud models.Audience
+	var conds []models.ConditionEmbedded
 
 	result := h.DB.Preload("Conditions").First(&aud, id)
+
+	for ind, _ := range aud.Conditions {
+		cond := aud.Conditions[ind]
+		var attr models.Attribute
+		h.DB.Find(&attr, cond.AttributeID)
+		h.DB.Find(&cond)
+		cond.Attribute = attr
+		conds = append(conds, models.ConditionEmbedded{
+			Condition: &cond,
+			Attribute: models.AttributeEmbedded{Attribute: &attr},
+		})
+	}
 
 	if result.Error != nil {
 		utils.NoRecordResponse(w, r, result.Error)
 		return
 	}
 
-	utils.PayloadResponse(w, r, aud)
+	response := models.AudienceResponse{
+		Audience:   &aud,
+		Conditions: conds,
+	}
+
+	utils.PayloadResponse(w, r, &response)
 }
 
 func (h Handler) GetAttribute(w http.ResponseWriter, r *http.Request) {

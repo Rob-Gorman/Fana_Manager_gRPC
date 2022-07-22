@@ -35,6 +35,7 @@ func refreshSchema(db *gorm.DB) {
 		&models.Condition{},
 		&models.FlagLog{},
 		&models.AudienceLog{},
+		&models.Sdkkey{},
 	)
 
 	// drop all relevant tables

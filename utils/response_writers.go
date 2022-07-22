@@ -34,3 +34,8 @@ func BadRequestResponse(w http.ResponseWriter, r *http.Request, err error) {
 	w.WriteHeader(http.StatusBadRequest)
 	w.Write([]byte(err.Error()))
 }
+
+func UnavailableResponse(w http.ResponseWriter, r *http.Request, err error) {
+	w.WriteHeader(http.StatusServiceUnavailable)
+	w.Write([]byte(err.Error()))
+}

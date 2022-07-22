@@ -17,19 +17,23 @@ type omit bool // this is a custom type to make the code intent more obvious
 
 type FlagResponse struct {
 	*Flag
-	DeletedAt omit `json:"deleted_at,omitempty"`
+	Audiences []AudienceNoCondsResponse `json:"audiences"`
+	SdkKey    omit                      `json:"sdkKey,omitempty"`
+	DeletedAt omit                      `json:"deleted_at,omitempty"`
 }
 
 type FlagNoAudsResponse struct {
 	*Flag
+	SdkKey    omit `json:"sdkKey,omitempty"`
 	DeletedAt omit `json:"deleted_at,omitempty"`
 	Audiences omit `json:"audiences,omitempty"`
 }
 
 type AudienceResponse struct {
 	*Audience
-	Flags     omit `json:"flags,omitempty"`
-	DeletedAt omit `json:"deleted_at,omitempty"`
+	Conditions []ConditionEmbedded `json:"conditions"`
+	Flags      omit                `json:"flags,omitempty"`
+	DeletedAt  omit                `json:"deleted_at,omitempty"`
 }
 
 type AudienceNoCondsResponse struct {
@@ -37,4 +41,17 @@ type AudienceNoCondsResponse struct {
 	Flags      omit `json:"flags,omitempty"`
 	DeletedAt  omit `json:"deleted_at,omitempty"`
 	Conditions omit `json:"conditions,omitempty"`
+	Combine    omit `json:"combine,omitempty"`
+}
+
+type ConditionEmbedded struct {
+	*Condition
+	AudienceID  omit              `json:"audienceID,omitempty"`
+	AttributeID omit              `json:"attributeID,omitempty"`
+	Attribute   AttributeEmbedded `json:"attribute"`
+}
+
+type AttributeEmbedded struct {
+	*Attribute
+	CreatedAt omit `json:"created_at,omitempty"`
 }

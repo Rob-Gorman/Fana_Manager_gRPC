@@ -1,79 +1,72 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"manager/models"
+	"manager/publisher"
 	"manager/utils"
 	"net/http"
-	"manager/publisher"
-	"context"
+
+	"gorm.io/gorm"
 )
 
 func (h Handler) CreateFlag(w http.ResponseWriter, r *http.Request) {
-	// shape of request payload
-	// the JSON tags identify what part of the incoming payload
-	// to assign to the field in the `json.Unmarshal` method
+	// TAKES AUDIENCE KEYS; NOT ID'S
 	type flagPost struct {
-		Name      string   `json:"name"`
-		Sdkkey    string   `json:"sdkKey"`
-		Audiences []string `json:"audiences"`
+		Key         string   `json:"key"`
+		DisplayName string   `json:"displayName"`
+		Sdkkey      string   `json:"sdkKey"`
+		Audiences   []string `json:"audiences,omitempty"`
 	}
 
+	var auds []models.Audience
 	var flagReq flagPost
-	// Read to request body
-	defer r.Body.Close()
-	body, err := ioutil.ReadAll(r.Body)
 
+	defer r.Body.Close()
+	body, _ := ioutil.ReadAll(r.Body)
+
+	err := json.Unmarshal(body, &flagReq)
 	if err != nil {
-		utils.HandleErr(err, "should put a bad request error here")
+		utils.BadRequestResponse(w, r, err)
 		return
 	}
 
-	// this translates the body into the flagPost form
-	// using the json tags from the struct definition
-	err = json.Unmarshal(body, &flagReq)
-	utils.HandleErr(err, "our unmarshalling sucks")
+	h.DB.Where("key in (?)", flagReq.Audiences).Find(&auds)
 
-	// get audience objects to insert join reference
-	// (GORM model for flags expects Audience objects, not key strings)
-	var dbAuds []models.Audience
-	h.DB.Where("key in ?", flagReq.Audiences).Find(&dbAuds)
-
-	// h.DB.Association("Audiences")
-	var flag models.Flag
-	flag.Audiences = dbAuds
-	flag.Key, flag.DisplayName = utils.ProcessNameToKeyDisplayName(flagReq.Name)
-	flag.Sdkkey = flagReq.Sdkkey
-
-	fmt.Printf("sdkkey req: %s\nsdkkey object: %s\n", flagReq.Sdkkey, flag.Sdkkey)
-
-	// Append to the Flags table
-	// result := h.DB.Preload("Audiences").Create(&flag)
+	flag := models.Flag{
+		Audiences:   auds,
+		Key:         flagReq.Key,
+		DisplayName: flagReq.DisplayName,
+		Sdkkey:      flagReq.Sdkkey,
+	}
 	result := h.DB.Save(&flag)
 
 	if result.Error != nil {
-		utils.HandleErr(result.Error, "should put a failed to create")
+		utils.UnavailableResponse(w, r, err)
 		return
 	}
 
-	byteArray, err := json.MarshalIndent(&flag, "", "  ")
+	response := models.FlagResponse{Flag: &flag}
+
+	byteArray, err := json.Marshal(&response)
 	if err != nil {
 		utils.HandleErr(err, "our unmarshalling sucks")
 	}
 	publisher.Redis.Publish(context.TODO(), "flag-update-channel", byteArray)
 
-	response := models.FlagResponse{Flag: &flag}
-
 	// Send a 201 created response
 	utils.PayloadResponse(w, r, &response)
+	w.WriteHeader(http.StatusOK)
 }
 
 func (h Handler) CreateAttribute(w http.ResponseWriter, r *http.Request) {
 	type attrPost struct {
-		Name string `json:"name"`
-		Type string `json:"attrType"`
+		Key         string `json:"key"`
+		DisplayName string `json:"displayName"`
+		Type        string `json:"attrType"`
 	}
 
 	var attrReq attrPost
@@ -88,9 +81,11 @@ func (h Handler) CreateAttribute(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(body, &attrReq)
 	utils.HandleErr(err, "problem unmarshalling, what do?")
 
-	var attr models.Attribute
-	attr.Key, attr.DisplayName = utils.ProcessNameToKeyDisplayName(attrReq.Name)
-	attr.Type = attrReq.Type
+	attr := models.Attribute{
+		Key:         attrReq.Key,
+		DisplayName: attrReq.DisplayName,
+		Type:        attrReq.Type,
+	}
 	h.DB.Save(&attr)
 
 	utils.CreatedResponse(w, r, &attr)
@@ -101,12 +96,14 @@ func (h Handler) CreateAudience(w http.ResponseWriter, r *http.Request) {
 		AttributeID uint   `json:"attributeID"`
 		Operator    string `json:"operator"`
 		Vals        string `json:"vals"`
+		Negate      bool   `json:"negate"`
 	}
 
 	type audPost struct {
-		Key        string     `json:"key"`
-		Combine    string     `json:"combine"`
-		Conditions []condPost `json:"conditions"`
+		Key         string     `json:"key"`
+		DisplayName string     `json:"displayName"`
+		Combine     string     `json:"combine"`
+		Conditions  []condPost `json:"conditions"`
 	}
 
 	var audReq audPost
@@ -121,11 +118,21 @@ func (h Handler) CreateAudience(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = json.Unmarshal(body, &audReq)
+	err = json.Unmarshal(body, &audReq) // THIS WORKS
 	utils.HandleErr(err, "problem unmarshalling, what do?")
 
+	printable, err := json.Marshal(&audReq)
+	fmt.Println(string(printable))
+
+	// for ind, _ := range audReq.Conditions {
+	// 	var attr models.Attribute
+	// 	h.DB.Find(&attr, audReq.Conditions[ind].AttributeID)
+	// 	cond := model.Condition{}
+	// }
+
+	h.DB.Session(&gorm.Session{FullSaveAssociations: true}).Save(&aud)
+
 	// var aud models.Attribute
-	aud.Key, aud.DisplayName = utils.ProcessNameToKeyDisplayName(aud.Key)
 	// aud.Type = audReq.Type
 	h.DB.Model(&aud).Save(&audReq)
 

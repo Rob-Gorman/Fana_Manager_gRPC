@@ -13,29 +13,41 @@ func seedDB(db *gorm.DB) {
 	seedAudiences(db)
 	seedFlagAuds(db) // see this function for tricker query implementation
 	seedLogs(db)
+	seedSdks(db)
+	models.BuildFlagset(db)
+}
+
+func seedSdks(db *gorm.DB) {
+	var sdkkeys = []models.Sdkkey{
+		{Key: "c3e-db3100c-8"},
+		{Key: "de9-6bf1a0c-3"},
+		{Key: "fa4-d731f0e-4"},
+	}
+	db.Create(&sdkkeys)
 }
 
 func seedFlags(db *gorm.DB) {
 	var flags = []models.Flag{
-		{Key: "fake-flag-1"},
-		{Key: "experimental-flag-1"},
-		{Key: "development-flag-1"},
+		{Key: "fake-flag-1", DisplayName: "FAKE FLAG ONE"},
+		{Key: "experimental-flag-1", DisplayName: "Exp Fl 1"},
+		{Key: "development-flag-1", DisplayName: "Dev Flag One"},
 	}
 	db.Create(&flags)
 }
 
 func seedAttributes(db *gorm.DB) {
 	var attrs = []models.Attribute{
-		{Key: "state", Type: "STR"},
-		{Key: "student", Type: "BOOL"},
-		{Key: "beta", Type: "BOOL"},
+		{Key: "state", Type: "STR", DisplayName: "State"},
+		{Key: "student", Type: "BOOL", DisplayName: "Student"},
+		{Key: "beta", Type: "BOOL", DisplayName: "Beta"},
 	}
 	db.Create(&attrs)
 }
 
 func seedAudiences(db *gorm.DB) {
 	ca_stu := models.Audience{
-		Key: "california_students",
+		Key:         "california_students",
+		DisplayName: "California Students",
 		Conditions: []models.Condition{
 			{
 				AttributeID: 1, // this references the actual attribute! WOOT
@@ -50,7 +62,8 @@ func seedAudiences(db *gorm.DB) {
 		},
 	}
 	beta_test := models.Audience{
-		Key: "beta_testers",
+		Key:         "beta_testers",
+		DisplayName: "Beta Testers",
 		Conditions: []models.Condition{
 			{
 				AttributeID: 3,

@@ -17,10 +17,3 @@ func StandardContext() (context.Context, *http.Request) {
 	return context.TODO(), nil
 	// return context.WithTimeout(context.Background(), 10*time.Second)
 }
-
-func ProcessNameToKeyDisplayName(name string) (key, display string) {
-	// TODO
-
-	key, display = name, name
-	return key, display
-}
