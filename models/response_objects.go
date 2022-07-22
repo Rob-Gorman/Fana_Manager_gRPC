@@ -50,5 +50,4 @@ type ConditionEmbedded struct {
 	AudienceID  omit   `json:"audienceID,omitempty"`
 	AttributeID omit   `json:"attributeID,omitempty"`
 	Attribute   string `json:"attribute"`
-	Vals        string `json:"vals"`
 }
