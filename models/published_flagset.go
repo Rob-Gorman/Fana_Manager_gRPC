@@ -13,21 +13,16 @@ type Flagset struct {
 	Flags   map[string]Flagrule `json:"flags"`
 }
 
-type Flagrule struct {
-	Status    bool     `json:"status"`
-	Audiences []Audset `json:"audiences"`
-}
+type Flagrule map[string]interface{}
 
 type Audset struct {
-	Combine    string              `json:"combine"`
-	Conditions []ConditionEmbedded `json:"conditions"`
+	Combine    string     `json:"combine"`
+	Conditions []CondInst `json:"conditions"`
 }
 
 type CondInst struct {
-	Attribute string   `json:"attribute"`
-	Operator  string   `json:"operator"`
-	Vals      []string `json:"vals"`
-	Negate    bool     `json:"negate"`
+	*ConditionEmbedded
+	Vals []string `json:"vals"`
 }
 
 func BuildFlagset(db *gorm.DB) (fs *Flagset) {
@@ -58,15 +53,13 @@ func buildFlagrules(db *gorm.DB) (frs map[string]Flagrule) {
 	for ind, _ := range flags {
 		flag := Flag{}
 		flagrule := Flagrule{}
-		audiences := []Audset{}
 		db.Preload("Audiences").First(&flag, flags[ind].ID)
+		flagrule["status"] = flag.Status
+
 		for i, _ := range flag.Audiences {
-			audiences = append(audiences, *buildAudrule(flag.Audiences[i], db))
+			flagrule[flag.Audiences[i].Key] = *buildAudrule(flag.Audiences[i], db)
 		}
-		flagrule = Flagrule{
-			Status:    flag.Status,
-			Audiences: audiences,
-		}
+
 		printrule, _ := json.Marshal(&flagrule)
 		fmt.Printf("%s: %s\n\n\n", flags[ind].Key, string(printrule))
 
@@ -89,17 +82,20 @@ func buildAudrule(aud Audience, db *gorm.DB) (ar *Audset) {
 	return ar
 }
 
-func getEmbeddedConds(aud Audience, db *gorm.DB) (conds []ConditionEmbedded) {
+func getEmbeddedConds(aud Audience, db *gorm.DB) []CondInst {
+	conds := []CondInst{}
 	for ind, _ := range aud.Conditions {
 		cond := aud.Conditions[ind]
 		var attr Attribute
 		db.Find(&attr, cond.AttributeID)
 		db.Find(&cond)
 		cond.Attribute = attr
-		conds = append(conds, ConditionEmbedded{
-			Condition: &cond,
-			Attribute: attr.Key,
-			Vals:      strings.Split(cond.Vals, ", "),
+		conds = append(conds, CondInst{
+			ConditionEmbedded: &ConditionEmbedded{
+				Condition: &cond,
+				Attribute: attr.Key,
+			},
+			Vals: strings.Split(cond.Vals, ", "),
 		})
 	}
 	return conds

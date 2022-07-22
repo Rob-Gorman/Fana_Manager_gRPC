@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"manager/models"
-	"strings"
 
 	"gorm.io/gorm"
 )
@@ -20,7 +19,6 @@ func GetEmbeddedConds(aud models.Audience, db *gorm.DB) []models.ConditionEmbedd
 		conds = append(conds, models.ConditionEmbedded{
 			Condition: &cond,
 			Attribute: attr.Key,
-			Vals:      strings.Split(cond.Vals, ", "),
 		})
 	}
 	return conds
