@@ -1,47 +1,44 @@
 {
-  "sdkKeys": {
-    "c3e-db3100c-8":true,
-    "de9-6bf1a0c-3":true,
-    "fa4-d731f0e-4":true
-  },
-  
-  "flags": {
-    "0": {
-      "status":false,
-      "audiences":[
-        {
-          "combine":"ANY",
-          "conditions":[{
-            "attribute":"state",
-            "operator":"EQ",
-            "vals":["california"],
-            "negate":false
-          },
-          {
-            "attribute":"student",
-            "operator":"EQ",
-            "vals":["true"],
-            "negate":false
-          }]
+  "sdkKeys":[
+    "c3e-db3100c-8",
+    "de9-6bf1a0c-3",
+    "fa4-d731f0e-4"
+  ],
+  "flags":{
+    "development-flag-1":{
+      "beta_testers":{
+        "combine":"ANY",
+        "conditions":[{
+          "negate":false,
+          "operator":"EQ",
+          "attribute":"beta",
+          "vals":["true"]
         }]
       },
-    "1":{
-      "status":false,
-      "audiences":[]
+      "status":false
     },
-    "2":{
-      "status":false,
-      "audiences":[
-        {
-          "combine":"ANY",
-          "conditions":[
-            {
-              "attribute":"beta",
-              "operator":"EQ",
-              "vals":["true"],
-              "negate":false
-            }]
-          }]
-        }
-      }
+    "experimental-flag-1":{
+      "status":false
+    },
+    "fake-flag-1":{
+      "california_students":{
+        "combine":"ANY",
+        "conditions":[
+          {
+            "negate":false,
+            "operator":"EQ",
+            "attribute":"state",
+            "vals":["california"]
+          },
+          {
+            "negate":false,
+            "operator":"EQ",
+            "attribute":"student",
+            "vals":["true"]
+          }
+        ]
+      },
+      "status":false
     }
+  }
+}

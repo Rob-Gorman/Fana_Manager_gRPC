@@ -94,6 +94,62 @@ Expected Response:
 }
 ```
 
+### Create Audience
+
+POST /api/audiences
+
+Expected Payload:
+```js
+{
+  "key": "texas_students",
+  "displayName": "TX Students",
+  "combine": "ALL",
+  "conditions": [
+      {
+      "attributeID": 1,
+      "operator": "EQ",
+      "vals": "texas"
+      },
+      {
+      "attributeID": 2,
+      "operator": "EQ",
+      "vals": "true",
+      "negate": true
+      }        
+  ]
+}
+```
+
+Expected Response:
+```js
+{
+  "id": 5,
+  "displayName": "TX Students",
+  "key": "texas_students",
+  "combine": "ALL",
+  "created_at": "2022-07-22T14:59:08.041869Z",
+  "updated_at": "2022-07-22T14:59:08.041869Z",
+  "conditions": [
+    {
+      "negate": false,
+      "operator": "EQ",
+      "attribute": "state",
+      "vals": [
+        "texas"
+      ]
+    },
+    {
+      "negate": true,
+      "operator": "EQ",
+      "attribute": "student",
+      "vals": [
+        "true"
+      ]
+    }
+  ]
+}
+```
+
 ## Flags
 
 ### Get Flags

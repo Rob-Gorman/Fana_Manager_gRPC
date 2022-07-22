@@ -2,6 +2,7 @@ package dev
 
 import (
 	"fmt"
+	"manager/handlers"
 	"manager/models"
 
 	"gorm.io/gorm"
@@ -14,7 +15,7 @@ func SeedDB(db *gorm.DB) {
 	seedFlagAuds(db) // see this function for tricker query implementation
 	seedLogs(db)
 	seedSdks(db)
-	models.BuildFlagset()
+	handlers.BuildFlagset(db)
 }
 
 func seedSdks(db *gorm.DB) {

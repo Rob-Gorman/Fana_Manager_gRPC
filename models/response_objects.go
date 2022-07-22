@@ -46,12 +46,7 @@ type AudienceNoCondsResponse struct {
 
 type ConditionEmbedded struct {
 	*Condition
-	AudienceID  omit              `json:"audienceID,omitempty"`
-	AttributeID omit              `json:"attributeID,omitempty"`
-	Attribute   AttributeEmbedded `json:"attribute"`
-}
-
-type AttributeEmbedded struct {
-	*Attribute
-	CreatedAt omit `json:"created_at,omitempty"`
+	ID         omit   `json:"id,omitempty"`
+	AudienceID omit   `json:"audienceID,omitempty"`
+	Attribute  string `json:"attribute"`
 }

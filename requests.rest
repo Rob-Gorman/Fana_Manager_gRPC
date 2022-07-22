@@ -47,7 +47,7 @@ content-type: application/json
 
 {
     "key": "texas_students",
-    "diaplayName": "TX Students",
+    "displayName": "TX Students",
     "combine": "ALL",
     "conditions": [
         {
@@ -70,17 +70,17 @@ content-type: application/json
 
 {
     "key": "nors",
-    "diaplayName": "Norwegians",
+    "displayName": "Norwegians",
     "combine": "ANY",
     "conditions": [
         {
-        "attribute": 1,
+        "attributeID": 1,
         "operator": "EQ",
         "negate": false,
         "vals": "california"
         },
         {
-        "attribute": 3,
+        "attributeID": 3,
         "operator": "EQ",
         "vals": "true"
         }        
@@ -98,13 +98,13 @@ content-type: application/json
     "combine": "ALL",
     "conditions": [
         {
-        "attribute": "state",
+        "attributeID": 1,
         "negate": false,
         "operator": "EQ",
         "vals": "california"
         },
         {
-        "attribute": "student",
+        "attributeID": 2,
         "negate": false,
         "operator": "EQ",
         "vals": "true"
@@ -133,7 +133,7 @@ content-type: application/json
     "key": "inauthentic_flag_2",
     "displayName": "Inauthentic Flag 2",
     "sdkKey": "beta_sdk_0",
-    "audiences": ["california_students", "beta_testers"]
+    "audiences": []
 }
 
 ###
@@ -143,7 +143,7 @@ content-type: application/json
 
 {
     "displayName": "Is a real flag",
-    "audiences": ["california_students", "beta_testers"]
+    "audiences": []
 }
 
 ###
@@ -178,7 +178,7 @@ GET http://localhost:6000/api/attributes HTTP/1.1
 
 ###
 
-# GET http://localhost:6000/api/attributes/1 HTTP/1.1
+GET http://localhost:6000/api/attributes/1 HTTP/1.1
 
 ###
 
@@ -186,4 +186,27 @@ GET http://localhost:6000/api/audiences HTTP/1.1
 
 ###
 
-GET http://localhost:6000/api/audiences/2 HTTP/1.1
+GET http://localhost:6000/api/audiences/1 HTTP/1.1
+
+###
+
+PATCH http://localhost:6000/api/audiences/1 HTTP/1.1
+content-type: application/json
+
+{
+  "displayName": "Betaaa",
+  "combine": "ALL",
+  "conditions": [
+      {
+      "attributeID": 1,
+      "operator": "EQ",
+      "vals": "texas"
+      },
+      {
+      "attributeID": 2,
+      "operator": "EQ",
+      "vals": "true",
+      "negate": true
+      }        
+  ]
+}
