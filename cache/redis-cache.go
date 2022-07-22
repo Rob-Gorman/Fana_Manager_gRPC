@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"manager/configs"
-	"manager/models"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -37,7 +36,7 @@ func (cache *redisCache) getClient() *redis.Client {
 }
 
 // Implementation of Set - associate flag json to the key
-func (cache *redisCache) Set(key string, value *models.Flag) {
+func (cache *redisCache) Set(key string, value interface{}) {
 	client := cache.getClient()
 
 	// serialize the flag
@@ -53,26 +52,27 @@ func (cache *redisCache) Set(key string, value *models.Flag) {
 }
 
 // get flag based on key
-func (cache *redisCache) Get(key string) *models.Flag {
-	client := cache.getClient()
+// func (cache *redisCache) Get(key string) interface{} {
+// 	client := cache.getClient()
 
-	// set the key to marshalled data
-	val, err := client.Get(context.TODO(), key).Result()
-	if err != nil {
-		fmt.Println("Get from redis: couldn't get")
-		panic(err)
-	}
+// 	// set the key to marshalled data
+// 	val, err := client.Get(context.TODO(), key).Result()
+// 	if err != nil {
+// 		fmt.Println("Get from redis: couldn't get")
+// 		panic(err)
+// 	}
 
-	// unmarshal and store in a flag struct
-	flag := models.Flag{}
-	err = json.Unmarshal([]byte(val), &flag)
-	if err != nil {
-		fmt.Println("Get from redis: unmarshalling error")
-		panic(err)
-	}
-	return &flag
-}
-// asynchronously flush all keys from cache 
+// 	// unmarshal and store in a flag struct
+// 	flag := models.Flag{}
+// 	err = json.Unmarshal([]byte(val), &flag)
+// 	if err != nil {
+// 		fmt.Println("Get from redis: unmarshalling error")
+// 		panic(err)
+// 	}
+// 	return &flag
+// }
+
+// asynchronously flush all keys from cache
 func (cache *redisCache) FlushAllAsync() {
 	client := cache.getClient()
 
