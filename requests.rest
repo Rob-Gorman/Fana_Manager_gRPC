@@ -76,6 +76,7 @@ content-type: application/json
         {
         "attribute": 1,
         "operator": "EQ",
+        "negate": false,
         "vals": "california"
         },
         {
@@ -98,11 +99,13 @@ content-type: application/json
     "conditions": [
         {
         "attribute": "state",
+        "negate": false,
         "operator": "EQ",
         "vals": "california"
         },
         {
         "attribute": "student",
+        "negate": false,
         "operator": "EQ",
         "vals": "true"
         }        
@@ -139,6 +142,7 @@ PATCH http://localhost:6000/api/flags/1 HTTP/1.1
 content-type: application/json
 
 {
+    "displayName": "Is a real flag",
     "audiences": ["california_students", "beta_testers"]
 }
 

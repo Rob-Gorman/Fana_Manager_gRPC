@@ -2,10 +2,13 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"manager/models"
 	"manager/utils"
 	"net/http"
+
+	"gorm.io/gorm"
 )
 
 func (h Handler) CreateFlag(w http.ResponseWriter, r *http.Request) {
@@ -81,12 +84,14 @@ func (h Handler) CreateAudience(w http.ResponseWriter, r *http.Request) {
 		AttributeID uint   `json:"attributeID"`
 		Operator    string `json:"operator"`
 		Vals        string `json:"vals"`
+		Negate      bool   `json:"negate"`
 	}
 
 	type audPost struct {
-		Key        string     `json:"key"`
-		Combine    string     `json:"combine"`
-		Conditions []condPost `json:"conditions"`
+		Key         string     `json:"key"`
+		DisplayName string     `json:"displayName"`
+		Combine     string     `json:"combine"`
+		Conditions  []condPost `json:"conditions"`
 	}
 
 	var audReq audPost
@@ -101,11 +106,21 @@ func (h Handler) CreateAudience(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = json.Unmarshal(body, &audReq)
+	err = json.Unmarshal(body, &audReq) // THIS WORKS
 	utils.HandleErr(err, "problem unmarshalling, what do?")
 
+	printable, err := json.Marshal(&audReq)
+	fmt.Println(string(printable))
+
+	// for ind, _ := range audReq.Conditions {
+	// 	var attr models.Attribute
+	// 	h.DB.Find(&attr, audReq.Conditions[ind].AttributeID)
+	// 	cond := model.Condition{}
+	// }
+
+	h.DB.Session(&gorm.Session{FullSaveAssociations: true}).Save(&aud)
+
 	// var aud models.Attribute
-	aud.Key, aud.DisplayName = utils.ProcessNameToKeyDisplayName(aud.Key)
 	// aud.Type = audReq.Type
 	h.DB.Model(&aud).Save(&audReq)
 

@@ -50,5 +50,12 @@ type Condition struct {
 	AttributeID uint      `json:"attributeID"`
 	Attribute   Attribute `json:"attribute,omitempty" gorm:"foreignKey:AttributeID; references:ID"`
 	Operator    string    `json:"operator" gorm:"default:'EQ'"`
-	Vals        string    `json:"vals" gorm:"default:'[]';not null"`
+	Vals        string    `json:"vals" gorm:"default:[];not null"`
+}
+
+type Sdkkey struct {
+	*gorm.Model
+	ID     uint   `json:"id"`
+	Key    string `json:"key" gorm:"type:varchar(30); NOT NULL; UNIQUE"`
+	Status bool   `json:"status" gorm:"default:true"`
 }

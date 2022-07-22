@@ -13,6 +13,17 @@ func seedDB(db *gorm.DB) {
 	seedAudiences(db)
 	seedFlagAuds(db) // see this function for tricker query implementation
 	seedLogs(db)
+	seedSdks(db)
+	models.BuildFlagset(db)
+}
+
+func seedSdks(db *gorm.DB) {
+	var sdkkeys = []models.Sdkkey{
+		{Key: "c3e-db3100c-8"},
+		{Key: "de9-6bf1a0c-3"},
+		{Key: "fa4-d731f0e-4"},
+	}
+	db.Create(&sdkkeys)
 }
 
 func seedFlags(db *gorm.DB) {
