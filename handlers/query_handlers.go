@@ -1,15 +1,15 @@
 package handlers
 
 import (
-	"encoding/json"
 	"fmt"
 	"manager/models"
 	"manager/utils"
 	"net/http"
 	"strconv"
 
-	"github.com/gorilla/mux"
 	"manager/cache"
+
+	"github.com/gorilla/mux"
 )
 
 var (
@@ -31,20 +31,10 @@ func (h Handler) GetAllFlags(w http.ResponseWriter, r *http.Request) {
 		response = append(response, models.FlagNoAudsResponse{Flag: &flags[ind]})
 	}
 
-	// checking conversion of []byte to string. i think it's p easy
-
-	fmt.Printf("before marshal %v\n", result)
-	payload, err := json.Marshal(&flags)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("after marshal %v\n", payload)
-	// publisher.Pub.PublishTo("flag-toggle-channel", string(payload))
-
 	utils.PayloadResponse(w, r, &response)
 
 	// ****~~~ CACHING WORKFLOW ****~~~
-	// Flush cache 
+	// Flush cache
 	// flagCache.FlushAllAsync()
 	// Store copy of data
 	// flagCache.Set("data", value) // `value` needs to match struct, not sure what it will be
