@@ -18,7 +18,14 @@ func (h Handler) DeleteFlag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.DB.Delete(&models.Flag{}, id).Error
+	flag := &models.Flag{}
+	err = h.DB.Preload("Audiences").Find(&flag, id).Error
+	if err != nil {
+		utils.NoRecordResponse(w, r, err)
+		return
+	}
+	h.DB.Model(&flag).Association("Audiences").Delete(flag.Audiences)
+	err = h.DB.Unscoped().Delete(&flag).Error
 	if err != nil {
 		utils.BadRequestResponse(w, r, err)
 		return
@@ -35,7 +42,14 @@ func (h Handler) DeleteAudience(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.DB.Delete(&models.Audience{}, id).Error
+	aud := &models.Audience{}
+	err = h.DB.Preload("Flags").Find(&aud, id).Error
+	if err != nil {
+		utils.NoRecordResponse(w, r, err)
+		return
+	}
+	h.DB.Model(&aud).Association("Flags").Delete(aud.Flags)
+	err = h.DB.Unscoped().Delete(&models.Audience{}, id).Error
 	if err != nil {
 		utils.BadRequestResponse(w, r, err)
 		return
@@ -52,7 +66,7 @@ func (h Handler) DeleteAttribute(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.DB.Delete(&models.Attribute{}, id).Error
+	err = h.DB.Unscoped().Delete(&models.Attribute{}, id).Error
 	if err != nil {
 		utils.BadRequestResponse(w, r, err)
 		return

@@ -29,18 +29,19 @@ type Audience struct {
 	Key         string         `json:"key" gorm:"type:varchar(30); UNIQUE; NOT NULL"`
 	Combine     string         `json:"combine" gorm:"default:'ANY'"`
 	Flags       []Flag         `json:"flags" gorm:"many2many:flag_audiences; foreignKey:ID"`
-	Conditions  []Condition    `json:"conditions"`
+	Conditions  []Condition    `json:"conditions" gorm:"constraint:OnDelete:CASCADE"`
 	CreatedAt   time.Time      `json:"created_at"`
 	UpdatedAt   time.Time      `json:"updated_at"`
 	DeletedAt   gorm.DeletedAt `json:"deleted_at" gorm:"index"`
 }
 
 type Attribute struct {
-	ID          uint      `json:"id" gorm:"primaryKey"`
-	Key         string    `json:"key" gorm:"type:varchar(30); UNIQUE; NOT NULL"`
-	Type        string    `json:"attrType" gorm:"type:varchar(10)"`
-	DisplayName string    `json:"displayName" gorm:"type:varchar(30)"`
-	CreatedAt   time.Time `json:"created_at"`
+	ID          uint           `json:"id" gorm:"primaryKey"`
+	Key         string         `json:"key" gorm:"type:varchar(30); UNIQUE; NOT NULL"`
+	Type        string         `json:"attrType" gorm:"type:varchar(10)"`
+	DisplayName string         `json:"displayName" gorm:"type:varchar(30)"`
+	CreatedAt   time.Time      `json:"created_at"`
+	DeletedAt   gorm.DeletedAt `json:"deleted_at" gorm:"index"`
 }
 
 type Condition struct {

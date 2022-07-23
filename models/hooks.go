@@ -22,7 +22,7 @@ func (fl *Flag) AfterSave(db *gorm.DB) error {
 	return err
 }
 
-func (fl *Flag) AfterDelete(db *gorm.DB) error {
+func (fl *Flag) BeforeDelete(db *gorm.DB) error {
 	log := BuildFlagLog(*fl, "deleted")
 	err := db.Create(&log).Error
 	return err
@@ -46,7 +46,7 @@ func (a *Audience) AfterSave(db *gorm.DB) error {
 	return err
 }
 
-func (a *Audience) AfterDelete(db *gorm.DB) error {
+func (a *Audience) BeforeDelete(db *gorm.DB) error {
 	log := BuildAudLog(*a, "deleted")
 	err := db.Create(&log).Error
 	return err
@@ -70,7 +70,7 @@ func (a *Attribute) AfterSave(db *gorm.DB) error {
 	return err
 }
 
-func (a *Attribute) AfterDelete(db *gorm.DB) error {
+func (a *Attribute) BeforeDelete(db *gorm.DB) error {
 	log := BuildAttrLog(*a, "deleted")
 	err := db.Create(&log).Error
 	return err
