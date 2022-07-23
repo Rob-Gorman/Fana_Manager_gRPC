@@ -7,14 +7,14 @@ import (
 	"net/http"
 	"strconv"
 
-	"manager/cache"
+	// "manager/cache"
 
 	"github.com/gorilla/mux"
 )
 
-var (
-	flagCache cache.FlagCache = cache.NewRedisCache("localhost:6379", 0, 1000000)
-)
+// var (
+// 	flagCache cache.FlagCache = cache.NewRedisCache("localhost:6379", 0, 1000000)
+// )
 
 func (h Handler) GetAllFlags(w http.ResponseWriter, r *http.Request) {
 	var flags []models.Flag
@@ -81,7 +81,12 @@ func (h Handler) GetFlag(w http.ResponseWriter, r *http.Request) {
 	var flag models.Flag
 	auds := []models.AudienceNoCondsResponse{}
 
-	h.DB.Preload("Audiences").Find(&flag, id)
+	err = h.DB.Preload("Audiences").Find(&flag, id).Error
+	if err != nil {
+		utils.NoRecordResponse(w, r, err)
+		return
+	}
+
 	for ind, _ := range flag.Audiences {
 		auds = append(auds, models.AudienceNoCondsResponse{Audience: &flag.Audiences[ind]})
 	}
@@ -99,18 +104,20 @@ func (h Handler) GetAudience(w http.ResponseWriter, r *http.Request) {
 
 	var aud models.Audience
 
-	result := h.DB.Preload("Conditions").First(&aud, id)
+	err = h.DB.Preload("Flags").Preload("Conditions").First(&aud, id).Error
 
-	if result.Error != nil {
-		utils.NoRecordResponse(w, r, result.Error)
+	if err != nil {
+		utils.NoRecordResponse(w, r, err)
 		return
 	}
 
 	conds := GetEmbeddedConds(aud, h.DB)
+	flags := GetEmbeddedFlags(aud.Flags)
 
 	response := models.AudienceResponse{
 		Audience:   &aud,
 		Conditions: conds,
+		Flags:      flags,
 	}
 
 	utils.PayloadResponse(w, r, &response)
@@ -134,4 +141,23 @@ func (h Handler) GetAttribute(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.PayloadResponse(w, r, attr)
+}
+
+func (h Handler) GetAuditLogs(w http.ResponseWriter, r *http.Request) {
+	flags := []models.FlagLog{}
+	h.DB.Find(&flags)
+
+	auds := []models.AudienceLog{}
+	h.DB.Find(&auds)
+
+	attrs := []models.AttributeLog{}
+	h.DB.Find(&attrs)
+
+	response := models.AuditResponse{
+		FlagLogs:      flags,
+		AudienceLogs:  auds,
+		AttributeLogs: attrs,
+	}
+
+	utils.PayloadResponse(w, r, &response)
 }

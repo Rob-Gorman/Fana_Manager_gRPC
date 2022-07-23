@@ -190,6 +190,10 @@ GET http://localhost:6000/api/audiences/1 HTTP/1.1
 
 ###
 
+GET http://localhost:6000/api/auditlogs HTTP/1.1
+
+###
+
 PATCH http://localhost:6000/api/audiences/1 HTTP/1.1
 content-type: application/json
 

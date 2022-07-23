@@ -46,11 +46,10 @@ func (h Handler) CreateFlag(w http.ResponseWriter, r *http.Request) {
 		Flag:      &flag,
 		Audiences: respAuds,
 	}
-byteArray, err := json.Marshal(&response)
-	if err != nil {
-		utils.HandleErr(err, "our unmarshalling sucks")
-	}
+	byteArray, _ := json.Marshal(&response)
+
 	publisher.Redis.Publish(context.TODO(), "flag-update-channel", byteArray)
+
 	utils.CreatedResponse(w, r, &response)
 }
 
@@ -111,10 +110,7 @@ func (h Handler) CreateAudience(w http.ResponseWriter, r *http.Request) {
 		Conditions: GetEmbeddedConds(aud, h.DB),
 	}
 
-	byteArray, err := json.Marshal(&aud)
-	if err != nil {
-		utils.HandleErr(err, "our unmarshalling sucks")
-	}
+	byteArray, _ := json.Marshal(&aud)
 
 	publisher.Redis.Publish(context.TODO(), "audience-update-channel", byteArray)
 

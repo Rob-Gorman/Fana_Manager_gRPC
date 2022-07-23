@@ -15,6 +15,8 @@ func (s *Server) dashboardRoutes() {
 	s.HandleFunc("/api/attributes", s.H.GetAllAttributes).Methods("GET")
 	s.HandleFunc("/api/attributes/{id}", s.H.GetAttribute).Methods("GET")
 	s.HandleFunc("/api/attributes", s.H.CreateAttribute).Methods("POST")
+
+	s.HandleFunc("/api/auditlogs", s.H.GetAuditLogs).Methods("GET")
 }
 
 func (s *Server) providerRoutes() {

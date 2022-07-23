@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
-	"fmt"
 	"manager/models"
 
 	"gorm.io/gorm"
@@ -35,8 +33,7 @@ func FlagReqToFlag(flagReq models.FlagSubmit, h Handler) (flag models.Flag) {
 		DisplayName: flagReq.DisplayName,
 		Sdkkey:      flagReq.SdkKey,
 	}
-	print, _ := json.Marshal(&flag)
-	fmt.Println("what's with these audiences?", string(print))
+
 	return flag
 }
 
@@ -58,4 +55,13 @@ func BuildAudUpdate(req models.Audience, id int, h Handler) (aud models.Audience
 	aud.Combine = req.Combine
 	aud.DisplayName = req.DisplayName
 	return aud
+}
+
+func GetEmbeddedFlags(flags []models.Flag) []models.FlagNoAudsResponse {
+	fr := []models.FlagNoAudsResponse{}
+	for i, _ := range flags {
+		fr = append(fr, models.FlagNoAudsResponse{Flag: &flags[i]})
+	}
+
+	return fr
 }

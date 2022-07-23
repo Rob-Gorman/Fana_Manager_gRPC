@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"context"
 	"encoding/json"
 	"io/ioutil"
 	"manager/models"
@@ -13,6 +12,8 @@ import (
 	"github.com/gorilla/mux"
 	"gorm.io/gorm"
 )
+
+var ctx = utils.StandardContext()
 
 func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 	var flagReq models.FlagSubmit
@@ -48,14 +49,12 @@ func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 		utils.BadRequestResponse(w, r, err)
 		return
 	}
+
 	response := FlagToFlagResponse(flag, h)
 
-	byteArray, err := json.Marshal(&response)
-	if err != nil {
-		utils.HandleErr(err, "our unmarshalling sucks")
-	}
+	byteArray, _ := json.Marshal(&response)
 
-	publisher.Redis.Publish(context.TODO(), "flag-update-channel", byteArray)
+	publisher.Redis.Publish(ctx, "flag-update-channel", byteArray)
 
 	utils.UpdatedResponse(w, r, &response)
 }
@@ -92,12 +91,9 @@ func (h Handler) ToggleFlag(w http.ResponseWriter, r *http.Request) {
 	h.DB.First(&flag, id)
 	response := models.FlagNoAudsResponse{Flag: &flag}
 
-	byteArray, err := json.Marshal(&response)
-	if err != nil {
-		utils.HandleErr(err, "our unmarshalling sucks")
-	}
+	byteArray, _ := json.Marshal(&response)
 
-	publisher.Redis.Publish(context.TODO(), "flag-toggle-channel", byteArray)
+	publisher.Redis.Publish(ctx, "flag-toggle-channel", byteArray)
 
 	utils.UpdatedResponse(w, r, &response)
 }

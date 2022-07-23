@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
-	"fmt"
 	"manager/models"
 	"strings"
 
@@ -37,8 +35,7 @@ func BuildFlagset(db *gorm.DB) (fs *Flagset) {
 		Sdkkeys: *sdks,
 		Flags:   flrules,
 	}
-	result, _ := json.Marshal(&fs)
-	fmt.Println(string(result))
+
 	return fs
 }
 
@@ -64,14 +61,8 @@ func buildFlagrules(db *gorm.DB) (frs map[string]Flagrule) {
 			flagrule[flag.Audiences[i].Key] = *buildAudrule(flag.Audiences[i], db)
 		}
 
-		printrule, _ := json.Marshal(&flagrule)
-		fmt.Printf("%s: %s\n\n\n", flags[ind].Key, string(printrule))
-
 		frs[flags[ind].Key] = flagrule
 	}
-
-	result, _ := json.Marshal(&frs)
-	fmt.Println("FLAGS AS BUILDING", string(result))
 
 	return frs
 }

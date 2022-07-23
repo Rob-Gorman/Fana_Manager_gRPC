@@ -18,6 +18,7 @@ func RefreshSchema(db *gorm.DB) {
 		&models.Condition{},
 		&models.FlagLog{},
 		&models.AudienceLog{},
+		&models.AttributeLog{},
 		&models.Sdkkey{},
 	)
 

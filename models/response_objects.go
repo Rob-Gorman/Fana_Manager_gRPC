@@ -31,9 +31,9 @@ type FlagNoAudsResponse struct {
 
 type AudienceResponse struct {
 	*Audience
-	Conditions []ConditionEmbedded `json:"conditions"`
-	Flags      omit                `json:"flags,omitempty"`
-	DeletedAt  omit                `json:"deleted_at,omitempty"`
+	Conditions []ConditionEmbedded  `json:"conditions"`
+	Flags      []FlagNoAudsResponse `json:"flags"`
+	DeletedAt  omit                 `json:"deleted_at,omitempty"`
 }
 
 type AudienceNoCondsResponse struct {
@@ -49,4 +49,10 @@ type ConditionEmbedded struct {
 	ID         omit   `json:"id,omitempty"`
 	AudienceID omit   `json:"audienceID,omitempty"`
 	Attribute  string `json:"attribute"`
+}
+
+type AuditResponse struct {
+	FlagLogs      []FlagLog      `json:"flagLogs"`
+	AudienceLogs  []AudienceLog  `json:"audienceLogs"`
+	AttributeLogs []AttributeLog `json:"attributeLogs"`
 }

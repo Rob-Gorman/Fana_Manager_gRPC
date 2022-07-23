@@ -117,19 +117,26 @@ func seedFlagAuds(db *gorm.DB) {
 
 func seedLogs(db *gorm.DB) {
 	var flagLogs = []models.FlagLog{
-		{FlagID: 1, EventDesc: "We plant'n seeds"},
-		{FlagID: 1, EventDesc: "Fr a bountiful harvest"},
-		{FlagID: 2, EventDesc: ":blobsweat"},
-		{FlagID: 2, EventDesc: "ahhhhhhhhhhh"},
+		{FlagID: 1, FlagKey: "key1", EventDesc: "We plant'n seeds"},
+		{FlagID: 1, FlagKey: "key1", EventDesc: "Fr a bountiful harvest"},
+		{FlagID: 2, FlagKey: "key2", EventDesc: ":blobsweat"},
+		{FlagID: 2, FlagKey: "key2", EventDesc: "ahhhhhhhhhhh"},
 	}
 	db.Create(&flagLogs)
 
 	var audLogs = []models.AudienceLog{
-		{AudienceID: 1, EventDesc: "changed some stuff"},
-		{AudienceID: 1, EventDesc: "reverted it"},
-		{AudienceID: 2, EventDesc: "reverted it"},
-		{AudienceID: 2, EventDesc: "git rebase"},
+		{AudienceID: 1, AudienceKey: "akey1", EventDesc: "changed some stuff"},
+		{AudienceID: 1, AudienceKey: "akey1", EventDesc: "reverted it"},
+		{AudienceID: 2, AudienceKey: "akey2", EventDesc: "reverted it"},
+		{AudienceID: 2, AudienceKey: "akey2", EventDesc: "git rebase"},
 	}
 
 	db.Create(&audLogs)
+
+	var attrLogs = []models.AttributeLog{
+		{AttributeID: 2, AttributeKey: "student", EventDesc: "created"},
+		{AttributeID: 1, AttributeKey: "state", EventDesc: "created"},
+	}
+
+	db.Create(&attrLogs)
 }
