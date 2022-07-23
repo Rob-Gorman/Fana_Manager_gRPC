@@ -161,7 +161,30 @@ PATCH http://localhost:6000/api/flags/2/toggle HTTP/1.1
 content-type: application/json
 
 {
-    "status": true
+    "status": false
+}
+
+###
+
+PATCH http://localhost:6000/api/audiences/1 HTTP/1.1
+content-type: application/json
+
+{
+  "displayName": "Betaaa",
+  "combine": "ALL",
+  "conditions": [
+      {
+      "attributeID": 1,
+      "operator": "EQ",
+      "vals": "texas"
+      },
+      {
+      "attributeID": 2,
+      "operator": "EQ",
+      "vals": "true",
+      "negate": true
+      }        
+  ]
 }
 
 ###
@@ -198,23 +221,16 @@ GET http://localhost:6000/api/auditlogs HTTP/1.1
 
 ###
 
-PATCH http://localhost:6000/api/audiences/1 HTTP/1.1
-content-type: application/json
+GET http://localhost:6000/api/sdkkeys HTTP/1.1
 
-{
-  "displayName": "Betaaa",
-  "combine": "ALL",
-  "conditions": [
-      {
-      "attributeID": 1,
-      "operator": "EQ",
-      "vals": "texas"
-      },
-      {
-      "attributeID": 2,
-      "operator": "EQ",
-      "vals": "true",
-      "negate": true
-      }        
-  ]
-}
+###
+
+DELETE http://localhost:6000/api/flags/1 HTTP/1.1
+
+###
+
+DELETE http://localhost:6000/api/audiences/1 HTTP/1.1
+
+###
+
+DELETE http://localhost:6000/api/attributes/1 HTTP/1.1

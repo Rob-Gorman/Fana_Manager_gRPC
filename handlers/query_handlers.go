@@ -10,7 +10,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-
 func (h Handler) GetAllFlags(w http.ResponseWriter, r *http.Request) {
 	var flags []models.Flag
 
@@ -27,8 +26,6 @@ func (h Handler) GetAllFlags(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.PayloadResponse(w, r, &response)
-
-
 
 }
 
@@ -154,4 +151,10 @@ func (h Handler) GetAuditLogs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.PayloadResponse(w, r, &response)
+}
+
+func (h Handler) GetSdkKeys(w http.ResponseWriter, r *http.Request) {
+	sdks := []models.Sdkkey{}
+	h.DB.Find(&sdks)
+	utils.PayloadResponse(w, r, &sdks)
 }

@@ -13,7 +13,7 @@ func SeedDB(db *gorm.DB) {
 	seedAttributes(db)
 	seedAudiences(db)
 	seedFlagAuds(db) // see this function for tricker query implementation
-	seedLogs(db)
+	// seedLogs(db)
 	seedSdks(db)
 	handlers.BuildFlagset(db)
 }

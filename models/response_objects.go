@@ -53,7 +53,7 @@ type ConditionEmbedded struct {
 }
 
 type AuditResponse struct {
-	FlagLogs      []FlagLog      `json:"flagLogs"`
-	AudienceLogs  []AudienceLog  `json:"audienceLogs"`
-	AttributeLogs []AttributeLog `json:"attributeLogs"`
+	FlagLogs      []FlagLog      `json:"flagLogs" gorm:"embedded"`
+	AudienceLogs  []AudienceLog  `json:"audienceLogs" gorm:"embedded"`
+	AttributeLogs []AttributeLog `json:"attributeLogs" gorm:"embedded"`
 }

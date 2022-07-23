@@ -29,3 +29,27 @@ type AttributeLog struct {
 	EventDesc    string    `json:"action"`
 	CreatedAt    time.Time `json:"created_at"`
 }
+
+func BuildFlagLog(f Flag, event string) FlagLog {
+	return FlagLog{
+		FlagID:    f.ID,
+		FlagKey:   f.Key,
+		EventDesc: event,
+	}
+}
+
+func BuildAudLog(a Audience, event string) AudienceLog {
+	return AudienceLog{
+		AudienceID:  a.ID,
+		AudienceKey: a.Key,
+		EventDesc:   event,
+	}
+}
+
+func BuildAttrLog(a Attribute, event string) AttributeLog {
+	return AttributeLog{
+		AttributeID:  a.ID,
+		AttributeKey: a.Key,
+		EventDesc:    event,
+	}
+}

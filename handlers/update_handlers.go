@@ -92,10 +92,12 @@ func (h Handler) ToggleFlag(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var flag models.Flag
-	update := map[string]interface{}{"status": togglef.Status}
-	result := h.DB.Model(&flag).Where("id = ?", id).Updates(update)
-	if result.Error != nil {
-		utils.NoRecordResponse(w, r, result.Error)
+	// update := map[string]interface{}{"status": togglef.Status}
+	h.DB.Find(&flag, id)
+	flag.Status = togglef.Status
+	err = h.DB.Select("status").Updates(&flag).Error
+	if err != nil {
+		utils.NoRecordResponse(w, r, err)
 		return
 	}
 
@@ -156,11 +158,12 @@ func (h Handler) UpdateAudience(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.DB.Model(&models.Audience{}).Preload("Conditions").Find(&aud)
+	h.DB.Model(&models.Audience{}).Preload("Flags").Preload("Conditions").Find(&aud)
 
 	response := models.AudienceResponse{
 		Audience:   &aud,
 		Conditions: GetEmbeddedConds(aud, h.DB),
+		Flags:      GetEmbeddedFlags(aud.Flags),
 	}
 
 	utils.CreatedResponse(w, r, &response)

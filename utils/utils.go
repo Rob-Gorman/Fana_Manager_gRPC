@@ -6,6 +6,7 @@ import (
 )
 
 func HandleErr(err error, msg string) {
+	// not useful, breaks app.
 	if err != nil {
 		log.Fatal(err, msg)
 	}

@@ -1,7 +1,12 @@
 package handlers
 
 import (
+	"context"
+	"encoding/json"
+	"manager/cache"
 	"manager/models"
+	"manager/publisher"
+	"manager/utils"
 
 	"gorm.io/gorm"
 )
@@ -64,4 +69,20 @@ func GetEmbeddedFlags(flags []models.Flag) []models.FlagNoAudsResponse {
 	}
 
 	return fr
+}
+
+func PublishContent(data interface{}, channel string) {
+	byteArray, err := json.Marshal(data)
+	if err != nil {
+		utils.HandleErr(err, "Unmarshalling error")
+	}
+
+	publisher.Redis.Publish(context.TODO(), channel, byteArray)
+}
+
+func RefreshCache(db *gorm.DB) {
+	flagCache := cache.InitFlagCache()
+	fs := BuildFlagset(db)
+	flagCache.FlushAllAsync()
+	flagCache.Set("data", &fs)
 }
