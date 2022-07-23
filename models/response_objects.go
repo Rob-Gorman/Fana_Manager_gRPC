@@ -48,6 +48,7 @@ type ConditionEmbedded struct {
 	*Condition
 	ID           omit   `json:"id,omitempty"`
 	AudienceID   omit   `json:"audienceID,omitempty"`
+	Attribute    omit   `json:"Attribute,omitempty"`
 	AttributeKey string `json:"attribute"`
 }
 

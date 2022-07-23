@@ -23,9 +23,8 @@ type Audset struct {
 
 type CondInst struct {
 	*models.ConditionEmbedded
-	AttributeID  omit     `json:"attributeID,omitempty"`
-	AttributeKey string   `json:"attribute"`
-	Vals         []string `json:"vals"`
+	AttributeID omit     `json:"attributeID,omitempty"`
+	Vals        []string `json:"vals"`
 }
 
 func BuildFlagset(db *gorm.DB) (fs *Flagset) {
@@ -88,7 +87,8 @@ func getEmbeddedConds(aud models.Audience, db *gorm.DB) []CondInst {
 		cond.Attribute = attr
 		conds = append(conds, CondInst{
 			ConditionEmbedded: &models.ConditionEmbedded{
-				Condition: &cond,
+				Condition:    &cond,
+				AttributeKey: attr.Key,
 			},
 			Vals: strings.Split(cond.Vals, ", "),
 		})
