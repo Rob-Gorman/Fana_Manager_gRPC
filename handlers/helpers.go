@@ -71,6 +71,32 @@ func GetEmbeddedFlags(flags []models.Flag) []models.FlagNoAudsResponse {
 	return fr
 }
 
+func BuildAttrResponse(a models.Attribute, h Handler) models.AttributeResponse {
+	conds := a.Conditions
+	audids := []uint{}
+	for _, cond := range conds {
+		audids = append(audids, cond.AudienceID)
+	}
+
+	auds := []models.Audience{}
+
+	if len(audids) > 0 {
+		h.DB.Find(&auds, audids)
+	}
+
+	respauds := []models.AudienceNoCondsResponse{}
+	for i, _ := range auds {
+		respauds = append(respauds, models.AudienceNoCondsResponse{
+			Audience: &auds[i],
+		})
+	}
+
+	return models.AttributeResponse{
+		Attribute: &a,
+		Audiences: respauds,
+	}
+}
+
 func PublishContent(data interface{}, channel string) {
 	byteArray, err := json.Marshal(data)
 	if err != nil {

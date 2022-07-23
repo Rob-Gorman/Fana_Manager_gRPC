@@ -16,11 +16,11 @@ func (fl *Flag) AfterUpdate(db *gorm.DB) error {
 	return err
 }
 
-func (fl *Flag) AfterSave(db *gorm.DB) error {
-	log := BuildFlagLog(*fl, "updated")
-	err := db.Create(&log).Error
-	return err
-}
+// func (fl *Flag) AfterSave(db *gorm.DB) error {
+// 	log := BuildFlagLog(*fl, "updated")
+// 	err := db.Create(&log).Error
+// 	return err
+// }
 
 func (fl *Flag) BeforeDelete(db *gorm.DB) error {
 	log := BuildFlagLog(*fl, "deleted")
@@ -40,11 +40,11 @@ func (a *Audience) AfterUpdate(db *gorm.DB) error {
 	return err
 }
 
-func (a *Audience) AfterSave(db *gorm.DB) error {
-	log := BuildAudLog(*a, "updated")
-	err := db.Create(&log).Error
-	return err
-}
+// func (a *Audience) AfterSave(db *gorm.DB) error {
+// 	log := BuildAudLog(*a, "updated")
+// 	err := db.Create(&log).Error
+// 	return err
+// }
 
 func (a *Audience) BeforeDelete(db *gorm.DB) error {
 	log := BuildAudLog(*a, "deleted")
@@ -64,11 +64,11 @@ func (a *Attribute) AfterUpdate(db *gorm.DB) error {
 	return err
 }
 
-func (a *Attribute) AfterSave(db *gorm.DB) error {
-	log := BuildAttrLog(*a, "updated")
-	err := db.Create(&log).Error
-	return err
-}
+// func (a *Attribute) AfterSave(db *gorm.DB) error {
+// 	log := BuildAttrLog(*a, "updated")
+// 	err := db.Create(&log).Error
+// 	return err
+// }
 
 func (a *Attribute) BeforeDelete(db *gorm.DB) error {
 	log := BuildAttrLog(*a, "deleted")

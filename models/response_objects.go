@@ -52,6 +52,12 @@ type ConditionEmbedded struct {
 	AttributeKey string `json:"attribute"`
 }
 
+type AttributeResponse struct {
+	*Attribute
+	Conditions omit                      `json:",omitempty"`
+	Audiences  []AudienceNoCondsResponse `json:"audiences"`
+}
+
 type AuditResponse struct {
 	FlagLogs      []FlagLog      `json:"flagLogs" gorm:"embedded"`
 	AudienceLogs  []AudienceLog  `json:"audienceLogs" gorm:"embedded"`

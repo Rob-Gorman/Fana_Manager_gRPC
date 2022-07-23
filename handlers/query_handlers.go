@@ -124,14 +124,16 @@ func (h Handler) GetAttribute(w http.ResponseWriter, r *http.Request) {
 
 	var attr models.Attribute
 
-	result := h.DB.First(&attr, id)
+	err = h.DB.Preload("Conditions").First(&attr, id).Error
 
-	if result.Error != nil {
-		utils.NoRecordResponse(w, r, result.Error)
+	if err != nil {
+		utils.NoRecordResponse(w, r, err)
 		return
 	}
 
-	utils.PayloadResponse(w, r, attr)
+	response := BuildAttrResponse(attr, h)
+
+	utils.PayloadResponse(w, r, &response)
 }
 
 func (h Handler) GetAuditLogs(w http.ResponseWriter, r *http.Request) {
