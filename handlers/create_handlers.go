@@ -112,3 +112,12 @@ func (h Handler) CreateAudience(w http.ResponseWriter, r *http.Request) {
 
 	utils.CreatedResponse(w, r, &response)
 }
+
+func (h Handler) RegenSDKkey(w http.ResponseWriter, r *http.Request) {
+	sdk := models.Sdkkey{}
+	h.DB.Take(&sdk)
+
+	// regen the key here
+
+	utils.CreatedResponse(w, r, &sdk)
+}
