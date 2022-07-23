@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"io/ioutil"
+	"manager/cache"
 	"manager/models"
 	"manager/publisher"
 	"manager/utils"
@@ -29,7 +30,7 @@ func (h Handler) CreateFlag(w http.ResponseWriter, r *http.Request) {
 	err = h.DB.Session(&gorm.Session{FullSaveAssociations: true}).Create(&flag).Error
 
 	if err != nil {
-		utils.BadRequestResponse(w, r, err)
+		utils.UnprocessableEntityResponse(w, r, err)
 		return
 	}
 
@@ -46,11 +47,19 @@ func (h Handler) CreateFlag(w http.ResponseWriter, r *http.Request) {
 		Flag:      &flag,
 		Audiences: respAuds,
 	}
-	byteArray, _ := json.Marshal(&response)
 
+	byteArray, err := json.Marshal(&response)
+	if err != nil {
+		utils.HandleErr(err, "Unmarshalling error")
+	}
 	publisher.Redis.Publish(context.TODO(), "flag-update-channel", byteArray)
 
 	utils.CreatedResponse(w, r, &response)
+
+	flagCache := cache.InitFlagCache()
+	fs := BuildFlagset(h.DB)
+	flagCache.FlushAllAsync()
+	flagCache.Set("data", &fs)
 }
 
 func (h Handler) CreateAttribute(w http.ResponseWriter, r *http.Request) {
@@ -65,19 +74,25 @@ func (h Handler) CreateAttribute(w http.ResponseWriter, r *http.Request) {
 
 	err = json.Unmarshal(body, &attrReq)
 	if err != nil {
+
 		utils.BadRequestResponse(w, r, err)
 		return
 	}
 
 	err = h.DB.Create(&attrReq).Error
 	if err != nil {
-		utils.BadRequestResponse(w, r, err)
+		utils.UnprocessableEntityResponse(w, r, err)
 		return
 	}
 	// attr := models.Attribute{}
 	h.DB.Find(&attrReq)
 
 	utils.CreatedResponse(w, r, &attrReq)
+
+	flagCache := cache.InitFlagCache()
+	fs := BuildFlagset(h.DB)
+	flagCache.FlushAllAsync()
+	flagCache.Set("data", &fs)
 }
 
 func (h Handler) CreateAudience(w http.ResponseWriter, r *http.Request) {
@@ -99,7 +114,7 @@ func (h Handler) CreateAudience(w http.ResponseWriter, r *http.Request) {
 
 	err = h.DB.Session(&gorm.Session{FullSaveAssociations: true}).Create(&aud).Error
 	if err != nil {
-		utils.BadRequestResponse(w, r, err)
+		utils.UnprocessableEntityResponse(w, r, err)
 		return
 	}
 
@@ -110,9 +125,16 @@ func (h Handler) CreateAudience(w http.ResponseWriter, r *http.Request) {
 		Conditions: GetEmbeddedConds(aud, h.DB),
 	}
 
-	byteArray, _ := json.Marshal(&aud)
+	byteArray, err := json.Marshal(&aud)
+	if err != nil {
+		utils.HandleErr(err, "Unmarshalling error")
+	}
 
 	publisher.Redis.Publish(context.TODO(), "audience-update-channel", byteArray)
 
 	utils.CreatedResponse(w, r, &response)
+	flagCache := cache.InitFlagCache()
+	fs := BuildFlagset(h.DB)
+	flagCache.FlushAllAsync()
+	flagCache.Set("data", &fs)
 }

@@ -46,9 +46,20 @@ func (cache *redisCache) Set(key string, value interface{}) {
 		panic(err)
 	}
 
-	fmt.Printf("\npost marshalling: %v\n", json)
 	// set the key to marshalled data
 	client.Set(context.TODO(), key, json, cache.expires*time.Second)
+}
+
+func (cache *redisCache) HSet(key string, values ...interface{}) {
+	client := cache.getClient()
+
+	// serialize the flag
+	json, err := json.Marshal(values)
+	if err != nil {
+		fmt.Println("Set from redis: marshalling error")
+		panic(err)
+	}
+	client.HSet(context.TODO(), key, json, cache.expires*time.Second)
 }
 
 // get flag based on key

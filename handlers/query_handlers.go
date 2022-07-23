@@ -7,14 +7,9 @@ import (
 	"net/http"
 	"strconv"
 
-	// "manager/cache"
-
 	"github.com/gorilla/mux"
 )
 
-// var (
-// 	flagCache cache.FlagCache = cache.NewRedisCache("localhost:6379", 0, 1000000)
-// )
 
 func (h Handler) GetAllFlags(w http.ResponseWriter, r *http.Request) {
 	var flags []models.Flag
@@ -33,11 +28,7 @@ func (h Handler) GetAllFlags(w http.ResponseWriter, r *http.Request) {
 
 	utils.PayloadResponse(w, r, &response)
 
-	// ****~~~ CACHING WORKFLOW ****~~~
-	// Flush cache
-	// flagCache.FlushAllAsync()
-	// Store copy of data
-	// flagCache.Set("data", value) // `value` needs to match struct, not sure what it will be
+
 
 }
 
@@ -74,7 +65,8 @@ func (h Handler) GetFlag(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		utils.BadRequestResponse(w, r, err)
+		w.WriteHeader(400)
+		w.Write([]byte("Invalid flag ID."))
 		return
 	}
 
@@ -98,7 +90,8 @@ func (h Handler) GetAudience(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		utils.BadRequestResponse(w, r, err)
+		w.WriteHeader(400)
+		w.Write([]byte("Invalid audience ID."))
 		return
 	}
 
@@ -127,7 +120,8 @@ func (h Handler) GetAttribute(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		utils.BadRequestResponse(w, r, err)
+		w.WriteHeader(400)
+		w.Write([]byte("Invalid attribute ID."))
 		return
 	}
 

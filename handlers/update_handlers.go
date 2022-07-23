@@ -2,7 +2,9 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"manager/cache"
 	"manager/models"
 	"manager/publisher"
 	"manager/utils"
@@ -30,7 +32,8 @@ func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		utils.BadRequestResponse(w, r, err)
+		w.WriteHeader(400)
+		w.Write([]byte("Invalid resource ID."))
 		return
 	}
 
@@ -52,18 +55,26 @@ func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 
 	response := FlagToFlagResponse(flag, h)
 
-	byteArray, _ := json.Marshal(&response)
+	byteArray, err := json.Marshal(&response)
+	if err != nil {
+		utils.HandleErr(err, "Unmarshalling error")
+	}
 
 	publisher.Redis.Publish(ctx, "flag-update-channel", byteArray)
 
 	utils.UpdatedResponse(w, r, &response)
+	flagCache := cache.InitFlagCache()
+	fs := BuildFlagset(h.DB)
+	flagCache.FlushAllAsync()
+	flagCache.Set("data", &fs)
 }
 
 func (h Handler) ToggleFlag(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		utils.BadRequestResponse(w, r, err)
+		w.WriteHeader(400)
+		w.Write([]byte("Invalid resource ID."))
 		return
 	}
 
@@ -91,11 +102,24 @@ func (h Handler) ToggleFlag(w http.ResponseWriter, r *http.Request) {
 	h.DB.First(&flag, id)
 	response := models.FlagNoAudsResponse{Flag: &flag}
 
-	byteArray, _ := json.Marshal(&response)
+	fmt.Printf("flag toggled %v\n", response)
+	fmt.Printf("\nflag key %v\n", response.Key) // string
+
+	byteArray, err := json.Marshal(&response)
+	if err != nil {
+		utils.HandleErr(err, "Unmarshalling error")
+	}
 
 	publisher.Redis.Publish(ctx, "flag-toggle-channel", byteArray)
 
 	utils.UpdatedResponse(w, r, &response)
+
+	flagCache := cache.InitFlagCache()
+	fs := BuildFlagset(h.DB)
+	flagCache.FlushAllAsync()
+	// syntax: data needs to be a hashmap type, then 'key'
+	// flagCache.HSet("data", response.Key, )
+	flagCache.Set("data", &fs)
 }
 
 func (h Handler) UpdateAudience(w http.ResponseWriter, r *http.Request) {
@@ -104,7 +128,8 @@ func (h Handler) UpdateAudience(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		utils.BadRequestResponse(w, r, err)
+		w.WriteHeader(400)
+		w.Write([]byte("Invalid resource ID."))
 		return
 	}
 
@@ -139,4 +164,9 @@ func (h Handler) UpdateAudience(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.CreatedResponse(w, r, &response)
+
+	flagCache := cache.InitFlagCache()
+	fs := BuildFlagset(h.DB)
+	flagCache.FlushAllAsync()
+	flagCache.Set("data", &fs)
 }
