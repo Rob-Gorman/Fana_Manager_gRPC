@@ -25,7 +25,7 @@ type AudienceLog struct {
 type AttributeLog struct {
 	ID           uint      `json:"logID" gorm:"primarykey"`
 	AttributeID  uint      `json:"id"`
-	AttributeKey string    `json:"attributeKey"`
+	AttributeKey string    `json:"key"`
 	EventDesc    string    `json:"action"`
 	CreatedAt    time.Time `json:"created_at"`
 }

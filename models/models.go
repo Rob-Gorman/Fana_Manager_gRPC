@@ -48,7 +48,7 @@ type Condition struct {
 	AudienceID  uint      `json:"audienceID"`
 	Negate      bool      `json:"negate" gorm:"default:false"`
 	AttributeID uint      `json:"attributeID"`
-	Attribute   Attribute `json:"attribute,omitempty" gorm:"foreignKey:AttributeID; references:ID"`
+	Attribute   Attribute `gorm:"foreignKey:AttributeID; references:ID"`
 	Operator    string    `json:"operator" gorm:"default:'EQ'"`
 	Vals        string    `json:"vals" gorm:"default:'';not null"`
 }

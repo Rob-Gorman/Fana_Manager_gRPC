@@ -15,8 +15,8 @@ func GetEmbeddedConds(aud models.Audience, db *gorm.DB) []models.ConditionEmbedd
 		db.Find(&cond)
 		cond.Attribute = attr
 		conds = append(conds, models.ConditionEmbedded{
-			Condition: &cond,
-			Attribute: attr.Key,
+			Condition:    &cond,
+			AttributeKey: attr.Key,
 		})
 	}
 	return conds

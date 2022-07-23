@@ -46,9 +46,9 @@ type AudienceNoCondsResponse struct {
 
 type ConditionEmbedded struct {
 	*Condition
-	ID         omit   `json:"id,omitempty"`
-	AudienceID omit   `json:"audienceID,omitempty"`
-	Attribute  string `json:"attribute"`
+	ID           omit   `json:"id,omitempty"`
+	AudienceID   omit   `json:"audienceID,omitempty"`
+	AttributeKey string `json:"attribute"`
 }
 
 type AuditResponse struct {

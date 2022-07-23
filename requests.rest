@@ -202,6 +202,7 @@ content-type: application/json
   "combine": "ALL",
   "conditions": [
       {
+      "attribute": "state",
       "attributeID": 1,
       "operator": "EQ",
       "vals": "texas"
