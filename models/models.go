@@ -40,6 +40,7 @@ type Attribute struct {
 	Key         string         `json:"key" gorm:"type:varchar(30); UNIQUE; NOT NULL"`
 	Type        string         `json:"attrType" gorm:"type:varchar(10)"`
 	DisplayName string         `json:"displayName" gorm:"type:varchar(30)"`
+	Conditions  []Condition    `gorm:"constraint:OnDelete:CASCADE"`
 	CreatedAt   time.Time      `json:"created_at"`
 	DeletedAt   gorm.DeletedAt `json:"deleted_at" gorm:"index"`
 }
