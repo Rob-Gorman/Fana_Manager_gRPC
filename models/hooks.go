@@ -11,7 +11,11 @@ func (fl *Flag) AfterCreate(db *gorm.DB) error {
 }
 
 func (fl *Flag) AfterUpdate(db *gorm.DB) error {
-	log := BuildFlagLog(*fl, "updated")
+	action := "updated"
+	if fl.DisplayName == "" {
+		action = "toggled"
+	}
+	log := BuildFlagLog(*fl, action)
 	err := db.Create(&log).Error
 	return err
 }

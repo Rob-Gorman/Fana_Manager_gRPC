@@ -45,7 +45,10 @@ func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 	flag.Key = fr.Key
 	flag.Sdkkey = fr.Sdkkey
 
-	h.DB.Model(&flag).Association("Audiences").Replace(flag.Audiences)
+	if flagReq.Audiences != nil {
+		h.DB.Model(&flag).Association("Audiences").Replace(flag.Audiences)
+	}
+
 	err = h.DB.Model(&flag).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&flag).Error
 
 	if err != nil {
@@ -95,6 +98,7 @@ func (h Handler) ToggleFlag(w http.ResponseWriter, r *http.Request) {
 	// update := map[string]interface{}{"status": togglef.Status}
 	h.DB.Find(&flag, id)
 	flag.Status = togglef.Status
+	flag.DisplayName = "" // hacky way to clue it's a toggle action, see flag update hook
 	err = h.DB.Select("status").Updates(&flag).Error
 	if err != nil {
 		utils.NoRecordResponse(w, r, err)
@@ -107,21 +111,11 @@ func (h Handler) ToggleFlag(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("flag toggled %v\n", response)
 	fmt.Printf("\nflag key %v\n", response.Key) // string
 
-	byteArray, err := json.Marshal(&response)
-	if err != nil {
-		utils.HandleErr(err, "Unmarshalling error")
-	}
-
-	publisher.Redis.Publish(ctx, "flag-toggle-channel", byteArray)
+	PublishContent(&response, "flag-toggle-channel")
 
 	utils.UpdatedResponse(w, r, &response)
 
-	flagCache := cache.InitFlagCache()
-	fs := BuildFlagset(h.DB)
-	flagCache.FlushAllAsync()
-	// syntax: data needs to be a hashmap type, then 'key'
-	// flagCache.HSet("data", response.Key, )
-	flagCache.Set("data", &fs)
+	RefreshCache(h.DB)
 }
 
 func (h Handler) UpdateAudience(w http.ResponseWriter, r *http.Request) {
@@ -151,7 +145,10 @@ func (h Handler) UpdateAudience(w http.ResponseWriter, r *http.Request) {
 
 	aud := BuildAudUpdate(req, id, h)
 
-	h.DB.Model(&aud).Association("Conditions").Replace(aud.Conditions)
+	if req.Conditions != nil {
+		h.DB.Model(&aud).Association("Conditions").Replace(aud.Conditions)
+	}
+
 	err = h.DB.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&aud).Error
 	if err != nil {
 		utils.BadRequestResponse(w, r, err)

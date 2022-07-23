@@ -148,6 +148,15 @@ content-type: application/json
 
 ###
 
+PATCH http://localhost:6000/api/flags/3 HTTP/1.1
+content-type: application/json
+
+{
+    "displayName": "Is flag"
+}
+
+###
+
 PATCH http://localhost:6000/api/flags/1/toggle HTTP/1.1
 content-type: application/json
 
