@@ -19,7 +19,7 @@ func (h Handler) DeleteFlag(w http.ResponseWriter, r *http.Request) {
 	}
 
 	flag := &models.Flag{}
-	err = h.DB.Preload("Audiences").Find(&flag, id).Error
+	err = h.DB.Preload("Audiences").First(&flag, id).Error
 	if err != nil {
 		utils.NoRecordResponse(w, r, err)
 		return
@@ -43,7 +43,7 @@ func (h Handler) DeleteAudience(w http.ResponseWriter, r *http.Request) {
 	}
 
 	aud := &models.Audience{}
-	err = h.DB.Preload("Flags").Find(&aud, id).Error
+	err = h.DB.Preload("Flags").First(&aud, id).Error
 	if err != nil {
 		utils.NoRecordResponse(w, r, err)
 		return

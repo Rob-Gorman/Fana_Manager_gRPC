@@ -70,7 +70,7 @@ func (h Handler) GetFlag(w http.ResponseWriter, r *http.Request) {
 	var flag models.Flag
 	auds := []models.AudienceNoCondsResponse{}
 
-	err = h.DB.Preload("Audiences").Find(&flag, id).Error
+	err = h.DB.Preload("Audiences").First(&flag, id).Error
 	if err != nil {
 		utils.NoRecordResponse(w, r, err)
 		return
