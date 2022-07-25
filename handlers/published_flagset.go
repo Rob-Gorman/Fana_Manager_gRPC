@@ -29,7 +29,7 @@ type CondInst struct {
 
 func BuildFlagset(db *gorm.DB) (fs *Flagset) {
 	sdks := buildSdkkeys(db)
-	flrules := buildFlagrules(db)
+	flrules := buildFlagrules(db, []uint{}) // empty array == flag ids
 
 	fs = &Flagset{
 		Sdkkeys: *sdks,
@@ -37,6 +37,16 @@ func BuildFlagset(db *gorm.DB) (fs *Flagset) {
 	}
 
 	return fs
+}
+
+func FlagUpdateForPublisher(db *gorm.DB, fls []models.Flag) map[string]Flagrule {
+	ids := []uint{}
+	for _, fl := range fls {
+		ids = append(ids, fl.ID)
+	}
+
+	pub := buildFlagrules(db, ids)
+	return pub
 }
 
 func buildSdkkeys(db *gorm.DB) *map[string]bool {
@@ -50,10 +60,10 @@ func buildSdkkeys(db *gorm.DB) *map[string]bool {
 	return &hash
 }
 
-func buildFlagrules(db *gorm.DB) (frs map[string]Flagrule) {
+func buildFlagrules(db *gorm.DB, flIds []uint) (frs map[string]Flagrule) {
 	var flags []models.Flag
 	frs = map[string]Flagrule{}
-	db.Model(models.Flag{}).Select("id", "key", "status").Find(&flags)
+	db.Model(models.Flag{}).Select("id", "key", "status").Find(&flags, flIds)
 
 	for ind, _ := range flags {
 		flag := models.Flag{}

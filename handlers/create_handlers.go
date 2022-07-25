@@ -105,6 +105,7 @@ func (h Handler) CreateAudience(w http.ResponseWriter, r *http.Request) {
 	response := models.AudienceResponse{
 		Audience:   &aud,
 		Conditions: GetEmbeddedConds(aud, h.DB),
+		Flags:      []models.FlagNoAudsResponse{},
 	}
 
 	PublishContent(&aud, "audience-update-channel")

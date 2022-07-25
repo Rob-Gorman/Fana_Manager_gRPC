@@ -2,11 +2,8 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
-	"manager/cache"
 	"manager/models"
-	"manager/publisher"
 	"manager/utils"
 	"net/http"
 	"strconv"
@@ -15,7 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var ctx = utils.StandardContext()
+// var ctx = utils.StandardContext()
 
 func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 	var flagReq models.FlagSubmit
@@ -58,18 +55,11 @@ func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 
 	response := FlagToFlagResponse(flag, h)
 
-	byteArray, err := json.Marshal(&response)
-	if err != nil {
-		utils.HandleErr(err, "Unmarshalling error")
-	}
-
-	publisher.Redis.Publish(ctx, "flag-update-channel", byteArray)
+	pub := FlagUpdateForPublisher(h.DB, []models.Flag{flag})
+	PublishContent(&pub, "flag-update-channel")
+	RefreshCache(h.DB)
 
 	utils.UpdatedResponse(w, r, &response)
-	flagCache := cache.InitFlagCache()
-	fs := BuildFlagset(h.DB)
-	flagCache.FlushAllAsync()
-	flagCache.Set("data", &fs)
 }
 
 func (h Handler) ToggleFlag(w http.ResponseWriter, r *http.Request) {
@@ -95,7 +85,6 @@ func (h Handler) ToggleFlag(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var flag models.Flag
-	// update := map[string]interface{}{"status": togglef.Status}
 	h.DB.Find(&flag, id)
 	flag.Status = togglef.Status
 	flag.DisplayName = "" // hacky way to clue it's a toggle action, see flag update hook
@@ -108,14 +97,11 @@ func (h Handler) ToggleFlag(w http.ResponseWriter, r *http.Request) {
 	h.DB.First(&flag, id)
 	response := models.FlagNoAudsResponse{Flag: &flag}
 
-	fmt.Printf("flag toggled %v\n", response)
-	fmt.Printf("\nflag key %v\n", response.Key) // string
-
-	PublishContent(&response, "flag-toggle-channel")
+	pub := FlagUpdateForPublisher(h.DB, []models.Flag{flag})
+	PublishContent(&pub, "flag-toggle-channel")
+	RefreshCache(h.DB)
 
 	utils.UpdatedResponse(w, r, &response)
-
-	RefreshCache(h.DB)
 }
 
 func (h Handler) UpdateAudience(w http.ResponseWriter, r *http.Request) {
@@ -163,10 +149,9 @@ func (h Handler) UpdateAudience(w http.ResponseWriter, r *http.Request) {
 		Flags:      GetEmbeddedFlags(aud.Flags),
 	}
 
-	utils.CreatedResponse(w, r, &response)
+	pub := FlagUpdateForPublisher(h.DB, aud.Flags)
+	PublishContent(&pub, "flag-update-channel")
+	RefreshCache(h.DB)
 
-	flagCache := cache.InitFlagCache()
-	fs := BuildFlagset(h.DB)
-	flagCache.FlushAllAsync()
-	flagCache.Set("data", &fs)
+	utils.CreatedResponse(w, r, &response)
 }
