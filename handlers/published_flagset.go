@@ -10,7 +10,7 @@ import (
 type omit bool
 
 type Flagset struct {
-	Sdkkeys []string            `json:"sdkKeys"`
+	Sdkkeys map[string]bool     `json:"sdkKeys"`
 	Flags   map[string]Flagrule `json:"flags"`
 }
 
@@ -39,11 +39,15 @@ func BuildFlagset(db *gorm.DB) (fs *Flagset) {
 	return fs
 }
 
-func buildSdkkeys(db *gorm.DB) *[]string {
+func buildSdkkeys(db *gorm.DB) *map[string]bool {
 	var sdks []string
 	db.Model(models.Sdkkey{}).Select("key").Find(&sdks)
 
-	return &sdks
+	hash := map[string]bool{}
+	for i, _ := range sdks {
+		hash[sdks[i]] = true
+	}
+	return &hash
 }
 
 func buildFlagrules(db *gorm.DB) (frs map[string]Flagrule) {
