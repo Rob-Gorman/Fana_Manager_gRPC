@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"manager/configs"
 	"time"
-
 	"github.com/go-redis/redis/v8"
 )
 
@@ -49,39 +48,6 @@ func (cache *redisCache) Set(key string, value interface{}) {
 	// set the key to marshalled data
 	client.Set(context.TODO(), key, json, cache.expires*time.Second)
 }
-
-func (cache *redisCache) HSet(key string, values ...interface{}) {
-	client := cache.getClient()
-
-	// serialize the flag
-	json, err := json.Marshal(values)
-	if err != nil {
-		fmt.Println("Set from redis: marshalling error")
-		panic(err)
-	}
-	client.HSet(context.TODO(), key, json, cache.expires*time.Second)
-}
-
-// get flag based on key
-// func (cache *redisCache) Get(key string) interface{} {
-// 	client := cache.getClient()
-
-// 	// set the key to marshalled data
-// 	val, err := client.Get(context.TODO(), key).Result()
-// 	if err != nil {
-// 		fmt.Println("Get from redis: couldn't get")
-// 		panic(err)
-// 	}
-
-// 	// unmarshal and store in a flag struct
-// 	flag := models.Flag{}
-// 	err = json.Unmarshal([]byte(val), &flag)
-// 	if err != nil {
-// 		fmt.Println("Get from redis: unmarshalling error")
-// 		panic(err)
-// 	}
-// 	return &flag
-// }
 
 // asynchronously flush all keys from cache
 func (cache *redisCache) FlushAllAsync() {
