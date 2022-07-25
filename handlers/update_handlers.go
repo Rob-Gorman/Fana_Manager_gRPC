@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"manager/models"
 	"manager/utils"
@@ -39,7 +40,6 @@ func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 	h.DB.First(&flag, id)
 	flag.Audiences = fr.Audiences
 	flag.DisplayName = fr.DisplayName
-	flag.Key = fr.Key
 	flag.Sdkkey = fr.Sdkkey
 
 	if flagReq.Audiences != nil {
@@ -87,7 +87,7 @@ func (h Handler) ToggleFlag(w http.ResponseWriter, r *http.Request) {
 	var flag models.Flag
 	h.DB.Find(&flag, id)
 	flag.Status = togglef.Status
-	flag.DisplayName = "" // hacky way to clue it's a toggle action, see flag update hook
+	flag.DisplayName = fmt.Sprintf("__%v", flag.Status) // hacky way to clue it's a toggle action, see flag update hook
 	err = h.DB.Select("status").Updates(&flag).Error
 	if err != nil {
 		utils.NoRecordResponse(w, r, err)

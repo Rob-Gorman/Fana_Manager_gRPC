@@ -49,7 +49,7 @@ func (h Handler) DeleteAudience(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	h.DB.Model(&aud).Association("Flags").Delete(aud.Flags)
-	err = h.DB.Unscoped().Delete(&models.Audience{}, id).Error
+	err = h.DB.Unscoped().Delete(&aud).Error
 	if err != nil {
 		utils.BadRequestResponse(w, r, err)
 		return

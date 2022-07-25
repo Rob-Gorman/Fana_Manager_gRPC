@@ -238,7 +238,7 @@ DELETE http://localhost:6000/api/flags/1 HTTP/1.1
 
 ###
 
-DELETE http://localhost:6000/api/audiences/1 HTTP/1.1
+DELETE http://localhost:6000/api/audiences/2 HTTP/1.1
 
 ###
 

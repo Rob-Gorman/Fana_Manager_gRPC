@@ -91,6 +91,3 @@ condition_1 = {
 
 ~~s.HandleFunc("/api/attributes", s.H.GetAllAttributes).Methods("GET")~~
 ~~s.HandleFunc("/api/attributes", s.H.CreateAttribute).Methods("POST")~~
-
-
-UPDATE STRUCTURE ==> redis publish only updates in shape of bearer object

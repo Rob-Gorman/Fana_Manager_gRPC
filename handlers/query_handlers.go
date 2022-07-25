@@ -30,8 +30,8 @@ func (h Handler) GetAllFlags(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h Handler) GetAllAudiences(w http.ResponseWriter, r *http.Request) {
-	var auds []models.Audience
-	var respAuds []models.AudienceNoCondsResponse
+	auds := []models.Audience{}
+	respAuds := []models.AudienceNoCondsResponse{}
 
 	result := h.DB.Preload("Conditions").Find(&auds)
 
