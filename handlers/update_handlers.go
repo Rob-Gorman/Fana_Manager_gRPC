@@ -66,6 +66,7 @@ func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h Handler) ToggleFlag(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("\nGot a flag toggle!")
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
@@ -87,24 +88,39 @@ func (h Handler) ToggleFlag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Println("Looking for flag...")
 	var flag models.Flag
 	h.DB.Find(&flag, id)
+	fmt.Println("done!")
 	flag.Status = togglef.Status
 	flag.DisplayName = fmt.Sprintf("__%v", flag.Status) // hacky way to clue it's a toggle action, see flag update hook
+	fmt.Println("Updating flag status...")
 	err = h.DB.Select("status").Updates(&flag).Error
 	if err != nil {
 		utils.NoRecordResponse(w, r, err)
 		return
 	}
-
+	fmt.Println("done!")
+	
+	fmt.Println("Retrieving flag again...")
 	h.DB.First(&flag, id)
 	response := models.FlagNoAudsResponse{Flag: &flag}
-
+	fmt.Println("done!")
+	
+	fmt.Println("Making pub/sub message...")
 	pub := FlagUpdateForPublisher(h.DB, []models.Flag{flag})
+	fmt.Println("done!")
+	fmt.Println("Publishing message...")
 	PublishContent(&pub, "flag-toggle-channel")
-	RefreshCache(h.DB)
+	fmt.Println("done!")
 
+	fmt.Println("refreshing cache...")
+	RefreshCache(h.DB)
+	fmt.Println("done refreshing cache!")
+	
+	fmt.Println("WRiting response...")
 	utils.UpdatedResponse(w, r, &response)
+	fmt.Println("Sent response!")
 }
 
 func (h Handler) UpdateAudience(w http.ResponseWriter, r *http.Request) {
