@@ -249,3 +249,5 @@ DELETE http://localhost:6000/api/attributes/1 HTTP/1.1
 POST http://localhost:6000/api/sdkkeys/yournamehere HTTP/1.1
 
 ###
+
+GET http://localhost:6000

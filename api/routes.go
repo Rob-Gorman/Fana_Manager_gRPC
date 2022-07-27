@@ -1,5 +1,7 @@
 package api
 
+import "net/http"
+
 func (s *Server) dashboardRoutes() {
 	s.HandleFunc("/api/flags/{id}", s.H.GetFlag).Methods("GET")
 	s.HandleFunc("/api/flags/{id}/toggle", s.H.ToggleFlag).Methods("PATCH")
@@ -27,4 +29,11 @@ func (s *Server) dashboardRoutes() {
 
 func (s *Server) providerRoutes() {
 	s.HandleFunc("/flagset", s.H.GetFlagset).Methods("GET")
+}
+
+func (s *Server) staticRoutes() {
+	s.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./build/static/"))))
+	s.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./build/index.html")
+	})
 }

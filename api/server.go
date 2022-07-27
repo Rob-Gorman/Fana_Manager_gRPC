@@ -27,4 +27,5 @@ func NewServer() *Server {
 func (s *Server) routes() {
 	s.dashboardRoutes()
 	s.providerRoutes()
+	s.staticRoutes()
 }
