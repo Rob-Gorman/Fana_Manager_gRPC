@@ -20,7 +20,7 @@ func CreateRedisClient() {
 
 	redis := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%s", configs.GetEnvVar("REDIS_HOST"), configs.GetEnvVar("REDIS_PORT")),
-		Password: "mypassword",
+		Password: configs.GetEnvVar("REDIS_PW"),
 		DB:       0, // default
 	})
 
