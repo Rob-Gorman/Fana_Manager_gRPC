@@ -35,7 +35,7 @@ func (h Handler) CreateFlag(w http.ResponseWriter, r *http.Request) {
 	h.DB.Preload("Audiences").Find(&flag)
 	respAuds := []models.AudienceNoCondsResponse{}
 
-	for ind, _ := range flag.Audiences {
+	for ind := range flag.Audiences {
 		respAuds = append(respAuds, models.AudienceNoCondsResponse{
 			Audience: &flag.Audiences[ind],
 		})

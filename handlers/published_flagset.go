@@ -54,7 +54,7 @@ func buildSdkkeys(db *gorm.DB) *map[string]bool {
 	db.Model(models.Sdkkey{}).Select("key").Find(&sdks)
 
 	hash := map[string]bool{}
-	for i, _ := range sdks {
+	for i := range sdks {
 		hash[sdks[i]] = true
 	}
 	return &hash
@@ -65,13 +65,13 @@ func buildFlagrules(db *gorm.DB, flIds []uint) (frs map[string]Flagrule) {
 	frs = map[string]Flagrule{}
 	db.Model(models.Flag{}).Select("id", "key", "status").Find(&flags, flIds)
 
-	for ind, _ := range flags {
+	for ind := range flags {
 		flag := models.Flag{}
 		flagrule := Flagrule{}
 		db.Preload("Audiences").First(&flag, flags[ind].ID)
 		flagrule["status"] = flag.Status
 
-		for i, _ := range flag.Audiences {
+		for i := range flag.Audiences {
 			flagrule[flag.Audiences[i].Key] = *buildAudrule(flag.Audiences[i], db)
 		}
 
@@ -93,7 +93,7 @@ func buildAudrule(aud models.Audience, db *gorm.DB) (ar *Audset) {
 
 func getEmbeddedConds(aud models.Audience, db *gorm.DB) []CondInst {
 	conds := []CondInst{}
-	for ind, _ := range aud.Conditions {
+	for ind := range aud.Conditions {
 		cond := aud.Conditions[ind]
 		var attr models.Attribute
 		db.Find(&attr, cond.AttributeID)

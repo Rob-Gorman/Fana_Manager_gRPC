@@ -14,7 +14,7 @@ import (
 
 func GetEmbeddedConds(aud models.Audience, db *gorm.DB) []models.ConditionEmbedded {
 	conds := []models.ConditionEmbedded{}
-	for ind, _ := range aud.Conditions {
+	for ind := range aud.Conditions {
 		cond := aud.Conditions[ind]
 		var attr models.Attribute
 		db.Find(&attr, cond.AttributeID)
@@ -46,7 +46,7 @@ func FlagReqToFlag(flagReq models.FlagSubmit, h Handler) (flag models.Flag) {
 func FlagToFlagResponse(flag models.Flag, h Handler) models.FlagResponse {
 	h.DB.Preload("Audiences").First(&flag)
 	respAuds := []models.AudienceNoCondsResponse{}
-	for ind, _ := range flag.Audiences {
+	for ind := range flag.Audiences {
 		respAuds = append(respAuds, models.AudienceNoCondsResponse{Audience: &flag.Audiences[ind]})
 	}
 	return models.FlagResponse{
@@ -65,7 +65,7 @@ func BuildAudUpdate(req models.Audience, id int, h Handler) (aud models.Audience
 
 func GetEmbeddedFlags(flags []models.Flag) []models.FlagNoAudsResponse {
 	fr := []models.FlagNoAudsResponse{}
-	for i, _ := range flags {
+	for i := range flags {
 		fr = append(fr, models.FlagNoAudsResponse{Flag: &flags[i]})
 	}
 
@@ -86,7 +86,7 @@ func BuildAttrResponse(a models.Attribute, h Handler) models.AttributeResponse {
 	}
 
 	respauds := []models.AudienceNoCondsResponse{}
-	for i, _ := range auds {
+	for i := range auds {
 		respauds = append(respauds, models.AudienceNoCondsResponse{
 			Audience: &auds[i],
 		})

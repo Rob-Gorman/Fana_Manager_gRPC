@@ -21,7 +21,7 @@ func (h Handler) GetAllFlags(w http.ResponseWriter, r *http.Request) {
 
 	response := []models.FlagNoAudsResponse{}
 
-	for ind, _ := range flags {
+	for ind := range flags {
 		response = append(response, models.FlagNoAudsResponse{Flag: &flags[ind]})
 	}
 
@@ -39,7 +39,7 @@ func (h Handler) GetAllAudiences(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(result.Error)
 	}
 
-	for ind, _ := range auds {
+	for ind := range auds {
 		respAuds = append(respAuds, models.AudienceNoCondsResponse{Audience: &auds[ind]})
 	}
 
@@ -76,7 +76,7 @@ func (h Handler) GetFlag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for ind, _ := range flag.Audiences {
+	for ind := range flag.Audiences {
 		auds = append(auds, models.AudienceNoCondsResponse{Audience: &flag.Audiences[ind]})
 	}
 
