@@ -46,7 +46,10 @@ func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 		h.DB.Model(&flag).Association("Audiences").Replace(flag.Audiences)
 	}
 
-	err = h.DB.Model(&flag).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&flag).Error
+	err = h.DB.Model(&flag).Session(&gorm.Session{
+		FullSaveAssociations: true,
+		SkipHooks:            true,
+	}).Updates(&flag).Error
 
 	if err != nil {
 		utils.BadRequestResponse(w, r, err)

@@ -35,9 +35,10 @@ func BadRequestResponse(w http.ResponseWriter, r *http.Request, err error) {
 	w.Write([]byte(err.Error()))
 }
 
-func UnprocessableEntityResponse(w http.ResponseWriter, r *http.Request, err error) {
+func UnprocessableEntityResponse(w http.ResponseWriter, r *http.Request, err error, msg string) {
 	w.WriteHeader(http.StatusUnprocessableEntity)
-	w.Write([]byte("Cannot create resource with duplicate keys.\n"))
+	w.Write([]byte(msg))
+	w.Write([]byte("\n"))
 }
 
 func UnavailableResponse(w http.ResponseWriter, r *http.Request, err error) {

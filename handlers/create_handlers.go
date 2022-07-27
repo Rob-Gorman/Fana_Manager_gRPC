@@ -13,7 +13,7 @@ import (
 func (h Handler) CreateFlag(w http.ResponseWriter, r *http.Request) {
 	var flagReq models.FlagSubmit
 
-	defer r.Body.Close()
+	// defer r.Body.Close()
 	body, _ := ioutil.ReadAll(r.Body)
 
 	err := json.Unmarshal(body, &flagReq)
@@ -27,7 +27,8 @@ func (h Handler) CreateFlag(w http.ResponseWriter, r *http.Request) {
 	err = h.DB.Session(&gorm.Session{FullSaveAssociations: true}).Create(&flag).Error
 
 	if err != nil {
-		utils.UnprocessableEntityResponse(w, r, err)
+		msg := "Cannot create resource with duplicate keys."
+		utils.UnprocessableEntityResponse(w, r, err, msg)
 		return
 	}
 
@@ -52,26 +53,27 @@ func (h Handler) CreateFlag(w http.ResponseWriter, r *http.Request) {
 
 func (h Handler) CreateAttribute(w http.ResponseWriter, r *http.Request) {
 	var attrReq models.Attribute
-	defer r.Body.Close()
+	// defer r.Body.Close()
 	body, err := ioutil.ReadAll(r.Body)
 
 	if err != nil {
-		utils.HandleErr(err, "should put a bad request error here")
+		utils.BadRequestResponse(w, r, err)
 		return
 	}
 
 	err = json.Unmarshal(body, &attrReq)
 	if err != nil {
-
 		utils.BadRequestResponse(w, r, err)
 		return
 	}
 
 	err = h.DB.Create(&attrReq).Error
 	if err != nil {
-		utils.UnprocessableEntityResponse(w, r, err)
+		msg := "Cannot create resource with duplicate keys."
+		utils.UnprocessableEntityResponse(w, r, err, msg)
 		return
 	}
+
 	h.DB.Find(&attrReq)
 	utils.CreatedResponse(w, r, &attrReq)
 	RefreshCache(h.DB)
@@ -80,7 +82,7 @@ func (h Handler) CreateAttribute(w http.ResponseWriter, r *http.Request) {
 func (h Handler) CreateAudience(w http.ResponseWriter, r *http.Request) {
 	var aud models.Audience
 
-	defer r.Body.Close()
+	// defer r.Body.Close()
 	body, err := ioutil.ReadAll(r.Body)
 
 	if err != nil {
@@ -96,7 +98,8 @@ func (h Handler) CreateAudience(w http.ResponseWriter, r *http.Request) {
 
 	err = h.DB.Session(&gorm.Session{FullSaveAssociations: true}).Create(&aud).Error
 	if err != nil {
-		utils.UnprocessableEntityResponse(w, r, err)
+		msg := "Cannot create resource with duplicate keys."
+		utils.UnprocessableEntityResponse(w, r, err, msg)
 		return
 	}
 
@@ -118,7 +121,17 @@ func (h Handler) RegenSDKkey(w http.ResponseWriter, r *http.Request) {
 	sdk := models.Sdkkey{}
 	h.DB.Take(&sdk)
 
-	// regen the key here
+	newSDK := models.Sdkkey{
+		Key: NewSDKKey(sdk.Key),
+	}
 
-	utils.CreatedResponse(w, r, &sdk)
+	err := h.DB.Create(&newSDK).Error
+	if err != nil {
+		utils.UnavailableResponse(w, r, err)
+		return
+	}
+
+	h.DB.Unscoped().Delete(&sdk)
+
+	utils.CreatedResponse(w, r, &newSDK)
 }

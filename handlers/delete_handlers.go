@@ -24,6 +24,7 @@ func (h Handler) DeleteFlag(w http.ResponseWriter, r *http.Request) {
 		utils.NoRecordResponse(w, r, err)
 		return
 	}
+
 	h.DB.Model(&flag).Association("Audiences").Delete(flag.Audiences)
 	err = h.DB.Unscoped().Delete(&flag).Error
 	if err != nil {
@@ -48,6 +49,12 @@ func (h Handler) DeleteAudience(w http.ResponseWriter, r *http.Request) {
 		utils.NoRecordResponse(w, r, err)
 		return
 	}
+	if !OrphanedAud(aud) {
+		msg := "Cannot delete Audience assigned to Flags."
+		utils.UnprocessableEntityResponse(w, r, nil, msg)
+		return
+	}
+
 	h.DB.Model(&aud).Association("Flags").Delete(aud.Flags)
 	err = h.DB.Unscoped().Delete(&aud).Error
 	if err != nil {
@@ -63,6 +70,18 @@ func (h Handler) DeleteAttribute(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(400)
 		w.Write([]byte("Invalid attribute ID."))
+		return
+	}
+
+	attr := &models.Attribute{}
+	err = h.DB.First(attr, id).Error
+	if err != nil {
+		utils.NoRecordResponse(w, r, err)
+		return
+	}
+	if !OrphanedAttr(attr, h) {
+		msg := "Cannot delete Attribute assigned to Audiences."
+		utils.UnprocessableEntityResponse(w, r, nil, msg)
 		return
 	}
 

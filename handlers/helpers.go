@@ -7,6 +7,7 @@ import (
 	"manager/models"
 	"manager/publisher"
 	"manager/utils"
+	"math/rand"
 
 	"gorm.io/gorm"
 )
@@ -111,4 +112,29 @@ func RefreshCache(db *gorm.DB) {
 	fs := BuildFlagset(db)
 	flagCache.FlushAllAsync()
 	flagCache.Set("data", &fs)
+}
+
+func OrphanedAud(aud *models.Audience) bool {
+	return len((*aud).Flags) == 0
+}
+
+func OrphanedAttr(attr *models.Attribute, h Handler) bool {
+	asscs := h.DB.Model(attr).Association("Conditions").Count()
+	return asscs == 0
+}
+
+func NewSDKKey(s string) string {
+	digits := []byte("0123456789abcdef")
+	newKey := []byte{}
+
+	for _, char := range s {
+		if char == '-' {
+			newKey = append(newKey, '-')
+		} else {
+			randInd := rand.Intn(len(digits))
+			newKey = append(newKey, digits[randInd])
+		}
+	}
+
+	return string(newKey)
 }

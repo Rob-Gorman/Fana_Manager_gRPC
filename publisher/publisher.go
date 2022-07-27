@@ -3,8 +3,9 @@ package publisher
 import (
 	"context"
 	"fmt"
-	"github.com/go-redis/redis/v8"
 	"manager/configs"
+
+	"github.com/go-redis/redis/v8"
 )
 
 // type RedisHandler struct {
@@ -13,6 +14,7 @@ import (
 var Redis *redis.Client
 
 var ctx = context.TODO()
+
 const channel = "flag-toggle-channel"
 
 func CreateRedisClient() {
@@ -20,7 +22,7 @@ func CreateRedisClient() {
 
 	redis := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%s", configs.GetEnvVar("REDIS_HOST"), configs.GetEnvVar("REDIS_PORT")),
-		Password: "",
+		Password: configs.GetEnvVar("REDIS_PW"),
 		DB:       0, // default
 	})
 
