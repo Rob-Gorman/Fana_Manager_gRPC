@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"manager/cache"
 	"manager/models"
 	"manager/publisher"
@@ -103,6 +104,7 @@ func PublishContent(data interface{}, channel string) {
 	if err != nil {
 		utils.HandleErr(err, "Unmarshalling error")
 	}
+	fmt.Println("Manager trying to publish", string(byteArray))
 
 	publisher.Redis.Publish(context.TODO(), channel, byteArray)
 }
