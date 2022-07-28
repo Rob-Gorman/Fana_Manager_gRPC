@@ -4,13 +4,12 @@ import (
 	"context"
 	"fmt"
 	"manager/configs"
+	"manager/utils"
 
 	"github.com/go-redis/redis/v8"
 )
 
-// type RedisHandler struct {
-// 	*redis.Client
-// }
+
 var Redis *redis.Client
 
 var ctx = context.TODO()
@@ -25,6 +24,15 @@ func CreateRedisClient() {
 		Password: configs.GetEnvVar("REDIS_PW"),
 		DB:       0, // default
 	})
+	pong, err := redis.Ping(context.TODO()).Result()
 
-	Redis = redis
+	if (err != nil) {
+		fmt.Println("pong", pong)
+		utils.HandleErr(err, ": Couldn't reach redis server...")
+	} else {
+
+		Redis = redis
+		fmt.Printf("\nRedis publisher client connected at %s\n", Redis.Options().Addr)
+	}
+
 }

@@ -105,8 +105,12 @@ func PublishContent(data interface{}, channel string) {
 		utils.HandleErr(err, "Unmarshalling error")
 	}
 	fmt.Println("Manager trying to publish", string(byteArray))
-
-	publisher.Redis.Publish(context.TODO(), channel, byteArray)
+	
+	err = publisher.Redis.Publish(context.TODO(), channel, byteArray).Err()
+	if (err != nil) {
+		utils.HandleErr(err, " : Error trying to publish to redis")
+		
+	}
 }
 
 func RefreshCache(db *gorm.DB) {
