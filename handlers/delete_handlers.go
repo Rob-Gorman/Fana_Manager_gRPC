@@ -85,7 +85,7 @@ func (h Handler) DeleteAttribute(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.DB.Unscoped().Delete(&models.Attribute{}, id).Error
+	err = h.DB.Unscoped().Delete(&attr).Error
 	if err != nil {
 		utils.BadRequestResponse(w, r, err)
 		return

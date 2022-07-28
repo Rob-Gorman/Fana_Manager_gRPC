@@ -19,7 +19,6 @@ func main() {
 
 	publisher.CreateRedisClient()
 	
-
 	fmt.Printf("\nServing flag configuration on PORT %s\n", PORT)
 	http.ListenAndServe(fmt.Sprintf(":%s", PORT), srv)
 }
