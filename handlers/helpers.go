@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"manager/cache"
 	"manager/models"
 	"manager/publisher"
@@ -103,8 +104,13 @@ func PublishContent(data interface{}, channel string) {
 	if err != nil {
 		utils.HandleErr(err, "Unmarshalling error")
 	}
-
-	publisher.Redis.Publish(context.TODO(), channel, byteArray)
+	fmt.Println("Manager trying to publish", string(byteArray))
+	
+	err = publisher.Redis.Publish(context.TODO(), channel, byteArray).Err()
+	if (err != nil) {
+		utils.HandleErr(err, " : Error trying to publish to redis")
+		
+	}
 }
 
 func RefreshCache(db *gorm.DB) {

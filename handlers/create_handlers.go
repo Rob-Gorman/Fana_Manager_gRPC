@@ -24,7 +24,7 @@ func (h Handler) CreateFlag(w http.ResponseWriter, r *http.Request) {
 
 	flag := FlagReqToFlag(flagReq, h)
 
-	err = h.DB.Session(&gorm.Session{FullSaveAssociations: true}).Create(&flag).Error
+	err = h.DB.Omit("Audiences.*").Session(&gorm.Session{FullSaveAssociations: true}).Create(&flag).Error
 
 	if err != nil {
 		msg := "Cannot create resource with duplicate keys."

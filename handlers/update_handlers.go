@@ -43,13 +43,12 @@ func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 	flag.Sdkkey = fr.Sdkkey
 
 	if flagReq.Audiences != nil {
-		h.DB.Model(&flag).Association("Audiences").Replace(flag.Audiences)
+		h.DB.Model(&flag).Omit("Audiences.*").Association("Audiences").Replace(flag.Audiences)
 	}
 
-	err = h.DB.Model(&flag).Session(&gorm.Session{
-		FullSaveAssociations: true,
-		SkipHooks:            true,
-	}).Updates(&flag).Error
+	// err = h.DB.Omit("Audiences").Session(&gorm.Session{
+	// 	SkipHooks:            true,
+	// }).Updates(&flag).Error
 
 	if err != nil {
 		utils.BadRequestResponse(w, r, err)
@@ -66,6 +65,7 @@ func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h Handler) ToggleFlag(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("\nGot a flag toggle!")
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
@@ -96,14 +96,13 @@ func (h Handler) ToggleFlag(w http.ResponseWriter, r *http.Request) {
 		utils.NoRecordResponse(w, r, err)
 		return
 	}
-
 	h.DB.First(&flag, id)
 	response := models.FlagNoAudsResponse{Flag: &flag}
-
 	pub := FlagUpdateForPublisher(h.DB, []models.Flag{flag})
 	PublishContent(&pub, "flag-toggle-channel")
-	RefreshCache(h.DB)
 
+	RefreshCache(h.DB)
+	
 	utils.UpdatedResponse(w, r, &response)
 }
 
@@ -138,7 +137,10 @@ func (h Handler) UpdateAudience(w http.ResponseWriter, r *http.Request) {
 		h.DB.Model(&aud).Association("Conditions").Replace(aud.Conditions)
 	}
 
-	err = h.DB.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&aud).Error
+	err = h.DB.Session(&gorm.Session{
+		FullSaveAssociations: true,
+		SkipHooks: true,
+		}).Updates(&aud).Error
 	if err != nil {
 		utils.BadRequestResponse(w, r, err)
 		return

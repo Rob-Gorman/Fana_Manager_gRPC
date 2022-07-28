@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"manager/configs"
 	"time"
+
 	"github.com/go-redis/redis/v8"
 )
 
@@ -29,7 +30,7 @@ func NewRedisCache(host string, db int, exp time.Duration) FlagCache {
 func (cache *redisCache) getClient() *redis.Client {
 	return redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%s", configs.GetEnvVar("REDIS_HOST"), configs.GetEnvVar("REDIS_PORT")),
-		Password: "",
+		Password: configs.GetEnvVar("REDIS_PW"),
 		DB:       cache.db,
 	})
 }
@@ -46,7 +47,10 @@ func (cache *redisCache) Set(key string, value interface{}) {
 	}
 
 	// set the key to marshalled data
-	client.Set(context.TODO(), key, json, cache.expires*time.Second)
+	err = client.Set(context.TODO(), key, json, cache.expires*time.Second).Err()
+	if (err != nil) {
+		fmt.Print("Error writing to redis cache...", err)
+	}
 }
 
 // asynchronously flush all keys from cache
