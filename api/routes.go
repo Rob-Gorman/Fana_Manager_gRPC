@@ -24,7 +24,7 @@ func (s *Server) dashboardRoutes() {
 	s.HandleFunc("/api/auditlogs", s.H.GetAuditLogs).Methods("GET")
 
 	s.HandleFunc("/api/sdkkeys", s.H.GetSdkKeys).Methods("GET")
-	s.HandleFunc("/api/sdkkeys/{futurework}", s.H.RegenSDKkey).Methods("POST")
+	s.HandleFunc("/api/sdkkeys/{id}", s.H.RegenSDKkey).Methods("DELETE")
 }
 
 func (s *Server) providerRoutes() {

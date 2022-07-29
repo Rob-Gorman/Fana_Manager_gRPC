@@ -116,22 +116,3 @@ func (h Handler) CreateAudience(w http.ResponseWriter, r *http.Request) {
 
 	utils.CreatedResponse(w, r, &response)
 }
-
-func (h Handler) RegenSDKkey(w http.ResponseWriter, r *http.Request) {
-	sdk := models.Sdkkey{}
-	h.DB.Take(&sdk)
-
-	newSDK := models.Sdkkey{
-		Key: NewSDKKey(sdk.Key),
-	}
-
-	err := h.DB.Create(&newSDK).Error
-	if err != nil {
-		utils.UnavailableResponse(w, r, err)
-		return
-	}
-
-	h.DB.Unscoped().Delete(&sdk)
-
-	utils.CreatedResponse(w, r, &newSDK)
-}
