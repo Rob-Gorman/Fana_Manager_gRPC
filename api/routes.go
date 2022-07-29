@@ -32,8 +32,8 @@ func (s *Server) providerRoutes() {
 }
 
 func (s *Server) staticRoutes() {
-	s.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./build/static/"))))
+	s.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./build/static/")))).Methods("GET")
 	s.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./build/index.html")
-	})
+	}).Methods("GET")
 }
