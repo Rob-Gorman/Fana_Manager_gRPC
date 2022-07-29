@@ -46,9 +46,9 @@ func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 		h.DB.Model(&flag).Omit("Audiences.*").Association("Audiences").Replace(flag.Audiences)
 	}
 
-	// err = h.DB.Omit("Audiences").Session(&gorm.Session{
-	// 	SkipHooks:            true,
-	// }).Updates(&flag).Error
+	err = h.DB.Omit("Audiences").Session(&gorm.Session{
+		SkipHooks:            true,
+	}).Updates(&flag).Error
 
 	if err != nil {
 		utils.BadRequestResponse(w, r, err)
