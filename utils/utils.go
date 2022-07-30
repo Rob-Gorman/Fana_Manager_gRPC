@@ -2,12 +2,12 @@ package utils
 
 import (
 	"context"
-	"fmt"
+	"log"
 )
 
 func HandleErr(err error, msg string) {
 	if err != nil {
-		fmt.Println(err, msg)
+		log.Println(err, msg)
 	}
 }
 
