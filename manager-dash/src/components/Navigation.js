@@ -18,7 +18,6 @@ import InputLabel from "@mui/material/InputLabel";
 import Stack from '@mui/material/Stack';
 
 export const Navigation = ({ darkModeOn, darkModeToggle }) => {
-  console.log(logo);
   const drawerWidth = 200;
   const pages = [
     { name: 'Flags', url: '/flags', icon: <FlagIcon />}, 
