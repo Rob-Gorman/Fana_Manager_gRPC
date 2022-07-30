@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"manager/configs"
 	"manager/utils"
 	"time"
@@ -58,8 +59,9 @@ func (cache *redisCache) Set(key string, value interface{}) {
 func (cache *redisCache) FlushAllAsync() {
 	client := cache.getClient()
 
-	_, err := client.Ping(context.TODO()).Result()
+	pong, err := client.Ping(context.TODO()).Result()
 	if err != nil {
+		log.Println(pong)
 		utils.HandleErr(err, "error with cache.getClient() when flushing cache")
 		return
 	}
