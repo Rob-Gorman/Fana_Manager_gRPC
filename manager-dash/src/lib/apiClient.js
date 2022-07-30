@@ -78,8 +78,8 @@ const apiClient = {
     let { data } = await axios.get(`/api/sdkkeys`);
     return data;
   },
-  regenSdkKey: async () => {
-    let { data } = await axios.post(`/api/sdkkeys/production`);
+  regenSdkKey: async (keyId) => {
+    let { data } = await axios.delete(`/api/sdkkeys/${keyId}`);
     return data;
   }
 }
