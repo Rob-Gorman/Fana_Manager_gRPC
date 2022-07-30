@@ -120,5 +120,7 @@ func (h Handler) RegenSDKkey(w http.ResponseWriter, r *http.Request) {
 
 	h.DB.Find(&newSDK)
 
+	RefreshCache(h.DB)
+
 	utils.CreatedResponse(w, r, &newSDK)
 }
