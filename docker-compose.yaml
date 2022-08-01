@@ -2,7 +2,7 @@ version: "3"
 
 services:
   manager:
-    image: "fanaff/manager-static:latest"
+    image: "fanaff/manager-static:1.2"
     ports:
       - "3000:3000"
     environment:
