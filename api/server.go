@@ -24,16 +24,8 @@ func NewServer() *Server {
 	return s
 }
 
-func StaticServer() *Server {
-	s := &Server{
-		Router: mux.NewRouter(),
-	}
-
-	s.staticRoutes()
-	return s
-}
-
 func (s *Server) routes() {
 	s.dashboardRoutes()
 	s.providerRoutes()
+	s.staticRoutes()
 }

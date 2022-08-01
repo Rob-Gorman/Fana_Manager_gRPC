@@ -16,10 +16,8 @@ func main() {
 	dev.RefreshSchema(srv.H.DB)
 	fmt.Println("Connected to postgres!")
 	PORT := os.Getenv("PORT")
-	publisher.CreateRedisClient()
 
-	staticRouter := api.StaticServer()
-	go http.ListenAndServe(":3000", staticRouter)
+	publisher.CreateRedisClient()
 
 	fmt.Printf("\nServing flag configuration on PORT %s\n", PORT)
 	http.ListenAndServe(fmt.Sprintf(":%s", PORT), srv)
