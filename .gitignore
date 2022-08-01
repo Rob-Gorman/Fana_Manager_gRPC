@@ -1,7 +1,7 @@
 todo.md
 .env
-Dockerfile
 notes.md
 gorm.md
 requests.rest
-.dockerignore
+node_modules
+./build

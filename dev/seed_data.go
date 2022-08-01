@@ -22,7 +22,6 @@ func seedSdks(db *gorm.DB) {
 	var sdkkeys = []models.Sdkkey{
 		{Key: "c3e-db3100c-8"},
 		{Key: "de9-6bf1a0c-3", Type: "server"},
-		{Key: "fa4-d731f0e-4"},
 	}
 	db.Create(&sdkkeys)
 }
