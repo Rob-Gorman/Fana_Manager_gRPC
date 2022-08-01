@@ -92,3 +92,35 @@ func (h Handler) DeleteAttribute(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusNoContent)
 }
+
+func (h Handler) RegenSDKkey(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		w.WriteHeader(400)
+		w.Write([]byte("Invalid flag ID."))
+		return
+	}
+
+	sdk := models.Sdkkey{}
+	h.DB.Find(&sdk, id)
+
+	newSDK := models.Sdkkey{
+		Key:  NewSDKKey(sdk.Key),
+		Type: sdk.Type,
+	}
+
+	err = h.DB.Create(&newSDK).Error
+	if err != nil {
+		utils.UnavailableResponse(w, r, err)
+		return
+	}
+
+	h.DB.Unscoped().Delete(&sdk)
+
+	h.DB.Find(&newSDK)
+
+	RefreshCache(h.DB)
+
+	utils.CreatedResponse(w, r, &newSDK)
+}

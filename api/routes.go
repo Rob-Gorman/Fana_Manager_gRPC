@@ -24,7 +24,7 @@ func (s *Server) dashboardRoutes() {
 	s.HandleFunc("/api/auditlogs", s.H.GetAuditLogs).Methods("GET")
 
 	s.HandleFunc("/api/sdkkeys", s.H.GetSdkKeys).Methods("GET")
-	s.HandleFunc("/api/sdkkeys/{futurework}", s.H.RegenSDKkey).Methods("POST")
+	s.HandleFunc("/api/sdkkeys/{id}", s.H.RegenSDKkey).Methods("DELETE")
 }
 
 func (s *Server) providerRoutes() {
@@ -32,8 +32,8 @@ func (s *Server) providerRoutes() {
 }
 
 func (s *Server) staticRoutes() {
-	s.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./build/static/"))))
+	s.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./build/static/")))).Methods("GET")
 	s.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./build/index.html")
-	})
+	}).Methods("GET")
 }

@@ -1,4 +1,4 @@
-POST http://localhost:6000/api/attributes HTTP/1.1
+POST http://localhost:3000/api/attributes HTTP/1.1
 content-type: application/json
 
 {
@@ -9,7 +9,7 @@ content-type: application/json
 
 ###
 
-POST http://localhost:6000/api/attributes HTTP/1.1
+POST http://localhost:3000/api/attributes HTTP/1.1
 content-type: application/json
 
 {
@@ -20,7 +20,7 @@ content-type: application/json
 
 ###
 
-POST http://localhost:6000/api/attributes HTTP/1.1
+POST http://localhost:3000/api/attributes HTTP/1.1
 content-type: application/json
 
 {
@@ -31,7 +31,7 @@ content-type: application/json
 
 ###
 
-POST http://localhost:6000/api/attributes HTTP/1.1
+POST http://localhost:3000/api/attributes HTTP/1.1
 content-type: application/json
 
 {
@@ -42,7 +42,7 @@ content-type: application/json
 
 ###
 
-POST http://localhost:6000/api/audiences HTTP/1.1
+POST http://localhost:3000/api/audiences HTTP/1.1
 content-type: application/json
 
 {
@@ -65,7 +65,7 @@ content-type: application/json
 
 ###
 
-POST http://localhost:6000/api/audiences HTTP/1.1
+POST http://localhost:3000/api/audiences HTTP/1.1
 content-type: application/json
 
 {
@@ -89,7 +89,7 @@ content-type: application/json
 
 ###
 
-POST http://localhost:6000/api/audiences HTTP/1.1
+POST http://localhost:3000/api/audiences HTTP/1.1
 content-type: application/json
 
 {
@@ -114,7 +114,7 @@ content-type: application/json
 
 ###
 
-POST http://localhost:6000/api/flags HTTP/1.1
+POST http://localhost:3000/api/flags HTTP/1.1
 content-type: application/json
 
 {
@@ -126,7 +126,7 @@ content-type: application/json
 
 ###
 
-POST http://localhost:6000/api/flags HTTP/1.1
+POST http://localhost:3000/api/flags HTTP/1.1
 content-type: application/json
 
 {
@@ -138,7 +138,7 @@ content-type: application/json
 
 ###
 
-PATCH http://localhost:6000/api/flags/1 HTTP/1.1
+PATCH http://localhost:3000/api/flags/1 HTTP/1.1
 content-type: application/json
 
 {
@@ -148,7 +148,7 @@ content-type: application/json
 
 ###
 
-PATCH http://localhost:6000/api/flags/3 HTTP/1.1
+PATCH http://localhost:3000/api/flags/3 HTTP/1.1
 content-type: application/json
 
 {
@@ -157,7 +157,7 @@ content-type: application/json
 
 ###
 
-PATCH http://localhost:6000/api/flags/1/toggle HTTP/1.1
+PATCH http://localhost:3000/api/flags/1/toggle HTTP/1.1
 content-type: application/json
 
 {
@@ -166,7 +166,7 @@ content-type: application/json
 
 ###
 
-PATCH http://localhost:6000/api/flags/2/toggle HTTP/1.1
+PATCH http://localhost:3000/api/flags/2/toggle HTTP/1.1
 content-type: application/json
 
 {
@@ -175,7 +175,7 @@ content-type: application/json
 
 ###
 
-PATCH http://localhost:6000/api/audiences/1 HTTP/1.1
+PATCH http://localhost:3000/api/audiences/1 HTTP/1.1
 content-type: application/json
 
 {
@@ -198,56 +198,59 @@ content-type: application/json
 
 ###
 
-GET http://localhost:6000/api/flags HTTP/1.1
+GET http://localhost:3000/api/flags HTTP/1.1
 
 ###
 
-GET http://localhost:6000/flagset HTTP/1.1
+GET http://localhost:3000/flagset HTTP/1.1
 
 ###
 
-GET http://localhost:6000/api/flags/1 HTTP/1.1
+GET http://localhost:3000/api/flags/1 HTTP/1.1
 
 ###
 
-GET http://localhost:6000/api/attributes HTTP/1.1
+GET http://localhost:3000/api/attributes HTTP/1.1
 
 ###
 
-GET http://localhost:6000/api/attributes/1 HTTP/1.1
+GET http://localhost:3000/api/attributes/1 HTTP/1.1
 
 ###
 
-GET http://localhost:6000/api/audiences HTTP/1.1
+GET http://localhost:3000/api/audiences HTTP/1.1
 
 ###
 
-GET http://localhost:6000/api/audiences/1 HTTP/1.1
+GET http://localhost:3000/api/audiences/1 HTTP/1.1
 
 ###
 
-GET http://localhost:6000/api/auditlogs HTTP/1.1
+GET http://localhost:3000/api/auditlogs HTTP/1.1
 
 ###
 
-GET http://localhost:6000/api/sdkkeys HTTP/1.1
+GET http://localhost:3000/api/sdkkeys HTTP/1.1
 
 ###
 
-DELETE http://localhost:6000/api/flags/1 HTTP/1.1
+DELETE http://localhost:3000/api/flags/1 HTTP/1.1
 
 ###
 
-DELETE http://localhost:6000/api/audiences/2 HTTP/1.1
+DELETE http://localhost:3000/api/audiences/2 HTTP/1.1
 
 ###
 
-DELETE http://localhost:6000/api/attributes/1 HTTP/1.1
+DELETE http://localhost:3000/api/attributes/1 HTTP/1.1
 
 ###
 
-POST http://localhost:6000/api/sdkkeys/yournamehere HTTP/1.1
+DELETE http://localhost:3000/api/sdkkeys/2 HTTP/1.1
 
 ###
 
-GET http://localhost:6000
+GET http://localhost:3000
+###
+
+POST http://localhost:3000
