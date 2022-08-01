@@ -59,6 +59,7 @@ type Sdkkey struct {
 	ID        uint           `json:"id" gorm:"primaryKey"`
 	Key       string         `json:"key" gorm:"type:varchar(30); NOT NULL; UNIQUE"`
 	Status    bool           `json:"status" gorm:"default:true"`
+	Type string `json:"type" gorm:"default:'client'"`
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `json:"deleted_at" gorm:"index"`
