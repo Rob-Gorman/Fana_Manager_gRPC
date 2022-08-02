@@ -9,6 +9,7 @@ import (
 	"manager/publisher"
 	"manager/utils"
 	"math/rand"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -105,11 +106,11 @@ func PublishContent(data interface{}, channel string) {
 		utils.HandleErr(err, "Unmarshalling error")
 	}
 	fmt.Println("Manager trying to publish", string(byteArray))
-	
+
 	err = publisher.Redis.Publish(context.TODO(), channel, byteArray).Err()
-	if (err != nil) {
+	if err != nil {
 		utils.HandleErr(err, " : Error trying to publish to redis")
-		
+
 	}
 }
 
@@ -130,8 +131,9 @@ func OrphanedAttr(attr *models.Attribute, h Handler) bool {
 }
 
 func NewSDKKey(s string) string {
-	digits := []byte("0123456789abcdef")
+	digits := []byte("0123456789abcdefghijkm")
 	newKey := []byte{}
+	rand.Seed(time.Now().UnixNano())
 
 	for _, char := range s {
 		if char == '-' {
