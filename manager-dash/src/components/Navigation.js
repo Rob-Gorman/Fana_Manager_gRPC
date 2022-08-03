@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom"
-import logo from '../images/logo.png';
+import darkLogo from '../images/logo.png';
+import whiteLogo from '../images/logo_white.png';
 import ListItemButton from "@mui/material/ListItemButton";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List"
@@ -27,6 +28,8 @@ export const Navigation = ({ darkModeOn, darkModeToggle }) => {
     { name: 'Settings', url: '/settings', icon: <SettingsIcon />}
   ];
 
+  let logo = darkModeOn ? whiteLogo : darkLogo;
+  
   return (
     <Drawer
         sx={{
@@ -40,7 +43,7 @@ export const Navigation = ({ darkModeOn, darkModeToggle }) => {
         variant="permanent"
         anchor="left"
       >
-        <img src={logo} alt="logo" style={{ width: '75%', marginLeft: 'auto', marginRight: 'auto' }}/>
+        <img src={logo} alt="logo" style={{ marginTop: '25px', width: '85%', marginLeft: 'auto', marginRight: 'auto' }}/>
         <Toolbar/>
         <List>
           {pages.map(page => {

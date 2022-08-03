@@ -27,9 +27,16 @@ function App() {
     createTheme({
       palette: {
         mode: darkMode ? 'dark' : 'light',
-        primary: {
-          main: green[500]
-        },
+        ...(darkMode === true) 
+        ? {
+          primary: {
+            main: '#FEB13A'
+          }
+        } : {
+          primary: {
+            main: '#15416C'
+          }
+        }
       },
     })
 
