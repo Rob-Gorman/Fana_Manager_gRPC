@@ -9,12 +9,7 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
-
 var Redis *redis.Client
-
-var ctx = context.TODO()
-
-const channel = "flag-toggle-channel"
 
 func CreateRedisClient() {
 	configs.LoadDotEnv()
@@ -26,13 +21,12 @@ func CreateRedisClient() {
 	})
 	pong, err := redis.Ping(context.TODO()).Result()
 
-	if (err != nil) {
-		fmt.Println("pong", pong)
+	if err != nil {
+		fmt.Println("pong:", pong)
 		utils.HandleErr(err, ": Couldn't reach redis server...")
+		return
 	} else {
-
 		Redis = redis
 		fmt.Printf("\nRedis publisher client connected at %s\n", Redis.Options().Addr)
 	}
-
 }

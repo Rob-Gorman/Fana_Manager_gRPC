@@ -28,5 +28,4 @@ func InitFlagCache() FlagCache {
 		return nil
 	}
 	return NewRedisCache(address, db, expires)
-
 }
