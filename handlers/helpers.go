@@ -101,6 +101,11 @@ func BuildAttrResponse(a models.Attribute, h Handler) models.AttributeResponse {
 }
 
 func PublishContent(data interface{}, channel string) {
+	if publisher.Redis == nil {
+		utils.HandleErr(nil, "No connection established with Redis; cannot publish")
+		return
+	}
+
 	byteArray, err := json.Marshal(data)
 	if err != nil {
 		utils.HandleErr(err, "Unmarshalling error")
@@ -110,7 +115,7 @@ func PublishContent(data interface{}, channel string) {
 	err = publisher.Redis.Publish(context.TODO(), channel, byteArray).Err()
 	if err != nil {
 		utils.HandleErr(err, " : Error trying to publish to redis")
-
+		return
 	}
 }
 

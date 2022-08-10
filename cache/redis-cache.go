@@ -39,6 +39,11 @@ func (cache *redisCache) getClient() *redis.Client {
 
 // Implementation of Set - associate flag json to the key
 func (cache *redisCache) Set(key string, value interface{}) {
+	if cache == nil {
+		utils.HandleErr(nil, "Redis client not initialized; cannot set cache")
+		return
+	}
+
 	client := cache.getClient()
 
 	// serialize the flag
@@ -52,12 +57,18 @@ func (cache *redisCache) Set(key string, value interface{}) {
 	err = client.Set(context.TODO(), key, json, cache.expires*time.Second).Err()
 	if err != nil {
 		utils.HandleErr(err, "Error writing to redis cache...")
+		return
 	}
 }
 
 // asynchronously flush all keys from cache
 func (cache *redisCache) FlushAllAsync() {
 	client := cache.getClient()
+
+	if client == nil {
+		utils.HandleErr(nil, "Redis cache did not initialize; cannot flush cache")
+		return
+	}
 
 	pong, err := client.Ping(context.TODO()).Result()
 	if err != nil {
