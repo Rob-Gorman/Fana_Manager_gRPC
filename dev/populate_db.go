@@ -7,7 +7,6 @@ import (
 )
 
 func RefreshSchema(db *gorm.DB) {
-	// this drops all of this projects tables
 	// re-creates them with the defined schema
 	// and seeds some data
 	var tables []interface{}
@@ -22,12 +21,8 @@ func RefreshSchema(db *gorm.DB) {
 		&models.Sdkkey{},
 	)
 
-	// drop all relevant tables
-	db.Migrator().DropTable(tables...)
-	db.Migrator().DropTable("flag_audiences")
-
 	// create all relevant tables
 	db.AutoMigrate(tables...)
-	// seed some data
+	// seed sample data
 	SeedDB(db)
 }
