@@ -58,7 +58,7 @@ export const CreateAudienceModal = ({ isOpen, setFormOpen, refreshAudiences, suc
     const submission = {
       displayName,
       key: audienceKey,
-      combination,
+      combine: combination,
       conditions: condsWithoutAttKey
     }
 
