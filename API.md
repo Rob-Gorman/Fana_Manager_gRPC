@@ -5,12 +5,14 @@
 - [Get One Attribute](#get-attribute)
 - [Create Attribute](#create-attribute)
 - [Delete Attribute](#delete-attribute)
+
 [Audiences](#audiences)
 - [Get Audiences](#get-audiences)
 - [Get One Audience](#get-single-audience)
 - [Create Audience](#create-audience)
 - [Update Audience](#update-audience)
 - [Delete Audience](#delete-audience)
+
 [Flags](#flags)
 - [Get Flags](#get-flags)
 - [Get One Flag](#get-single-flag)
@@ -18,9 +20,11 @@
 - [Toggle Flag](#toggle-flag)
 - [Update Flag](#update-flag)
 - [Delete Flag](#delete-flag)
+
 [SDK Keys](#sdk-keys)
 - [Get SDK Keys](#get-sdk-keys)
 - [Regenerate SDK Key](#regenerate-sdk-key)
+
 [Audit Logs](#audit-logs)
 - [Get Audit Logs](#get-audit-logs)
 
