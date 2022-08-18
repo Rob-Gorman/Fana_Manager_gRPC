@@ -1,29 +1,18 @@
-# Go Web Services
-## Launching
-Launch the manager (from the root folder of the Go program, where main.go is):
-```go
-go mod tidy
-go run main.go
+# Fana Manager
+The Flag Manager consists of:
+1. dashboard user interface that is used to create a set of attributes, audiences, and flags 
+2. backend API server that processes the data and makes queries to a persistent PostgreSQL database.
+
+# Usage
+There are two options to get started in a self-hosted environment.
+
+Deploy the entire Fana Platform stack using Docker Compose yaml file found [here](https://github.com/fana-io/fana-deploy).
+
+Pull the Docker image from DockerHub and run the container in an existing Docker network with the prerequisite components:
 ```
-## (It's Express)
-Like `import express from 'express'`, `app = express()`, and `app.use(routes)`
-The patterns are really, really similar for Go web services.
-
-I opted for `mux` router package over the std lib one, and to be honest I forget why.
-
-But the `mux.router` is our express package. This is the thing that behaves very similarly to express
-(I wrapped it in a custom `Server` struct, but don't let that confuse you. All the web stuff is done via the router)
-
-Just like `app.use(routes)`, we assign behavior to specific paths by defining them in very similar ways.
-```go
-s.HandleFunc("/flags", s.H.GetAllFlags).Methods("GET")
+$ docker pull fanaff/manager-static
 ```
-When a GET request comes in, our router will send it to our `GetAllFlags` controller (called a handler here, but it could just had easily been called a controller--word never really struck me right)
-(The actual handler has a lot of ORM functionality that is real tough to parse, but that's for another conversation)
+Prerequisites include:
 
-So we have our router, our routes, and our controller//handler functions
-
-lastly, we let the router listen:
-```go
-http.ListenAndServe(":6000", srv)
-```
+- PostgreSQL running on port `5432`
+- Redis Cluster running on port `6379`

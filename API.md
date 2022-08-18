@@ -1,6 +1,88 @@
-# API
+# Manager - Dashboard API
+
+[Attributes](#attributes)
+- [Get Attributes](#get-all-attributes)
+- [Get One Attribute](#get-attribute)
+- [Create Attribute](#create-attribute)
+- [Delete Attribute](#delete-attribute)
+
+[Audiences](#audiences)
+- [Get Audiences](#get-audiences)
+- [Get One Audience](#get-single-audience)
+- [Create Audience](#create-audience)
+- [Update Audience](#update-audience)
+- [Delete Audience](#delete-audience)
+
+[Flags](#flags)
+- [Get Flags](#get-flags)
+- [Get One Flag](#get-single-flag)
+- [Create Flag](#create-flag)
+- [Toggle Flag](#toggle-flag)
+- [Update Flag](#update-flag)
+- [Delete Flag](#delete-flag)
+
+[SDK Keys](#sdk-keys)
+- [Get SDK Keys](#get-sdk-keys)
+- [Regenerate SDK Key](#regenerate-sdk-key)
+
+[Audit Logs](#audit-logs)
+- [Get Audit Logs](#get-audit-logs)
 
 ## Attributes
+
+### Get All Attributes
+
+GET /api/attributes
+
+Expected Response:
+```js
+[
+  {
+    "id": 1,
+    "key": "state",
+    "attrType": "STR",
+    "displayName": "State",
+    "Conditions": null,
+    "created_at": "2022-08-16T19:34:24.037795Z",
+    "deleted_at": null
+  },
+  {
+    "id": 2,
+    "key": "student",
+    "attrType": "BOOL",
+    "displayName": "Student",
+    "Conditions": null,
+    "created_at": "2022-08-16T19:34:24.037795Z",
+    "deleted_at": null
+  }
+]
+```
+
+### Get Attribute
+
+GET /api/attributes/{id}
+
+Expected Response:
+```js
+{
+  "id": 1,
+  "key": "state",
+  "attrType": "STR",
+  "displayName": "State",
+  "created_at": "2022-08-16T19:34:24.037795Z",
+  "deleted_at": null,
+  "audiences": [
+    {
+      "id": 1,
+      "displayName": "California Students",
+      "key": "california_students",
+      "created_at": "2022-08-16T19:34:24.041163Z",
+      "updated_at": "2022-08-16T19:34:24.04882Z"
+    }
+  ]
+}
+```
+
 ### Create Attribute
 
 POST /api/attributes
@@ -26,7 +108,13 @@ Expected Response:
 
 ```
 
-## Audiences (PATCH and POST 1 sec...)
+### Delete Attribute
+
+DELETE /api/attributes/{id}
+
+Expected Response: 204 No Content
+
+## Audiences
 
 ### Get Audiences
 
@@ -150,6 +238,75 @@ Expected Response:
 }
 ```
 
+### Update Audience
+
+PATCH /api/audiences/{id}
+
+Expected Payload:
+```js
+{
+  "displayName": "NewName",
+  "combine": "ALL",
+  "conditions": [
+      {
+      "attributeID": 1,
+      "operator": "EQ",
+      "vals": "texas"
+      },
+      {
+      "attributeID": 2,
+      "operator": "EQ",
+      "vals": "true",
+      "negate": true
+      }        
+  ]
+}
+```
+
+Expected Response:
+```js
+{
+  "id": 1,
+  "displayName": "NewName",
+  "key": "california_students",
+  "combine": "ALL",
+  "created_at": "2022-08-16T19:56:01.358514Z",
+  "updated_at": "2022-08-16T19:56:04.663571Z",
+  "conditions": [
+    {
+      "negate": false,
+      "attributeID": 1,
+      "operator": "EQ",
+      "vals": "texas",
+      "attribute": "state"
+    },
+    {
+      "negate": true,
+      "attributeID": 2,
+      "operator": "EQ",
+      "vals": "true",
+      "attribute": "student"
+    }
+  ],
+  "flags": [
+    {
+      "id": 1,
+      "key": "fake-flag-1",
+      "displayName": "FAKE FLAG ONE",
+      "status": false,
+      "created_at": "2022-08-16T19:56:01.350562Z",
+      "updated_at": "2022-08-16T19:56:01.362871Z"
+    }
+  ]
+}
+```
+
+### Delete Audience
+
+DELETE /api/audiences/{id}
+
+Expected Response: 204 No Content
+
 ## Flags
 
 ### Get Flags
@@ -203,6 +360,33 @@ Expected Response:
 }
 ```
 
+### Create Flag
+
+POST /api/audiences
+
+Expected Payload:
+```js
+{
+    "key": "inauthentic_flag_2",
+    "displayName": "Inauthentic Flag 2",
+    "sdkKey": "beta_sdk_0",
+    "audiences": []
+}
+```
+
+Expected Response:
+```js
+{
+  "id": 4,
+  "key": "inauthentic_flag_2",
+  "displayName": "Inauthentic Flag 2",
+  "status": false,
+  "created_at": "2022-08-16T20:02:22.94274Z",
+  "updated_at": "2022-08-16T20:02:22.94274Z",
+  "audiences": []
+}
+```
+
 ### Toggle Flag
 
 PATCH /api/flags/{id}/toggle
@@ -215,7 +399,6 @@ Expected Payload
 ```
 
 Expected Response:
-**OPINION: response should just be 200, no body**
 ```js
 {
   "id": 2,
@@ -269,3 +452,159 @@ Expected Response:
   ]
 }
 ```
+
+### Delete Flag
+
+DELETE /api/flags/{id}
+
+Expected Response: 204 No Content
+
+## SDK Keys
+
+### Get SDK Keys
+
+GET /api/sdkkeys
+
+Expected Response:
+```js
+[
+  {
+    "id": 1,
+    "key": "1f7-b169c-84",
+    "status": true,
+    "type": "client",
+    "created_at": "2022-08-16T19:56:01.36771Z",
+    "updated_at": "2022-08-16T19:56:01.36771Z",
+    "deleted_at": null
+  },
+  {
+    "id": 2,
+    "key": "6f2-18ab5-52",
+    "status": true,
+    "type": "server",
+    "created_at": "2022-08-16T19:56:01.36771Z",
+    "updated_at": "2022-08-16T19:56:01.36771Z",
+    "deleted_at": null
+  }
+]
+```
+
+### Regenerate SDK Key
+
+DELETE /api/sdkkeys/{2}
+
+Expected Response:
+```js
+{
+  "id": 3,
+  "key": "fa8-2fbf8-67",
+  "status": true,
+  "type": "server",
+  "created_at": "2022-08-16T20:19:17.420347Z",
+  "updated_at": "2022-08-16T20:19:17.420347Z",
+  "deleted_at": null
+}
+```
+
+## Audit Logs
+
+### Get Audit Logs
+
+GET /api/auditlogs
+
+Expected Response:
+```js
+{
+  "flagLogs": [
+    {
+      "logID": 1,
+      "id": 1,
+      "key": "fake-flag-1",
+      "action": "created",
+      "created_at": "2022-08-16T20:24:00.962036Z"
+    },
+    {
+      "logID": 2,
+      "id": 2,
+      "key": "experimental-flag-1",
+      "action": "created",
+      "created_at": "2022-08-16T20:24:00.962586Z"
+    },
+    {
+      "logID": 3,
+      "id": 3,
+      "key": "development-flag-1",
+      "action": "created",
+      "created_at": "2022-08-16T20:24:00.962892Z"
+    },
+    {
+      "logID": 4,
+      "id": 1,
+      "key": "fake-flag-1",
+      "action": "created",
+      "created_at": "2022-08-16T20:24:00.976404Z"
+    },
+    {
+      "logID": 5,
+      "id": 3,
+      "key": "development-flag-1",
+      "action": "created",
+      "created_at": "2022-08-16T20:24:00.976699Z"
+    }
+  ],
+  "audienceLogs": [
+    {
+      "logID": 1,
+      "id": 1,
+      "key": "california_students",
+      "action": "created",
+      "created_at": "2022-08-16T20:24:00.970743Z"
+    },
+    {
+      "logID": 2,
+      "id": 2,
+      "key": "beta_testers",
+      "action": "created",
+      "created_at": "2022-08-16T20:24:00.971246Z"
+    },
+    {
+      "logID": 3,
+      "id": 1,
+      "key": "california_students",
+      "action": "created",
+      "created_at": "2022-08-16T20:24:00.975065Z"
+    },
+    {
+      "logID": 4,
+      "id": 2,
+      "key": "beta_testers",
+      "action": "created",
+      "created_at": "2022-08-16T20:24:00.975347Z"
+    }
+  ],
+  "attributeLogs": [
+    {
+      "logID": 1,
+      "id": 1,
+      "key": "state",
+      "action": "created",
+      "created_at": "2022-08-16T20:24:00.964977Z"
+    },
+    {
+      "logID": 2,
+      "id": 2,
+      "key": "student",
+      "action": "created",
+      "created_at": "2022-08-16T20:24:00.965507Z"
+    },
+    {
+      "logID": 3,
+      "id": 3,
+      "key": "beta",
+      "action": "created",
+      "created_at": "2022-08-16T20:24:00.965938Z"
+    }
+  ]
+}
+```
+[Back To Top](#manager---dashboard-api)
