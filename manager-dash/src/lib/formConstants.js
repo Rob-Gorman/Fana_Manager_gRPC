@@ -16,8 +16,6 @@ export const combinationOptions = [
   { value: 'ALL', text: 'All' },
 ];
 
-// note: operands should be based on attribute type
-
 export const operatorOptions = [
   { value: '', text: 'Select an operator' },
   { value: 'EQ', text: 'is equal to' },

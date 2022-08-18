@@ -14,7 +14,6 @@ import Paper from '@mui/material/Paper';
 import Toolbar from '@mui/material/Toolbar';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { green } from '@mui/material/colors'
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { AuditHistory } from './components/AuditHistory/AuditHistory';
 import { EntityNotFoundPage } from './components/EntityNotFoundPage';
@@ -49,7 +48,6 @@ function App() {
         <Box sx={{ display: 'flex' }}>
           <Navigation darkModeOn={darkMode} darkModeToggle={() => setDarkMode(!darkMode)} />
           <Box sx={{ marginLeft: 8, maxWidth: 1000 }}>
-        {/* <Breadcrumbs /> */}
             <Route path="/" exact component={FlagsList} />
             <Route path="/flags/:id" component={Flag} />
             <Route path="/audiences/:id" component={Audience} />

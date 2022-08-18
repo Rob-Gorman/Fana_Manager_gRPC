@@ -138,7 +138,6 @@ export const Flag = () => {
   }, [fetchFlag]);
 
   useEffect(() => {
-    // when temporaryAudiences changes, see if it matches the actual audiences
     if (ready) {
       const tempKeys = temporaryAudiences.map((a) => a.key).sort();
       const appliedKeys = flag.audiences.map((a) => a.key).sort();

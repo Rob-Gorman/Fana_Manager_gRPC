@@ -16,7 +16,6 @@ export const SingleViewConditions = ({ conditions, combination, pendingChanges, 
   const [temporaryCombination, setTemporaryCombination] = useState(combination);
 
   useEffect(() => {
-    // when temporaryAudiences changes, see if it matches the actual audiences
     if (!_.isEqual(conditions, temporaryConditions) || temporaryCombination !== combination) {
       setPendingChanges(true);
     } else {

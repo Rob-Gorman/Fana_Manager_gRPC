@@ -21,7 +21,6 @@ export const CreateAttributeModal = ({ isOpen, setFormOpen, refreshAtts, success
   const [selectedType, setSelectedType] = useState('');
   const [attributeKey, setAttributeKey] = useState('');
 
-  // TODO: import dynamic list of attribute types from manager
   const attrTypeOptions = [
     {value: "BOOL", text:"Boolean"}, 
     {value: "STR", text: "String"}, 

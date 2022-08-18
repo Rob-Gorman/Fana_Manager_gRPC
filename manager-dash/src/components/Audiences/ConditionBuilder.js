@@ -47,7 +47,6 @@ export const ConditionBuilder = ({ handleSaveCondition, closable = false, closeC
       setPossibleOperators([]);
     } else {
       const currentType = attributeOptions.find(a => a.key === attribute).attrType;
-      // when attribute changes, change possible operators based on type
       setAttrType(currentType);
       setPossibleOperators(operatorOptionsByType[currentType]);
     }

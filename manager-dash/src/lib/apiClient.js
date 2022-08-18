@@ -31,10 +31,6 @@ const apiClient = {
   },
   getAudience: async(id) => {
     let { data } = await axios.get(`/api/audiences/${id}`);
-    // this route sends it back with an "Attribute" field that we don't need
-    // it messes with the value comparison with the temporary conditions in the Audience component
-    // so we remove it to avoid that. In case we need access to more detailed attribute info, 
-    // we're not adjusting the route
     data.conditions = data.conditions.map(c => {
       const { Attribute, ...remainingFields } = c;
       return remainingFields;
