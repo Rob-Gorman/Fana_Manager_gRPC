@@ -1,0 +1,1 @@
+protoc --proto_path=pb --go-grpc_out=. --go_out=. ./pb/responses.proto ./pb/requests.proto ./pb/fana.proto

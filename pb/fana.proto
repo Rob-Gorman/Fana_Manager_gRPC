@@ -1,0 +1,13 @@
+syntax = "proto3";
+import "responses.proto";
+import "requests.proto";
+
+option go_package = "./pb";
+
+service Fana {
+  rpc GetFlag(ID) returns (FlagFullResp);
+}
+
+message ID {
+  int32 ID = 1;
+}

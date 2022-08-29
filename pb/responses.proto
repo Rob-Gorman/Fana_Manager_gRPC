@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "./pb";
+
+message FlagNoAudsResp {
+  int32 ID = 1;
+  string Key = 2;
+  string DisplayName = 3;
+  bool Status = 4;
+  google.protobuf.Timestamp CreatedAt = 5;
+  google.protobuf.Timestamp UpdatedAt = 6;
+}
+
+message FlagFullResp {
+  int32 ID = 1;
+  string Key = 2;
+  string DisplayName = 3;
+  bool Status = 4;
+  google.protobuf.Timestamp CreatedAt = 5;
+  google.protobuf.Timestamp UpdatedAt = 6;
+  repeated AudienceSparseResp Audiences = 7;
+}
+
+message AudienceSparseResp {
+  int32 ID = 1;
+  string Key = 2;
+  string DisplayName = 3;
+  google.protobuf.Timestamp CreatedAt = 4;
+  google.protobuf.Timestamp UpdatedAt = 5;
+}
+
+message AudienceFullResp {
+  int32 ID = 1;
+  string Key = 2;
+  string DisplayName = 3;
+  string Combine = 4;
+  repeated ConditionEmbedded Conditions = 5;
+  repeated FlagNoAudsResp Flags = 6;
+  google.protobuf.Timestamp CreatedAt = 7;
+  google.protobuf.Timestamp UpdatedAt = 8;
+}
+
+message ConditionEmbedded {
+  string Attribute = 1;
+  string Operator = 2;
+  bool Negate = 3;
+  string Vals = 4;
+}
+
+message AttributeResp {
+	int32 ID = 1;
+  string Key = 2;
+  string DisplayName = 3;
+  string Type = 4;
+  repeated AudienceSparseResp Audiences = 5;
+}
+
+message AuditLogResp {
+  repeated LogMsg FlagLogs = 1;
+  repeated LogMsg AudienceLogs = 2;
+  repeated LogMsg AttributeLogs = 3;
+}
+
+message LogMsg {
+  int32 LogID = 1;
+  int32 ID = 2;
+  string Key = 3;
+  string Action = 4;
+  google.protobuf.Timestamp CreatedAt = 5;
+}

@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+import "responses.proto";
+
+option go_package = "./pb";
+
+message FlagSubmit {
+  string Key = 1;
+  string DisplayName = 2;
+  repeated AudienceSparseResp Audiences = 3; // build this
+}
+
+message AudSubmit {
+  string Key = 1;
+  string DisplayName = 2;
+  string Combine = 3;
+  repeated CondSubmit Conditions = 4;
+}
+
+message AttrSubmit {
+	string Key = 1;
+  string DisplayName = 2;
+  string Type = 3;
+}
+
+message CondSubmit {
+  int32 AttributeID = 1;
+  string Operator = 2;
+  bool Negate = 3;
+  repeated string Vals = 4;
+}
