@@ -110,7 +110,7 @@ func PublishContent(data interface{}, channel string) {
 	if err != nil {
 		utils.HandleErr(err, "Unmarshalling error")
 	}
-	fmt.Println("Manager trying to publish", string(byteArray))
+	fmt.Println("Manager trying to publish (helpers.go)", string(byteArray))
 
 	err = publisher.Redis.Publish(context.TODO(), channel, byteArray).Err()
 	if err != nil {

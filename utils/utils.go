@@ -3,6 +3,7 @@ package utils
 import (
 	"context"
 	"log"
+	"time"
 )
 
 func HandleErr(err error, msg string) {
@@ -12,6 +13,6 @@ func HandleErr(err error, msg string) {
 }
 
 func StandardContext() context.Context {
-	return context.TODO()
-	// return context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+	return ctx
 }

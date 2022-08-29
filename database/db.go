@@ -8,12 +8,10 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
-
 func Init() *gorm.DB {
 	dbUri := configs.DBConnStr()
 	var err error
-	DB, err = gorm.Open(postgres.New(postgres.Config{
+	DB, err := gorm.Open(postgres.New(postgres.Config{
 		DSN:                  dbUri,
 		PreferSimpleProtocol: true,
 	}), &gorm.Config{})

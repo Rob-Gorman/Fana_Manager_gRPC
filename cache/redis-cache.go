@@ -77,5 +77,5 @@ func (cache *redisCache) FlushAllAsync() {
 		return
 	}
 
-	client.FlushAllAsync(context.TODO())
+	client.FlushAllAsync(utils.StandardContext())
 }
