@@ -22,3 +22,21 @@ func (h *Handler) GetFlagsR() (flags []*models.Flag, err error) {
 	}
 	return flags, nil
 }
+
+func (h *Handler) GetAudiencesR() (auds []*models.Audience, err error) {
+	err = h.DB.Find(&auds).Error
+	if err != nil {
+		fmt.Printf("Problem getting attribute: %v", err)
+		return nil, err
+	}
+	return auds, nil
+}
+
+func (h *Handler) GetAttributesR() (attrs []*models.Attribute, err error) {
+	err = h.DB.Find(&attrs).Error
+	if err != nil {
+		fmt.Printf("Problem getting attribute: %v", err)
+		return nil, err
+	}
+	return attrs, nil
+}

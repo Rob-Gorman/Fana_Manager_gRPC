@@ -24,6 +24,8 @@ const _ = grpc.SupportPackageIsVersion7
 type FanaClient interface {
 	GetFlag(ctx context.Context, in *ID, opts ...grpc.CallOption) (*FlagFullResp, error)
 	GetFlags(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Flags, error)
+	GetAudiences(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Audiences, error)
+	GetAttributes(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Attributes, error)
 }
 
 type fanaClient struct {
@@ -52,12 +54,32 @@ func (c *fanaClient) GetFlags(ctx context.Context, in *Empty, opts ...grpc.CallO
 	return out, nil
 }
 
+func (c *fanaClient) GetAudiences(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Audiences, error) {
+	out := new(Audiences)
+	err := c.cc.Invoke(ctx, "/Fana/GetAudiences", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *fanaClient) GetAttributes(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Attributes, error) {
+	out := new(Attributes)
+	err := c.cc.Invoke(ctx, "/Fana/GetAttributes", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FanaServer is the server API for Fana service.
 // All implementations must embed UnimplementedFanaServer
 // for forward compatibility
 type FanaServer interface {
 	GetFlag(context.Context, *ID) (*FlagFullResp, error)
 	GetFlags(context.Context, *Empty) (*Flags, error)
+	GetAudiences(context.Context, *Empty) (*Audiences, error)
+	GetAttributes(context.Context, *Empty) (*Attributes, error)
 	mustEmbedUnimplementedFanaServer()
 }
 
@@ -70,6 +92,12 @@ func (UnimplementedFanaServer) GetFlag(context.Context, *ID) (*FlagFullResp, err
 }
 func (UnimplementedFanaServer) GetFlags(context.Context, *Empty) (*Flags, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetFlags not implemented")
+}
+func (UnimplementedFanaServer) GetAudiences(context.Context, *Empty) (*Audiences, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAudiences not implemented")
+}
+func (UnimplementedFanaServer) GetAttributes(context.Context, *Empty) (*Attributes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAttributes not implemented")
 }
 func (UnimplementedFanaServer) mustEmbedUnimplementedFanaServer() {}
 
@@ -120,6 +148,42 @@ func _Fana_GetFlags_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Fana_GetAudiences_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FanaServer).GetAudiences(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Fana/GetAudiences",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FanaServer).GetAudiences(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Fana_GetAttributes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FanaServer).GetAttributes(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Fana/GetAttributes",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FanaServer).GetAttributes(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Fana_ServiceDesc is the grpc.ServiceDesc for Fana service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +198,14 @@ var Fana_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetFlags",
 			Handler:    _Fana_GetFlags_Handler,
+		},
+		{
+			MethodName: "GetAudiences",
+			Handler:    _Fana_GetAudiences_Handler,
+		},
+		{
+			MethodName: "GetAttributes",
+			Handler:    _Fana_GetAttributes_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

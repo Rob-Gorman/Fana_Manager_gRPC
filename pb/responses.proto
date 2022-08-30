@@ -27,6 +27,10 @@ message FlagFullResp {
   repeated AudienceSparseResp Audiences = 7;
 }
 
+message Audiences {
+  repeated AudienceSparseResp Audiences = 1;
+}
+
 message AudienceSparseResp {
   int32 ID = 1;
   string Key = 2;
@@ -53,12 +57,17 @@ message ConditionEmbedded {
   string Vals = 4;
 }
 
+message Attributes {
+  repeated AttributeResp Attributes = 1;
+}
+
 message AttributeResp {
 	int32 ID = 1;
   string Key = 2;
   string DisplayName = 3;
   string Type = 4;
   repeated AudienceSparseResp Audiences = 5;
+  google.protobuf.Timestamp CreatedAt = 6;
 }
 
 message AuditLogResp {

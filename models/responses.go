@@ -49,3 +49,15 @@ func (aud *Audience) ToSparseResp() (resp *pb.AudienceSparseResp) {
 
 	return resp
 }
+
+func (attr *Attribute) ToSparseResp() (resp *pb.AttributeResp) {
+	resp = &pb.AttributeResp{
+		ID:          int32(attr.ID),
+		Key:         attr.Key,
+		DisplayName: attr.DisplayName,
+		Type:        attr.Type,
+		CreatedAt:   timestamppb.New(attr.CreatedAt),
+	}
+
+	return resp
+}

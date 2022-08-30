@@ -66,3 +66,21 @@ func TestGetFlags(t *testing.T) {
 	}
 	fmt.Println(have)
 }
+
+func TestGetAudiences(t *testing.T) {
+	mc := *makeClient(t)
+	have, err := mc.GetAudiences(context.Background(), &pb.Empty{})
+	if err != nil || have == nil {
+		t.Fatalf("Failed TestGetAttrs: \nHave: %v\nError: %v\n", have, err)
+	}
+	fmt.Println(have)
+}
+
+func TestGetAttributes(t *testing.T) {
+	mc := *makeClient(t)
+	have, err := mc.GetAttributes(context.Background(), &pb.Empty{})
+	if err != nil || have == nil {
+		t.Fatalf("Failed TestGetAttrs: \nHave: %v\nError: %v\n", have, err)
+	}
+	fmt.Println(have)
+}

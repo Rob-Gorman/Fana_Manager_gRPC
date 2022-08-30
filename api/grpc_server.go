@@ -54,3 +54,35 @@ func (ds *DashServer) GetFlags(ctx context.Context, empty *pb.Empty) (resp *pb.F
 	}
 	return resp, nil
 }
+
+func (ds *DashServer) GetAudiences(ctx context.Context, empty *pb.Empty) (resp *pb.Audiences, err error) {
+	auds, err := ds.H.GetAudiencesR()
+	if err != nil {
+		return nil, err
+	}
+
+	resp = &pb.Audiences{
+		Audiences: []*pb.AudienceSparseResp{},
+	}
+
+	for ind := range auds {
+		resp.Audiences = append(resp.Audiences, auds[ind].ToSparseResp())
+	}
+	return resp, nil
+}
+
+func (ds *DashServer) GetAttributes(ctx context.Context, empty *pb.Empty) (resp *pb.Attributes, err error) {
+	attrs, err := ds.H.GetAttributesR()
+	if err != nil {
+		return nil, err
+	}
+
+	resp = &pb.Attributes{
+		Attributes: []*pb.AttributeResp{},
+	}
+
+	for ind := range attrs {
+		resp.Attributes = append(resp.Attributes, attrs[ind].ToSparseResp())
+	}
+	return resp, nil
+}
