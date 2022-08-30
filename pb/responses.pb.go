@@ -21,7 +21,54 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type FlagNoAudsResp struct {
+type Flags struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Flags []*FlagSparseResp `protobuf:"bytes,1,rep,name=Flags,proto3" json:"Flags,omitempty"`
+}
+
+func (x *Flags) Reset() {
+	*x = Flags{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_responses_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Flags) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Flags) ProtoMessage() {}
+
+func (x *Flags) ProtoReflect() protoreflect.Message {
+	mi := &file_responses_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Flags.ProtoReflect.Descriptor instead.
+func (*Flags) Descriptor() ([]byte, []int) {
+	return file_responses_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *Flags) GetFlags() []*FlagSparseResp {
+	if x != nil {
+		return x.Flags
+	}
+	return nil
+}
+
+type FlagSparseResp struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -34,23 +81,23 @@ type FlagNoAudsResp struct {
 	UpdatedAt   *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=UpdatedAt,proto3" json:"UpdatedAt,omitempty"`
 }
 
-func (x *FlagNoAudsResp) Reset() {
-	*x = FlagNoAudsResp{}
+func (x *FlagSparseResp) Reset() {
+	*x = FlagSparseResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_responses_proto_msgTypes[0]
+		mi := &file_responses_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
 }
 
-func (x *FlagNoAudsResp) String() string {
+func (x *FlagSparseResp) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*FlagNoAudsResp) ProtoMessage() {}
+func (*FlagSparseResp) ProtoMessage() {}
 
-func (x *FlagNoAudsResp) ProtoReflect() protoreflect.Message {
-	mi := &file_responses_proto_msgTypes[0]
+func (x *FlagSparseResp) ProtoReflect() protoreflect.Message {
+	mi := &file_responses_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -61,47 +108,47 @@ func (x *FlagNoAudsResp) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use FlagNoAudsResp.ProtoReflect.Descriptor instead.
-func (*FlagNoAudsResp) Descriptor() ([]byte, []int) {
-	return file_responses_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use FlagSparseResp.ProtoReflect.Descriptor instead.
+func (*FlagSparseResp) Descriptor() ([]byte, []int) {
+	return file_responses_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *FlagNoAudsResp) GetID() int32 {
+func (x *FlagSparseResp) GetID() int32 {
 	if x != nil {
 		return x.ID
 	}
 	return 0
 }
 
-func (x *FlagNoAudsResp) GetKey() string {
+func (x *FlagSparseResp) GetKey() string {
 	if x != nil {
 		return x.Key
 	}
 	return ""
 }
 
-func (x *FlagNoAudsResp) GetDisplayName() string {
+func (x *FlagSparseResp) GetDisplayName() string {
 	if x != nil {
 		return x.DisplayName
 	}
 	return ""
 }
 
-func (x *FlagNoAudsResp) GetStatus() bool {
+func (x *FlagSparseResp) GetStatus() bool {
 	if x != nil {
 		return x.Status
 	}
 	return false
 }
 
-func (x *FlagNoAudsResp) GetCreatedAt() *timestamppb.Timestamp {
+func (x *FlagSparseResp) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CreatedAt
 	}
 	return nil
 }
 
-func (x *FlagNoAudsResp) GetUpdatedAt() *timestamppb.Timestamp {
+func (x *FlagSparseResp) GetUpdatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.UpdatedAt
 	}
@@ -125,7 +172,7 @@ type FlagFullResp struct {
 func (x *FlagFullResp) Reset() {
 	*x = FlagFullResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_responses_proto_msgTypes[1]
+		mi := &file_responses_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -138,7 +185,7 @@ func (x *FlagFullResp) String() string {
 func (*FlagFullResp) ProtoMessage() {}
 
 func (x *FlagFullResp) ProtoReflect() protoreflect.Message {
-	mi := &file_responses_proto_msgTypes[1]
+	mi := &file_responses_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -151,7 +198,7 @@ func (x *FlagFullResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FlagFullResp.ProtoReflect.Descriptor instead.
 func (*FlagFullResp) Descriptor() ([]byte, []int) {
-	return file_responses_proto_rawDescGZIP(), []int{1}
+	return file_responses_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *FlagFullResp) GetID() int32 {
@@ -218,7 +265,7 @@ type AudienceSparseResp struct {
 func (x *AudienceSparseResp) Reset() {
 	*x = AudienceSparseResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_responses_proto_msgTypes[2]
+		mi := &file_responses_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -231,7 +278,7 @@ func (x *AudienceSparseResp) String() string {
 func (*AudienceSparseResp) ProtoMessage() {}
 
 func (x *AudienceSparseResp) ProtoReflect() protoreflect.Message {
-	mi := &file_responses_proto_msgTypes[2]
+	mi := &file_responses_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -244,7 +291,7 @@ func (x *AudienceSparseResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AudienceSparseResp.ProtoReflect.Descriptor instead.
 func (*AudienceSparseResp) Descriptor() ([]byte, []int) {
-	return file_responses_proto_rawDescGZIP(), []int{2}
+	return file_responses_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *AudienceSparseResp) GetID() int32 {
@@ -292,7 +339,7 @@ type AudienceFullResp struct {
 	DisplayName string                 `protobuf:"bytes,3,opt,name=DisplayName,proto3" json:"DisplayName,omitempty"`
 	Combine     string                 `protobuf:"bytes,4,opt,name=Combine,proto3" json:"Combine,omitempty"`
 	Conditions  []*ConditionEmbedded   `protobuf:"bytes,5,rep,name=Conditions,proto3" json:"Conditions,omitempty"`
-	Flags       []*FlagNoAudsResp      `protobuf:"bytes,6,rep,name=Flags,proto3" json:"Flags,omitempty"`
+	Flags       []*FlagSparseResp      `protobuf:"bytes,6,rep,name=Flags,proto3" json:"Flags,omitempty"`
 	CreatedAt   *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=CreatedAt,proto3" json:"CreatedAt,omitempty"`
 	UpdatedAt   *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=UpdatedAt,proto3" json:"UpdatedAt,omitempty"`
 }
@@ -300,7 +347,7 @@ type AudienceFullResp struct {
 func (x *AudienceFullResp) Reset() {
 	*x = AudienceFullResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_responses_proto_msgTypes[3]
+		mi := &file_responses_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -313,7 +360,7 @@ func (x *AudienceFullResp) String() string {
 func (*AudienceFullResp) ProtoMessage() {}
 
 func (x *AudienceFullResp) ProtoReflect() protoreflect.Message {
-	mi := &file_responses_proto_msgTypes[3]
+	mi := &file_responses_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -326,7 +373,7 @@ func (x *AudienceFullResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AudienceFullResp.ProtoReflect.Descriptor instead.
 func (*AudienceFullResp) Descriptor() ([]byte, []int) {
-	return file_responses_proto_rawDescGZIP(), []int{3}
+	return file_responses_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *AudienceFullResp) GetID() int32 {
@@ -364,7 +411,7 @@ func (x *AudienceFullResp) GetConditions() []*ConditionEmbedded {
 	return nil
 }
 
-func (x *AudienceFullResp) GetFlags() []*FlagNoAudsResp {
+func (x *AudienceFullResp) GetFlags() []*FlagSparseResp {
 	if x != nil {
 		return x.Flags
 	}
@@ -399,7 +446,7 @@ type ConditionEmbedded struct {
 func (x *ConditionEmbedded) Reset() {
 	*x = ConditionEmbedded{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_responses_proto_msgTypes[4]
+		mi := &file_responses_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -412,7 +459,7 @@ func (x *ConditionEmbedded) String() string {
 func (*ConditionEmbedded) ProtoMessage() {}
 
 func (x *ConditionEmbedded) ProtoReflect() protoreflect.Message {
-	mi := &file_responses_proto_msgTypes[4]
+	mi := &file_responses_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -425,7 +472,7 @@ func (x *ConditionEmbedded) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ConditionEmbedded.ProtoReflect.Descriptor instead.
 func (*ConditionEmbedded) Descriptor() ([]byte, []int) {
-	return file_responses_proto_rawDescGZIP(), []int{4}
+	return file_responses_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *ConditionEmbedded) GetAttribute() string {
@@ -471,7 +518,7 @@ type AttributeResp struct {
 func (x *AttributeResp) Reset() {
 	*x = AttributeResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_responses_proto_msgTypes[5]
+		mi := &file_responses_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -484,7 +531,7 @@ func (x *AttributeResp) String() string {
 func (*AttributeResp) ProtoMessage() {}
 
 func (x *AttributeResp) ProtoReflect() protoreflect.Message {
-	mi := &file_responses_proto_msgTypes[5]
+	mi := &file_responses_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -497,7 +544,7 @@ func (x *AttributeResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AttributeResp.ProtoReflect.Descriptor instead.
 func (*AttributeResp) Descriptor() ([]byte, []int) {
-	return file_responses_proto_rawDescGZIP(), []int{5}
+	return file_responses_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *AttributeResp) GetID() int32 {
@@ -548,7 +595,7 @@ type AuditLogResp struct {
 func (x *AuditLogResp) Reset() {
 	*x = AuditLogResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_responses_proto_msgTypes[6]
+		mi := &file_responses_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -561,7 +608,7 @@ func (x *AuditLogResp) String() string {
 func (*AuditLogResp) ProtoMessage() {}
 
 func (x *AuditLogResp) ProtoReflect() protoreflect.Message {
-	mi := &file_responses_proto_msgTypes[6]
+	mi := &file_responses_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -574,7 +621,7 @@ func (x *AuditLogResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AuditLogResp.ProtoReflect.Descriptor instead.
 func (*AuditLogResp) Descriptor() ([]byte, []int) {
-	return file_responses_proto_rawDescGZIP(), []int{6}
+	return file_responses_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *AuditLogResp) GetFlagLogs() []*LogMsg {
@@ -613,7 +660,7 @@ type LogMsg struct {
 func (x *LogMsg) Reset() {
 	*x = LogMsg{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_responses_proto_msgTypes[7]
+		mi := &file_responses_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -626,7 +673,7 @@ func (x *LogMsg) String() string {
 func (*LogMsg) ProtoMessage() {}
 
 func (x *LogMsg) ProtoReflect() protoreflect.Message {
-	mi := &file_responses_proto_msgTypes[7]
+	mi := &file_responses_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -639,7 +686,7 @@ func (x *LogMsg) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LogMsg.ProtoReflect.Descriptor instead.
 func (*LogMsg) Descriptor() ([]byte, []int) {
-	return file_responses_proto_rawDescGZIP(), []int{7}
+	return file_responses_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *LogMsg) GetLogID() int32 {
@@ -683,8 +730,11 @@ var file_responses_proto_rawDesc = []byte{
 	0x0a, 0x0f, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x1a, 0x1f, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
 	0x75, 0x66, 0x2f, 0x74, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x2e, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x22, 0xe0, 0x01, 0x0a, 0x0e, 0x46, 0x6c, 0x61, 0x67, 0x4e, 0x6f, 0x41, 0x75, 0x64,
-	0x73, 0x52, 0x65, 0x73, 0x70, 0x12, 0x0e, 0x0a, 0x02, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x74, 0x6f, 0x22, 0x2e, 0x0a, 0x05, 0x46, 0x6c, 0x61, 0x67, 0x73, 0x12, 0x25, 0x0a, 0x05, 0x46,
+	0x6c, 0x61, 0x67, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x46, 0x6c, 0x61,
+	0x67, 0x53, 0x70, 0x61, 0x72, 0x73, 0x65, 0x52, 0x65, 0x73, 0x70, 0x52, 0x05, 0x46, 0x6c, 0x61,
+	0x67, 0x73, 0x22, 0xe0, 0x01, 0x0a, 0x0e, 0x46, 0x6c, 0x61, 0x67, 0x53, 0x70, 0x61, 0x72, 0x73,
+	0x65, 0x52, 0x65, 0x73, 0x70, 0x12, 0x0e, 0x0a, 0x02, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28,
 	0x05, 0x52, 0x02, 0x49, 0x44, 0x12, 0x10, 0x0a, 0x03, 0x4b, 0x65, 0x79, 0x18, 0x02, 0x20, 0x01,
 	0x28, 0x09, 0x52, 0x03, 0x4b, 0x65, 0x79, 0x12, 0x20, 0x0a, 0x0b, 0x44, 0x69, 0x73, 0x70, 0x6c,
 	0x61, 0x79, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x44, 0x69,
@@ -739,7 +789,7 @@ var file_responses_proto_rawDesc = []byte{
 	0x12, 0x2e, 0x43, 0x6f, 0x6e, 0x64, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x45, 0x6d, 0x62, 0x65, 0x64,
 	0x64, 0x65, 0x64, 0x52, 0x0a, 0x43, 0x6f, 0x6e, 0x64, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12,
 	0x25, 0x0a, 0x05, 0x46, 0x6c, 0x61, 0x67, 0x73, 0x18, 0x06, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0f,
-	0x2e, 0x46, 0x6c, 0x61, 0x67, 0x4e, 0x6f, 0x41, 0x75, 0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x52,
+	0x2e, 0x46, 0x6c, 0x61, 0x67, 0x53, 0x70, 0x61, 0x72, 0x73, 0x65, 0x52, 0x65, 0x73, 0x70, 0x52,
 	0x05, 0x46, 0x6c, 0x61, 0x67, 0x73, 0x12, 0x38, 0x0a, 0x09, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
 	0x64, 0x41, 0x74, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67,
 	0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65,
@@ -799,40 +849,42 @@ func file_responses_proto_rawDescGZIP() []byte {
 	return file_responses_proto_rawDescData
 }
 
-var file_responses_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_responses_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_responses_proto_goTypes = []interface{}{
-	(*FlagNoAudsResp)(nil),        // 0: FlagNoAudsResp
-	(*FlagFullResp)(nil),          // 1: FlagFullResp
-	(*AudienceSparseResp)(nil),    // 2: AudienceSparseResp
-	(*AudienceFullResp)(nil),      // 3: AudienceFullResp
-	(*ConditionEmbedded)(nil),     // 4: ConditionEmbedded
-	(*AttributeResp)(nil),         // 5: AttributeResp
-	(*AuditLogResp)(nil),          // 6: AuditLogResp
-	(*LogMsg)(nil),                // 7: LogMsg
-	(*timestamppb.Timestamp)(nil), // 8: google.protobuf.Timestamp
+	(*Flags)(nil),                 // 0: Flags
+	(*FlagSparseResp)(nil),        // 1: FlagSparseResp
+	(*FlagFullResp)(nil),          // 2: FlagFullResp
+	(*AudienceSparseResp)(nil),    // 3: AudienceSparseResp
+	(*AudienceFullResp)(nil),      // 4: AudienceFullResp
+	(*ConditionEmbedded)(nil),     // 5: ConditionEmbedded
+	(*AttributeResp)(nil),         // 6: AttributeResp
+	(*AuditLogResp)(nil),          // 7: AuditLogResp
+	(*LogMsg)(nil),                // 8: LogMsg
+	(*timestamppb.Timestamp)(nil), // 9: google.protobuf.Timestamp
 }
 var file_responses_proto_depIdxs = []int32{
-	8,  // 0: FlagNoAudsResp.CreatedAt:type_name -> google.protobuf.Timestamp
-	8,  // 1: FlagNoAudsResp.UpdatedAt:type_name -> google.protobuf.Timestamp
-	8,  // 2: FlagFullResp.CreatedAt:type_name -> google.protobuf.Timestamp
-	8,  // 3: FlagFullResp.UpdatedAt:type_name -> google.protobuf.Timestamp
-	2,  // 4: FlagFullResp.Audiences:type_name -> AudienceSparseResp
-	8,  // 5: AudienceSparseResp.CreatedAt:type_name -> google.protobuf.Timestamp
-	8,  // 6: AudienceSparseResp.UpdatedAt:type_name -> google.protobuf.Timestamp
-	4,  // 7: AudienceFullResp.Conditions:type_name -> ConditionEmbedded
-	0,  // 8: AudienceFullResp.Flags:type_name -> FlagNoAudsResp
-	8,  // 9: AudienceFullResp.CreatedAt:type_name -> google.protobuf.Timestamp
-	8,  // 10: AudienceFullResp.UpdatedAt:type_name -> google.protobuf.Timestamp
-	2,  // 11: AttributeResp.Audiences:type_name -> AudienceSparseResp
-	7,  // 12: AuditLogResp.FlagLogs:type_name -> LogMsg
-	7,  // 13: AuditLogResp.AudienceLogs:type_name -> LogMsg
-	7,  // 14: AuditLogResp.AttributeLogs:type_name -> LogMsg
-	8,  // 15: LogMsg.CreatedAt:type_name -> google.protobuf.Timestamp
-	16, // [16:16] is the sub-list for method output_type
-	16, // [16:16] is the sub-list for method input_type
-	16, // [16:16] is the sub-list for extension type_name
-	16, // [16:16] is the sub-list for extension extendee
-	0,  // [0:16] is the sub-list for field type_name
+	1,  // 0: Flags.Flags:type_name -> FlagSparseResp
+	9,  // 1: FlagSparseResp.CreatedAt:type_name -> google.protobuf.Timestamp
+	9,  // 2: FlagSparseResp.UpdatedAt:type_name -> google.protobuf.Timestamp
+	9,  // 3: FlagFullResp.CreatedAt:type_name -> google.protobuf.Timestamp
+	9,  // 4: FlagFullResp.UpdatedAt:type_name -> google.protobuf.Timestamp
+	3,  // 5: FlagFullResp.Audiences:type_name -> AudienceSparseResp
+	9,  // 6: AudienceSparseResp.CreatedAt:type_name -> google.protobuf.Timestamp
+	9,  // 7: AudienceSparseResp.UpdatedAt:type_name -> google.protobuf.Timestamp
+	5,  // 8: AudienceFullResp.Conditions:type_name -> ConditionEmbedded
+	1,  // 9: AudienceFullResp.Flags:type_name -> FlagSparseResp
+	9,  // 10: AudienceFullResp.CreatedAt:type_name -> google.protobuf.Timestamp
+	9,  // 11: AudienceFullResp.UpdatedAt:type_name -> google.protobuf.Timestamp
+	3,  // 12: AttributeResp.Audiences:type_name -> AudienceSparseResp
+	8,  // 13: AuditLogResp.FlagLogs:type_name -> LogMsg
+	8,  // 14: AuditLogResp.AudienceLogs:type_name -> LogMsg
+	8,  // 15: AuditLogResp.AttributeLogs:type_name -> LogMsg
+	9,  // 16: LogMsg.CreatedAt:type_name -> google.protobuf.Timestamp
+	17, // [17:17] is the sub-list for method output_type
+	17, // [17:17] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_responses_proto_init() }
@@ -842,7 +894,7 @@ func file_responses_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_responses_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FlagNoAudsResp); i {
+			switch v := v.(*Flags); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -854,7 +906,7 @@ func file_responses_proto_init() {
 			}
 		}
 		file_responses_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FlagFullResp); i {
+			switch v := v.(*FlagSparseResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -866,7 +918,7 @@ func file_responses_proto_init() {
 			}
 		}
 		file_responses_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AudienceSparseResp); i {
+			switch v := v.(*FlagFullResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -878,7 +930,7 @@ func file_responses_proto_init() {
 			}
 		}
 		file_responses_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AudienceFullResp); i {
+			switch v := v.(*AudienceSparseResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -890,7 +942,7 @@ func file_responses_proto_init() {
 			}
 		}
 		file_responses_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ConditionEmbedded); i {
+			switch v := v.(*AudienceFullResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -902,7 +954,7 @@ func file_responses_proto_init() {
 			}
 		}
 		file_responses_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AttributeResp); i {
+			switch v := v.(*ConditionEmbedded); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -914,7 +966,7 @@ func file_responses_proto_init() {
 			}
 		}
 		file_responses_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AuditLogResp); i {
+			switch v := v.(*AttributeResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -926,6 +978,18 @@ func file_responses_proto_init() {
 			}
 		}
 		file_responses_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AuditLogResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_responses_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*LogMsg); i {
 			case 0:
 				return &v.state
@@ -944,7 +1008,7 @@ func file_responses_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_responses_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

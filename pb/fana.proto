@@ -6,6 +6,7 @@ option go_package = "./pb";
 
 service Fana {
   rpc GetFlag(ID) returns (FlagFullResp);
+  rpc GetFlags(Empty) returns (Flags);
 }
 
 message ID {

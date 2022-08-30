@@ -4,7 +4,11 @@ import "google/protobuf/timestamp.proto";
 
 option go_package = "./pb";
 
-message FlagNoAudsResp {
+message Flags {
+  repeated FlagSparseResp Flags = 1;
+}
+
+message FlagSparseResp {
   int32 ID = 1;
   string Key = 2;
   string DisplayName = 3;
@@ -37,7 +41,7 @@ message AudienceFullResp {
   string DisplayName = 3;
   string Combine = 4;
   repeated ConditionEmbedded Conditions = 5;
-  repeated FlagNoAudsResp Flags = 6;
+  repeated FlagSparseResp Flags = 6;
   google.protobuf.Timestamp CreatedAt = 7;
   google.protobuf.Timestamp UpdatedAt = 8;
 }

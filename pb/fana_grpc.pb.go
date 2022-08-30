@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FanaClient interface {
 	GetFlag(ctx context.Context, in *ID, opts ...grpc.CallOption) (*FlagFullResp, error)
+	GetFlags(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Flags, error)
 }
 
 type fanaClient struct {
@@ -42,11 +43,21 @@ func (c *fanaClient) GetFlag(ctx context.Context, in *ID, opts ...grpc.CallOptio
 	return out, nil
 }
 
+func (c *fanaClient) GetFlags(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Flags, error) {
+	out := new(Flags)
+	err := c.cc.Invoke(ctx, "/Fana/GetFlags", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FanaServer is the server API for Fana service.
 // All implementations must embed UnimplementedFanaServer
 // for forward compatibility
 type FanaServer interface {
 	GetFlag(context.Context, *ID) (*FlagFullResp, error)
+	GetFlags(context.Context, *Empty) (*Flags, error)
 	mustEmbedUnimplementedFanaServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedFanaServer struct {
 
 func (UnimplementedFanaServer) GetFlag(context.Context, *ID) (*FlagFullResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetFlag not implemented")
+}
+func (UnimplementedFanaServer) GetFlags(context.Context, *Empty) (*Flags, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFlags not implemented")
 }
 func (UnimplementedFanaServer) mustEmbedUnimplementedFanaServer() {}
 
@@ -88,6 +102,24 @@ func _Fana_GetFlag_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Fana_GetFlags_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FanaServer).GetFlags(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Fana/GetFlags",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FanaServer).GetFlags(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Fana_ServiceDesc is the grpc.ServiceDesc for Fana service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var Fana_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetFlag",
 			Handler:    _Fana_GetFlag_Handler,
+		},
+		{
+			MethodName: "GetFlags",
+			Handler:    _Fana_GetFlags_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

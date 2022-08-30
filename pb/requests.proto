@@ -29,3 +29,5 @@ message CondSubmit {
   bool Negate = 3;
   repeated string Vals = 4;
 }
+
+message Empty {}
