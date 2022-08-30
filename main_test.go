@@ -71,7 +71,7 @@ func TestGetAudiences(t *testing.T) {
 	mc := *makeClient(t)
 	have, err := mc.GetAudiences(context.Background(), &pb.Empty{})
 	if err != nil || have == nil {
-		t.Fatalf("Failed TestGetAttrs: \nHave: %v\nError: %v\n", have, err)
+		t.Fatalf("Failed TestGetAuds: \nHave: %v\nError: %v\n", have, err)
 	}
 	fmt.Println(have)
 }
@@ -81,6 +81,24 @@ func TestGetAttributes(t *testing.T) {
 	have, err := mc.GetAttributes(context.Background(), &pb.Empty{})
 	if err != nil || have == nil {
 		t.Fatalf("Failed TestGetAttrs: \nHave: %v\nError: %v\n", have, err)
+	}
+	fmt.Println(have)
+}
+
+func TestGetAttribute(t *testing.T) {
+	mc := *makeClient(t)
+	have, err := mc.GetAttribute(context.Background(), &pb.ID{ID: 1})
+	if err != nil || have == nil {
+		t.Fatalf("Failed TestGetAttribute: \nHave: %v\nError: %v\n", have, err)
+	}
+	fmt.Println(have)
+}
+
+func TestGetAudience(t *testing.T) {
+	mc := *makeClient(t)
+	have, err := mc.GetAudience(context.Background(), &pb.ID{ID: 1})
+	if err != nil || have == nil {
+		t.Fatalf("Failed TestGetAttribute: \nHave: %v\nError: %v\n", have, err)
 	}
 	fmt.Println(have)
 }

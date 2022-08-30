@@ -51,7 +51,7 @@ message AudienceFullResp {
 }
 
 message ConditionEmbedded {
-  string Attribute = 1;
+  AttributeResp Attribute = 1;
   string Operator = 2;
   bool Negate = 3;
   string Vals = 4;

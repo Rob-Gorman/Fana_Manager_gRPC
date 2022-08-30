@@ -24,7 +24,9 @@ const _ = grpc.SupportPackageIsVersion7
 type FanaClient interface {
 	GetFlag(ctx context.Context, in *ID, opts ...grpc.CallOption) (*FlagFullResp, error)
 	GetFlags(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Flags, error)
+	GetAudience(ctx context.Context, in *ID, opts ...grpc.CallOption) (*AudienceFullResp, error)
 	GetAudiences(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Audiences, error)
+	GetAttribute(ctx context.Context, in *ID, opts ...grpc.CallOption) (*AttributeResp, error)
 	GetAttributes(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Attributes, error)
 }
 
@@ -54,9 +56,27 @@ func (c *fanaClient) GetFlags(ctx context.Context, in *Empty, opts ...grpc.CallO
 	return out, nil
 }
 
+func (c *fanaClient) GetAudience(ctx context.Context, in *ID, opts ...grpc.CallOption) (*AudienceFullResp, error) {
+	out := new(AudienceFullResp)
+	err := c.cc.Invoke(ctx, "/Fana/GetAudience", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *fanaClient) GetAudiences(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Audiences, error) {
 	out := new(Audiences)
 	err := c.cc.Invoke(ctx, "/Fana/GetAudiences", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *fanaClient) GetAttribute(ctx context.Context, in *ID, opts ...grpc.CallOption) (*AttributeResp, error) {
+	out := new(AttributeResp)
+	err := c.cc.Invoke(ctx, "/Fana/GetAttribute", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +98,9 @@ func (c *fanaClient) GetAttributes(ctx context.Context, in *Empty, opts ...grpc.
 type FanaServer interface {
 	GetFlag(context.Context, *ID) (*FlagFullResp, error)
 	GetFlags(context.Context, *Empty) (*Flags, error)
+	GetAudience(context.Context, *ID) (*AudienceFullResp, error)
 	GetAudiences(context.Context, *Empty) (*Audiences, error)
+	GetAttribute(context.Context, *ID) (*AttributeResp, error)
 	GetAttributes(context.Context, *Empty) (*Attributes, error)
 	mustEmbedUnimplementedFanaServer()
 }
@@ -93,8 +115,14 @@ func (UnimplementedFanaServer) GetFlag(context.Context, *ID) (*FlagFullResp, err
 func (UnimplementedFanaServer) GetFlags(context.Context, *Empty) (*Flags, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetFlags not implemented")
 }
+func (UnimplementedFanaServer) GetAudience(context.Context, *ID) (*AudienceFullResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAudience not implemented")
+}
 func (UnimplementedFanaServer) GetAudiences(context.Context, *Empty) (*Audiences, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAudiences not implemented")
+}
+func (UnimplementedFanaServer) GetAttribute(context.Context, *ID) (*AttributeResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAttribute not implemented")
 }
 func (UnimplementedFanaServer) GetAttributes(context.Context, *Empty) (*Attributes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAttributes not implemented")
@@ -148,6 +176,24 @@ func _Fana_GetFlags_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Fana_GetAudience_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FanaServer).GetAudience(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Fana/GetAudience",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FanaServer).GetAudience(ctx, req.(*ID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Fana_GetAudiences_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Empty)
 	if err := dec(in); err != nil {
@@ -162,6 +208,24 @@ func _Fana_GetAudiences_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FanaServer).GetAudiences(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Fana_GetAttribute_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FanaServer).GetAttribute(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Fana/GetAttribute",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FanaServer).GetAttribute(ctx, req.(*ID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -200,8 +264,16 @@ var Fana_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Fana_GetFlags_Handler,
 		},
 		{
+			MethodName: "GetAudience",
+			Handler:    _Fana_GetAudience_Handler,
+		},
+		{
 			MethodName: "GetAudiences",
 			Handler:    _Fana_GetAudiences_Handler,
+		},
+		{
+			MethodName: "GetAttribute",
+			Handler:    _Fana_GetAttribute_Handler,
 		},
 		{
 			MethodName: "GetAttributes",

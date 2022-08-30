@@ -50,6 +50,21 @@ func (aud *Audience) ToSparseResp() (resp *pb.AudienceSparseResp) {
 	return resp
 }
 
+func (aud *Audience) ToFullResp() (resp *pb.AudienceFullResp) {
+	resp = &pb.AudienceFullResp{
+		ID:          int32(aud.ID),
+		Key:         aud.Key,
+		DisplayName: aud.DisplayName,
+		Combine:     aud.Combine,
+		Conditions:  nil, // filled by helper
+		Flags:       nil, // filled by helper
+		CreatedAt:   timestamppb.New(aud.CreatedAt),
+		UpdatedAt:   timestamppb.New(aud.UpdatedAt),
+	}
+
+	return resp
+}
+
 func (attr *Attribute) ToSparseResp() (resp *pb.AttributeResp) {
 	resp = &pb.AttributeResp{
 		ID:          int32(attr.ID),
@@ -57,6 +72,17 @@ func (attr *Attribute) ToSparseResp() (resp *pb.AttributeResp) {
 		DisplayName: attr.DisplayName,
 		Type:        attr.Type,
 		CreatedAt:   timestamppb.New(attr.CreatedAt),
+	}
+
+	return resp
+}
+
+func (cond *Condition) ToEmbeddedResp() (resp *pb.ConditionEmbedded) {
+	resp = &pb.ConditionEmbedded{
+		Attribute: cond.Attribute.ToSparseResp(),
+		Operator:  cond.Operator,
+		Negate:    cond.Negate,
+		Vals:      cond.Vals,
 	}
 
 	return resp

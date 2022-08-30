@@ -7,7 +7,9 @@ option go_package = "./pb";
 service Fana {
   rpc GetFlag(ID) returns (FlagFullResp);
   rpc GetFlags(Empty) returns (Flags);
+  rpc GetAudience(ID) returns (AudienceFullResp);
   rpc GetAudiences(Empty) returns (Audiences);
+  rpc GetAttribute(ID) returns (AttributeResp);
   rpc GetAttributes(Empty) returns (Attributes);
 }
 
