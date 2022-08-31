@@ -21,6 +21,7 @@ func RefreshSchema(db *gorm.DB) {
 		&models.Sdkkey{},
 	)
 
+	DevRefresh(db, tables) // THIS WIPES DATA
 	// create all relevant tables
 	db.AutoMigrate(tables...)
 	// seed sample data

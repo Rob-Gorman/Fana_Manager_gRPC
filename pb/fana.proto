@@ -11,6 +11,10 @@ service Fana {
   rpc GetAudiences(Empty) returns (Audiences);
   rpc GetAttribute(ID) returns (AttributeResp);
   rpc GetAttributes(Empty) returns (Attributes);
+
+  rpc CreateFlag(FlagSubmit) returns (FlagFullResp);
+  rpc CreateAudience(AudSubmit) returns (AudienceFullResp);
+  rpc CreateAttribute(AttrSubmit) returns (AttributeResp);
 }
 
 message ID {

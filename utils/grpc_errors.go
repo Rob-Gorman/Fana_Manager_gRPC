@@ -13,3 +13,12 @@ func NotFoundError(err error) error {
 	)
 	return errStatus.Err()
 }
+
+func InternalError(err error) error {
+	errStatus := status.Newf(
+		codes.Internal,
+		"Internal error: %v",
+		err,
+	)
+	return errStatus.Err()
+}

@@ -6,6 +6,7 @@ import (
 	"log"
 	"manager/api"
 	"manager/configs"
+	"manager/dev"
 	"manager/pb"
 	"net"
 	"testing"
@@ -15,6 +16,14 @@ import (
 )
 
 const bufSize = 1024 * 1024
+
+type sampleData struct {
+	Conds []*pb.CondSubmit
+	Auds  []*pb.AudSubmit
+	Attrs []*pb.AttrSubmit
+}
+
+var data sampleData
 
 var lis *bufconn.Listener
 
@@ -26,6 +35,11 @@ func init() {
 	s2 := api.NewServer()
 
 	pb.RegisterFanaServer(s, api.NewDashServer(&s2.H))
+
+	initSampleData()
+
+	dev.RefreshSchema(s2.H.DB)
+
 	go func() {
 		if err := s.Serve(lis); err != nil {
 			log.Fatalf("Server exited with error: %v", err)
@@ -49,13 +63,45 @@ func makeClient(t *testing.T) *pb.FanaClient {
 	return &client
 }
 
+func initSampleData() {
+	Cond1 := &pb.CondSubmit{
+		AttributeID: 1,
+		Operator:    "EQ",
+		Negate:      true,
+		Vals:        "Jersey",
+	}
+	Cond2 := &pb.CondSubmit{
+		AttributeID: 2,
+		Operator:    "EQ",
+		Negate:      true,
+		Vals:        "true",
+	}
+	Aud1 := &pb.AudSubmit{
+		Key:         "GoTest Audience",
+		DisplayName: "From inside main_test.go",
+		Combine:     "ANY",
+		Conditions:  []*pb.CondSubmit{Cond1},
+	}
+	Attr1 := &pb.AttrSubmit{
+		Key:         "GoTest Attribute",
+		DisplayName: "Attribute From main_test.go",
+		Type:        "NUM",
+	}
+
+	data = sampleData{
+		Conds: []*pb.CondSubmit{Cond1, Cond2},
+		Auds:  []*pb.AudSubmit{Aud1},
+		Attrs: []*pb.AttrSubmit{Attr1},
+	}
+}
+
 func TestGetFlag(t *testing.T) {
 	mc := *makeClient(t)
 	have, err := mc.GetFlag(context.Background(), &pb.ID{ID: 1})
 	if err != nil || have == nil {
 		t.Fatalf("Failed TestGetFlag: \nHave: %v\nError: %v\n", have, err)
 	}
-	fmt.Println(have)
+	fmt.Print(have, "\n\n")
 }
 
 func TestGetFlags(t *testing.T) {
@@ -64,7 +110,7 @@ func TestGetFlags(t *testing.T) {
 	if err != nil || have == nil {
 		t.Fatalf("Failed TestGetFlag: \nHave: %v\nError: %v\n", have, err)
 	}
-	fmt.Println(have)
+	fmt.Print(have, "\n\n")
 }
 
 func TestGetAudiences(t *testing.T) {
@@ -73,7 +119,7 @@ func TestGetAudiences(t *testing.T) {
 	if err != nil || have == nil {
 		t.Fatalf("Failed TestGetAuds: \nHave: %v\nError: %v\n", have, err)
 	}
-	fmt.Println(have)
+	fmt.Print(have, "\n\n")
 }
 
 func TestGetAttributes(t *testing.T) {
@@ -82,7 +128,7 @@ func TestGetAttributes(t *testing.T) {
 	if err != nil || have == nil {
 		t.Fatalf("Failed TestGetAttrs: \nHave: %v\nError: %v\n", have, err)
 	}
-	fmt.Println(have)
+	fmt.Print(have, "\n\n")
 }
 
 func TestGetAttribute(t *testing.T) {
@@ -91,14 +137,48 @@ func TestGetAttribute(t *testing.T) {
 	if err != nil || have == nil {
 		t.Fatalf("Failed TestGetAttribute: \nHave: %v\nError: %v\n", have, err)
 	}
-	fmt.Println(have)
+	fmt.Print(have, "\n\n")
 }
 
 func TestGetAudience(t *testing.T) {
 	mc := *makeClient(t)
 	have, err := mc.GetAudience(context.Background(), &pb.ID{ID: 1})
 	if err != nil || have == nil {
-		t.Fatalf("Failed TestGetAttribute: \nHave: %v\nError: %v\n", have, err)
+		t.Fatalf("Failed TestGetAudience: \nHave: %v\nError: %v\n", have, err)
 	}
-	fmt.Println(have)
+	fmt.Print(have, "\n\n")
+}
+
+func TestCreateFlag(t *testing.T) {
+	mc := *makeClient(t)
+	req := &pb.FlagSubmit{
+		Key:         "GoTest Flag",
+		DisplayName: "From inside main_test.go",
+		AudienceIDs: []string{"1", "2"},
+	}
+	have, err := mc.CreateFlag(context.Background(), req)
+	if err != nil || have == nil {
+		t.Fatalf("Failed TestCreateFlag: \nHave: %v\nError: %v\n", have, err)
+	}
+	fmt.Print(have, "\n\n")
+}
+
+func TestCreateAudience(t *testing.T) {
+	mc := *makeClient(t)
+	req := data.Auds[0]
+	have, err := mc.CreateAudience(context.Background(), req)
+	if err != nil || have == nil {
+		t.Fatalf("Failed TestCreateAudience: \nHave: %v\nError: %v\n", have, err)
+	}
+	fmt.Print(have, "\n\n")
+}
+
+func TestCreateAttribute(t *testing.T) {
+	mc := *makeClient(t)
+	req := data.Attrs[0]
+	have, err := mc.CreateAttribute(context.Background(), req)
+	if err != nil || have == nil {
+		t.Fatalf("Failed TestCreateAttribute: \nHave: %v\nError: %v\n", have, err)
+	}
+	fmt.Print(have, "\n\n")
 }
