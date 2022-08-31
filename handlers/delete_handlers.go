@@ -64,7 +64,7 @@ func (h Handler) DeleteAudience(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
-func (h Handler) DeleteAttribute(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) DeleteAttribute(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
@@ -93,7 +93,7 @@ func (h Handler) DeleteAttribute(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
-func (h Handler) RegenSDKkey(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) RegenSDKkey(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {

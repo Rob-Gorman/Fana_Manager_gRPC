@@ -28,4 +28,14 @@ message CondSubmit {
   string Vals = 4;
 }
 
+message FlagUpdate {
+  FlagSubmit Updates = 1;
+  uint32 ID = 2;
+}
+
+message AudUpdate {
+  AudSubmit Updates = 1;
+  uint32 ID = 2;
+}
+
 message Empty {}

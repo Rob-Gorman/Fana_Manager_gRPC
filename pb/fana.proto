@@ -11,10 +11,21 @@ service Fana {
   rpc GetAudiences(Empty) returns (Audiences);
   rpc GetAttribute(ID) returns (AttributeResp);
   rpc GetAttributes(Empty) returns (Attributes);
+  rpc GetSDKKeys(Empty) returns (SDKKeys);
+  rpc GetAuditLogs(Empty) returns (AuditLogResp);
 
   rpc CreateFlag(FlagSubmit) returns (FlagFullResp);
   rpc CreateAudience(AudSubmit) returns (AudienceFullResp);
   rpc CreateAttribute(AttrSubmit) returns (AttributeResp);
+
+  rpc UpdateFlag(FlagUpdate) returns (FlagFullResp);
+  rpc UpdateAudience(AudUpdate) returns (AudienceFullResp);
+
+  rpc RegenerateSDK(ID) returns (SDKKey);
+  
+  rpc DeleteFlag(ID) returns (Empty);
+  rpc DeleteAudience(ID) returns (Empty);
+  rpc DeleteAttribute(ID) returns (Empty);
 }
 
 message ID {

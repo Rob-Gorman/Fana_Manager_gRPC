@@ -83,3 +83,16 @@ message LogMsg {
   string Action = 4;
   google.protobuf.Timestamp CreatedAt = 5;
 }
+
+message SDKKey {
+  int32 ID = 1;
+  string Key = 2;
+  bool Status = 3;
+  string Type = 4;
+  google.protobuf.Timestamp CreatedAt = 5;
+  google.protobuf.Timestamp UpdatedAt = 6;  
+}
+
+message SDKKeys {
+  repeated SDKKey SDKs = 1;
+}

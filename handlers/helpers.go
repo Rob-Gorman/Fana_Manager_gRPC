@@ -130,7 +130,7 @@ func OrphanedAud(aud *models.Audience) bool {
 	return len((*aud).Flags) == 0
 }
 
-func OrphanedAttr(attr *models.Attribute, h Handler) bool {
+func OrphanedAttr(attr *models.Attribute, h *Handler) bool {
 	asscs := h.DB.Model(attr).Association("Conditions").Count()
 	return asscs == 0
 }

@@ -13,57 +13,57 @@ func (ds *DashServer) GetFlag(ctx context.Context, id *pb.ID) (*pb.FlagFullResp,
 		return nil, err
 	}
 
-	resp := flag.ToFullResp()
-	return resp, nil
+	res := flag.ToFullResp()
+	return res, nil
 }
 
-func (ds *DashServer) GetFlags(ctx context.Context, empty *pb.Empty) (resp *pb.Flags, err error) {
+func (ds *DashServer) GetFlags(ctx context.Context, empty *pb.Empty) (res *pb.Flags, err error) {
 	flags, err := ds.H.GetFlagsR()
 	if err != nil {
 		err = utils.NotFoundError(err)
 		return nil, err
 	}
 
-	resp = &pb.Flags{
+	res = &pb.Flags{
 		Flags: []*pb.FlagSparseResp{},
 	}
 
 	for ind := range flags {
-		resp.Flags = append(resp.Flags, flags[ind].ToSparseResp())
+		res.Flags = append(res.Flags, flags[ind].ToSparseResp())
 	}
-	return resp, nil
+	return res, nil
 }
 
-func (ds *DashServer) GetAudience(ctx context.Context, id *pb.ID) (resp *pb.AudienceFullResp, err error) {
+func (ds *DashServer) GetAudience(ctx context.Context, id *pb.ID) (res *pb.AudienceFullResp, err error) {
 	aud, err := ds.H.GetAudienceR(int(id.ID))
 	if err != nil {
 		err = utils.NotFoundError(err)
 		return nil, err
 	}
 
-	resp = aud.ToFullResp()
+	res = aud.ToFullResp()
 
-	resp.Conditions = ds.H.BuildEmbeddedConds(aud.Conditions)
-	resp.Flags = ds.H.BuildEmbeddedFlags(aud.Flags)
+	res.Conditions = ds.H.BuildEmbeddedConds(aud.Conditions)
+	res.Flags = ds.H.BuildEmbeddedFlags(aud.Flags)
 
-	return resp, nil
+	return res, nil
 }
 
-func (ds *DashServer) GetAudiences(ctx context.Context, empty *pb.Empty) (resp *pb.Audiences, err error) {
+func (ds *DashServer) GetAudiences(ctx context.Context, empty *pb.Empty) (res *pb.Audiences, err error) {
 	auds, err := ds.H.GetAudiencesR()
 	if err != nil {
 		err = utils.NotFoundError(err)
 		return nil, err
 	}
 
-	resp = &pb.Audiences{
+	res = &pb.Audiences{
 		Audiences: []*pb.AudienceSparseResp{},
 	}
 
 	for ind := range auds {
-		resp.Audiences = append(resp.Audiences, auds[ind].ToSparseResp())
+		res.Audiences = append(res.Audiences, auds[ind].ToSparseResp())
 	}
-	return resp, nil
+	return res, nil
 }
 
 func (ds *DashServer) GetAttribute(ctx context.Context, id *pb.ID) (*pb.AttributeResp, error) {
@@ -73,26 +73,51 @@ func (ds *DashServer) GetAttribute(ctx context.Context, id *pb.ID) (*pb.Attribut
 		return nil, err
 	}
 
-	resp := attr.ToSparseResp()
+	res := attr.ToSparseResp()
 
-	resp.Audiences = ds.H.BuildAttributeAudiences(attr.Conditions)
+	res.Audiences = ds.H.BuildAttributeAudiences(attr.Conditions)
 
-	return resp, nil
+	return res, nil
 }
 
-func (ds *DashServer) GetAttributes(ctx context.Context, empty *pb.Empty) (resp *pb.Attributes, err error) {
+func (ds *DashServer) GetAttributes(ctx context.Context, empty *pb.Empty) (res *pb.Attributes, err error) {
 	attrs, err := ds.H.GetAttributesR()
 	if err != nil {
 		err = utils.NotFoundError(err)
 		return nil, err
 	}
 
-	resp = &pb.Attributes{
+	res = &pb.Attributes{
 		Attributes: []*pb.AttributeResp{},
 	}
 
 	for ind := range attrs {
-		resp.Attributes = append(resp.Attributes, attrs[ind].ToSparseResp())
+		res.Attributes = append(res.Attributes, attrs[ind].ToSparseResp())
 	}
-	return resp, nil
+	return res, nil
+}
+
+func (ds *DashServer) GetSDKKeys(ctx context.Context, in *pb.Empty) (*pb.SDKKeys, error) {
+	sdks, err := ds.H.GetSDKKeysR()
+	if err != nil {
+		err = utils.NotFoundError(err)
+		return nil, err
+	}
+
+	resSDKs := []*pb.SDKKey{}
+	for _, sdk := range sdks {
+		resSDK := sdk.ToFullResp()
+		resSDKs = append(resSDKs, resSDK)
+	}
+
+	res := &pb.SDKKeys{SDKs: resSDKs}
+	return res, nil
+}
+
+func (ds *DashServer) GetAuditLogs(ctx context.Context, in *pb.Empty) (*pb.AuditLogResp, error) {
+	logs, _ := ds.H.GetLogsR()
+
+	res := logs.ToResp()
+
+	return res, nil
 }

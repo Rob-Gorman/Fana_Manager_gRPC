@@ -22,3 +22,12 @@ func InternalError(err error) error {
 	)
 	return errStatus.Err()
 }
+
+func InvalidArgumentError(err error, msg string) error {
+	errStatus := status.Newf(
+		codes.InvalidArgument,
+		msg,
+		err,
+	)
+	return errStatus.Err()
+}

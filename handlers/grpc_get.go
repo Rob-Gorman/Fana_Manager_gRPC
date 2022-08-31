@@ -58,3 +58,28 @@ func (h *Handler) GetAttributesR() (attrs []*models.Attribute, err error) {
 	}
 	return attrs, nil
 }
+
+func (h *Handler) GetSDKKeysR() ([]models.Sdkkey, error) {
+	sdks := []models.Sdkkey{}
+	h.DB.Find(&sdks)
+	return sdks, nil
+}
+
+func (h *Handler) GetLogsR() (models.AuditLogs, error) {
+	flags := []models.FlagLog{}
+	h.DB.Find(&flags)
+
+	auds := []models.AudienceLog{}
+	h.DB.Find(&auds)
+
+	attrs := []models.AttributeLog{}
+	h.DB.Find(&attrs)
+
+	res := models.AuditLogs{
+		FlagLogs:      flags,
+		AudienceLogs:  auds,
+		AttributeLogs: attrs,
+	}
+
+	return res, nil
+}

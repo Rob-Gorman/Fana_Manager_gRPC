@@ -53,3 +53,9 @@ func BuildAttrLog(a Attribute, event string) AttributeLog {
 		EventDesc:    event,
 	}
 }
+
+type AuditLogs struct {
+	FlagLogs      []FlagLog      `json:"flagLogs" gorm:"embedded"`
+	AudienceLogs  []AudienceLog  `json:"audienceLogs" gorm:"embedded"`
+	AttributeLogs []AttributeLog `json:"attributeLogs" gorm:"embedded"`
+}

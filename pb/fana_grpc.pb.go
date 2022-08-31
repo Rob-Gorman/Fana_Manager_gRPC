@@ -28,9 +28,17 @@ type FanaClient interface {
 	GetAudiences(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Audiences, error)
 	GetAttribute(ctx context.Context, in *ID, opts ...grpc.CallOption) (*AttributeResp, error)
 	GetAttributes(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Attributes, error)
+	GetSDKKeys(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*SDKKeys, error)
+	GetAuditLogs(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*AuditLogResp, error)
 	CreateFlag(ctx context.Context, in *FlagSubmit, opts ...grpc.CallOption) (*FlagFullResp, error)
 	CreateAudience(ctx context.Context, in *AudSubmit, opts ...grpc.CallOption) (*AudienceFullResp, error)
 	CreateAttribute(ctx context.Context, in *AttrSubmit, opts ...grpc.CallOption) (*AttributeResp, error)
+	UpdateFlag(ctx context.Context, in *FlagUpdate, opts ...grpc.CallOption) (*FlagFullResp, error)
+	UpdateAudience(ctx context.Context, in *AudUpdate, opts ...grpc.CallOption) (*AudienceFullResp, error)
+	RegenerateSDK(ctx context.Context, in *ID, opts ...grpc.CallOption) (*SDKKey, error)
+	DeleteFlag(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Empty, error)
+	DeleteAudience(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Empty, error)
+	DeleteAttribute(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type fanaClient struct {
@@ -95,6 +103,24 @@ func (c *fanaClient) GetAttributes(ctx context.Context, in *Empty, opts ...grpc.
 	return out, nil
 }
 
+func (c *fanaClient) GetSDKKeys(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*SDKKeys, error) {
+	out := new(SDKKeys)
+	err := c.cc.Invoke(ctx, "/Fana/GetSDKKeys", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *fanaClient) GetAuditLogs(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*AuditLogResp, error) {
+	out := new(AuditLogResp)
+	err := c.cc.Invoke(ctx, "/Fana/GetAuditLogs", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *fanaClient) CreateFlag(ctx context.Context, in *FlagSubmit, opts ...grpc.CallOption) (*FlagFullResp, error) {
 	out := new(FlagFullResp)
 	err := c.cc.Invoke(ctx, "/Fana/CreateFlag", in, out, opts...)
@@ -122,6 +148,60 @@ func (c *fanaClient) CreateAttribute(ctx context.Context, in *AttrSubmit, opts .
 	return out, nil
 }
 
+func (c *fanaClient) UpdateFlag(ctx context.Context, in *FlagUpdate, opts ...grpc.CallOption) (*FlagFullResp, error) {
+	out := new(FlagFullResp)
+	err := c.cc.Invoke(ctx, "/Fana/UpdateFlag", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *fanaClient) UpdateAudience(ctx context.Context, in *AudUpdate, opts ...grpc.CallOption) (*AudienceFullResp, error) {
+	out := new(AudienceFullResp)
+	err := c.cc.Invoke(ctx, "/Fana/UpdateAudience", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *fanaClient) RegenerateSDK(ctx context.Context, in *ID, opts ...grpc.CallOption) (*SDKKey, error) {
+	out := new(SDKKey)
+	err := c.cc.Invoke(ctx, "/Fana/RegenerateSDK", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *fanaClient) DeleteFlag(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/Fana/DeleteFlag", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *fanaClient) DeleteAudience(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/Fana/DeleteAudience", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *fanaClient) DeleteAttribute(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/Fana/DeleteAttribute", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FanaServer is the server API for Fana service.
 // All implementations must embed UnimplementedFanaServer
 // for forward compatibility
@@ -132,9 +212,17 @@ type FanaServer interface {
 	GetAudiences(context.Context, *Empty) (*Audiences, error)
 	GetAttribute(context.Context, *ID) (*AttributeResp, error)
 	GetAttributes(context.Context, *Empty) (*Attributes, error)
+	GetSDKKeys(context.Context, *Empty) (*SDKKeys, error)
+	GetAuditLogs(context.Context, *Empty) (*AuditLogResp, error)
 	CreateFlag(context.Context, *FlagSubmit) (*FlagFullResp, error)
 	CreateAudience(context.Context, *AudSubmit) (*AudienceFullResp, error)
 	CreateAttribute(context.Context, *AttrSubmit) (*AttributeResp, error)
+	UpdateFlag(context.Context, *FlagUpdate) (*FlagFullResp, error)
+	UpdateAudience(context.Context, *AudUpdate) (*AudienceFullResp, error)
+	RegenerateSDK(context.Context, *ID) (*SDKKey, error)
+	DeleteFlag(context.Context, *ID) (*Empty, error)
+	DeleteAudience(context.Context, *ID) (*Empty, error)
+	DeleteAttribute(context.Context, *ID) (*Empty, error)
 	mustEmbedUnimplementedFanaServer()
 }
 
@@ -160,6 +248,12 @@ func (UnimplementedFanaServer) GetAttribute(context.Context, *ID) (*AttributeRes
 func (UnimplementedFanaServer) GetAttributes(context.Context, *Empty) (*Attributes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAttributes not implemented")
 }
+func (UnimplementedFanaServer) GetSDKKeys(context.Context, *Empty) (*SDKKeys, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSDKKeys not implemented")
+}
+func (UnimplementedFanaServer) GetAuditLogs(context.Context, *Empty) (*AuditLogResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAuditLogs not implemented")
+}
 func (UnimplementedFanaServer) CreateFlag(context.Context, *FlagSubmit) (*FlagFullResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateFlag not implemented")
 }
@@ -168,6 +262,24 @@ func (UnimplementedFanaServer) CreateAudience(context.Context, *AudSubmit) (*Aud
 }
 func (UnimplementedFanaServer) CreateAttribute(context.Context, *AttrSubmit) (*AttributeResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAttribute not implemented")
+}
+func (UnimplementedFanaServer) UpdateFlag(context.Context, *FlagUpdate) (*FlagFullResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateFlag not implemented")
+}
+func (UnimplementedFanaServer) UpdateAudience(context.Context, *AudUpdate) (*AudienceFullResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAudience not implemented")
+}
+func (UnimplementedFanaServer) RegenerateSDK(context.Context, *ID) (*SDKKey, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegenerateSDK not implemented")
+}
+func (UnimplementedFanaServer) DeleteFlag(context.Context, *ID) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteFlag not implemented")
+}
+func (UnimplementedFanaServer) DeleteAudience(context.Context, *ID) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAudience not implemented")
+}
+func (UnimplementedFanaServer) DeleteAttribute(context.Context, *ID) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAttribute not implemented")
 }
 func (UnimplementedFanaServer) mustEmbedUnimplementedFanaServer() {}
 
@@ -290,6 +402,42 @@ func _Fana_GetAttributes_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Fana_GetSDKKeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FanaServer).GetSDKKeys(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Fana/GetSDKKeys",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FanaServer).GetSDKKeys(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Fana_GetAuditLogs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FanaServer).GetAuditLogs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Fana/GetAuditLogs",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FanaServer).GetAuditLogs(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Fana_CreateFlag_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FlagSubmit)
 	if err := dec(in); err != nil {
@@ -344,6 +492,114 @@ func _Fana_CreateAttribute_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Fana_UpdateFlag_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FlagUpdate)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FanaServer).UpdateFlag(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Fana/UpdateFlag",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FanaServer).UpdateFlag(ctx, req.(*FlagUpdate))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Fana_UpdateAudience_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AudUpdate)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FanaServer).UpdateAudience(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Fana/UpdateAudience",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FanaServer).UpdateAudience(ctx, req.(*AudUpdate))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Fana_RegenerateSDK_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FanaServer).RegenerateSDK(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Fana/RegenerateSDK",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FanaServer).RegenerateSDK(ctx, req.(*ID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Fana_DeleteFlag_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FanaServer).DeleteFlag(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Fana/DeleteFlag",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FanaServer).DeleteFlag(ctx, req.(*ID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Fana_DeleteAudience_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FanaServer).DeleteAudience(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Fana/DeleteAudience",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FanaServer).DeleteAudience(ctx, req.(*ID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Fana_DeleteAttribute_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FanaServer).DeleteAttribute(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Fana/DeleteAttribute",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FanaServer).DeleteAttribute(ctx, req.(*ID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Fana_ServiceDesc is the grpc.ServiceDesc for Fana service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -376,6 +632,14 @@ var Fana_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Fana_GetAttributes_Handler,
 		},
 		{
+			MethodName: "GetSDKKeys",
+			Handler:    _Fana_GetSDKKeys_Handler,
+		},
+		{
+			MethodName: "GetAuditLogs",
+			Handler:    _Fana_GetAuditLogs_Handler,
+		},
+		{
 			MethodName: "CreateFlag",
 			Handler:    _Fana_CreateFlag_Handler,
 		},
@@ -386,6 +650,30 @@ var Fana_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateAttribute",
 			Handler:    _Fana_CreateAttribute_Handler,
+		},
+		{
+			MethodName: "UpdateFlag",
+			Handler:    _Fana_UpdateFlag_Handler,
+		},
+		{
+			MethodName: "UpdateAudience",
+			Handler:    _Fana_UpdateAudience_Handler,
+		},
+		{
+			MethodName: "RegenerateSDK",
+			Handler:    _Fana_RegenerateSDK_Handler,
+		},
+		{
+			MethodName: "DeleteFlag",
+			Handler:    _Fana_DeleteFlag_Handler,
+		},
+		{
+			MethodName: "DeleteAudience",
+			Handler:    _Fana_DeleteAudience_Handler,
+		},
+		{
+			MethodName: "DeleteAttribute",
+			Handler:    _Fana_DeleteAttribute_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -13,8 +13,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// var ctx = utils.StandardContext()
-
 func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 	var flagReq models.FlagSubmit
 
@@ -47,9 +45,8 @@ func (h Handler) UpdateFlag(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = h.DB.Omit("Audiences").Session(&gorm.Session{
-		SkipHooks:            true,
+		SkipHooks: true,
 	}).Updates(&flag).Error
-	
 
 	if err != nil {
 		utils.BadRequestResponse(w, r, err)
@@ -103,7 +100,7 @@ func (h Handler) ToggleFlag(w http.ResponseWriter, r *http.Request) {
 	PublishContent(&pub, "flag-toggle-channel")
 
 	RefreshCache(h.DB)
-	
+
 	utils.UpdatedResponse(w, r, &response)
 }
 
@@ -140,8 +137,8 @@ func (h Handler) UpdateAudience(w http.ResponseWriter, r *http.Request) {
 
 	err = h.DB.Session(&gorm.Session{
 		FullSaveAssociations: true,
-		SkipHooks: true,
-		}).Updates(&aud).Error
+		SkipHooks:            true,
+	}).Updates(&aud).Error
 	if err != nil {
 		utils.BadRequestResponse(w, r, err)
 		return
