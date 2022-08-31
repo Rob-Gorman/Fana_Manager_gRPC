@@ -33,6 +33,11 @@ message FlagUpdate {
   uint32 ID = 2;
 }
 
+message FlagToggle {
+  int32 ID = 1;
+  bool Status = 2;
+}
+
 message AudUpdate {
   AudSubmit Updates = 1;
   uint32 ID = 2;

@@ -34,6 +34,7 @@ type FanaClient interface {
 	CreateAudience(ctx context.Context, in *AudSubmit, opts ...grpc.CallOption) (*AudienceFullResp, error)
 	CreateAttribute(ctx context.Context, in *AttrSubmit, opts ...grpc.CallOption) (*AttributeResp, error)
 	UpdateFlag(ctx context.Context, in *FlagUpdate, opts ...grpc.CallOption) (*FlagFullResp, error)
+	ToggleFlag(ctx context.Context, in *FlagToggle, opts ...grpc.CallOption) (*Empty, error)
 	UpdateAudience(ctx context.Context, in *AudUpdate, opts ...grpc.CallOption) (*AudienceFullResp, error)
 	RegenerateSDK(ctx context.Context, in *ID, opts ...grpc.CallOption) (*SDKKey, error)
 	DeleteFlag(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Empty, error)
@@ -157,6 +158,15 @@ func (c *fanaClient) UpdateFlag(ctx context.Context, in *FlagUpdate, opts ...grp
 	return out, nil
 }
 
+func (c *fanaClient) ToggleFlag(ctx context.Context, in *FlagToggle, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/Fana/ToggleFlag", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *fanaClient) UpdateAudience(ctx context.Context, in *AudUpdate, opts ...grpc.CallOption) (*AudienceFullResp, error) {
 	out := new(AudienceFullResp)
 	err := c.cc.Invoke(ctx, "/Fana/UpdateAudience", in, out, opts...)
@@ -218,6 +228,7 @@ type FanaServer interface {
 	CreateAudience(context.Context, *AudSubmit) (*AudienceFullResp, error)
 	CreateAttribute(context.Context, *AttrSubmit) (*AttributeResp, error)
 	UpdateFlag(context.Context, *FlagUpdate) (*FlagFullResp, error)
+	ToggleFlag(context.Context, *FlagToggle) (*Empty, error)
 	UpdateAudience(context.Context, *AudUpdate) (*AudienceFullResp, error)
 	RegenerateSDK(context.Context, *ID) (*SDKKey, error)
 	DeleteFlag(context.Context, *ID) (*Empty, error)
@@ -265,6 +276,9 @@ func (UnimplementedFanaServer) CreateAttribute(context.Context, *AttrSubmit) (*A
 }
 func (UnimplementedFanaServer) UpdateFlag(context.Context, *FlagUpdate) (*FlagFullResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateFlag not implemented")
+}
+func (UnimplementedFanaServer) ToggleFlag(context.Context, *FlagToggle) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ToggleFlag not implemented")
 }
 func (UnimplementedFanaServer) UpdateAudience(context.Context, *AudUpdate) (*AudienceFullResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateAudience not implemented")
@@ -510,6 +524,24 @@ func _Fana_UpdateFlag_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Fana_ToggleFlag_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FlagToggle)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FanaServer).ToggleFlag(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Fana/ToggleFlag",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FanaServer).ToggleFlag(ctx, req.(*FlagToggle))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Fana_UpdateAudience_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AudUpdate)
 	if err := dec(in); err != nil {
@@ -654,6 +686,10 @@ var Fana_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateFlag",
 			Handler:    _Fana_UpdateFlag_Handler,
+		},
+		{
+			MethodName: "ToggleFlag",
+			Handler:    _Fana_ToggleFlag_Handler,
 		},
 		{
 			MethodName: "UpdateAudience",

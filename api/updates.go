@@ -36,3 +36,12 @@ func (ds *DashServer) RegenerateSDK(ctx context.Context, in *pb.ID) (res *pb.SDK
 	res = sdk.ToFullResp()
 	return res, nil
 }
+
+func (ds *DashServer) ToggleFlag(ctx context.Context, in *pb.FlagToggle) (*pb.Empty, error) {
+	err := ds.H.ToggleFlagR(in)
+	if err != nil {
+		err = utils.NotFoundError(err)
+		return nil, err
+	}
+	return &pb.Empty{}, nil
+}

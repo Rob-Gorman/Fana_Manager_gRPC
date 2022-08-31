@@ -343,6 +343,61 @@ func (x *FlagUpdate) GetID() uint32 {
 	return 0
 }
 
+type FlagToggle struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ID     int32 `protobuf:"varint,1,opt,name=ID,proto3" json:"ID,omitempty"`
+	Status bool  `protobuf:"varint,2,opt,name=Status,proto3" json:"Status,omitempty"`
+}
+
+func (x *FlagToggle) Reset() {
+	*x = FlagToggle{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_requests_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FlagToggle) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FlagToggle) ProtoMessage() {}
+
+func (x *FlagToggle) ProtoReflect() protoreflect.Message {
+	mi := &file_requests_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FlagToggle.ProtoReflect.Descriptor instead.
+func (*FlagToggle) Descriptor() ([]byte, []int) {
+	return file_requests_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *FlagToggle) GetID() int32 {
+	if x != nil {
+		return x.ID
+	}
+	return 0
+}
+
+func (x *FlagToggle) GetStatus() bool {
+	if x != nil {
+		return x.Status
+	}
+	return false
+}
+
 type AudUpdate struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -355,7 +410,7 @@ type AudUpdate struct {
 func (x *AudUpdate) Reset() {
 	*x = AudUpdate{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_requests_proto_msgTypes[5]
+		mi := &file_requests_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -368,7 +423,7 @@ func (x *AudUpdate) String() string {
 func (*AudUpdate) ProtoMessage() {}
 
 func (x *AudUpdate) ProtoReflect() protoreflect.Message {
-	mi := &file_requests_proto_msgTypes[5]
+	mi := &file_requests_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -381,7 +436,7 @@ func (x *AudUpdate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AudUpdate.ProtoReflect.Descriptor instead.
 func (*AudUpdate) Descriptor() ([]byte, []int) {
-	return file_requests_proto_rawDescGZIP(), []int{5}
+	return file_requests_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *AudUpdate) GetUpdates() *AudSubmit {
@@ -407,7 +462,7 @@ type Empty struct {
 func (x *Empty) Reset() {
 	*x = Empty{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_requests_proto_msgTypes[6]
+		mi := &file_requests_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -420,7 +475,7 @@ func (x *Empty) String() string {
 func (*Empty) ProtoMessage() {}
 
 func (x *Empty) ProtoReflect() protoreflect.Message {
-	mi := &file_requests_proto_msgTypes[6]
+	mi := &file_requests_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -433,7 +488,7 @@ func (x *Empty) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Empty.ProtoReflect.Descriptor instead.
 func (*Empty) Descriptor() ([]byte, []int) {
-	return file_requests_proto_rawDescGZIP(), []int{6}
+	return file_requests_proto_rawDescGZIP(), []int{7}
 }
 
 var File_requests_proto protoreflect.FileDescriptor
@@ -472,12 +527,16 @@ var file_requests_proto_rawDesc = []byte{
 	0x61, 0x74, 0x65, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x46, 0x6c, 0x61,
 	0x67, 0x53, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x52, 0x07, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x73,
 	0x12, 0x0e, 0x0a, 0x02, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x02, 0x49, 0x44,
-	0x22, 0x41, 0x0a, 0x09, 0x41, 0x75, 0x64, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x12, 0x24, 0x0a,
-	0x07, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0a,
-	0x2e, 0x41, 0x75, 0x64, 0x53, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x52, 0x07, 0x55, 0x70, 0x64, 0x61,
-	0x74, 0x65, 0x73, 0x12, 0x0e, 0x0a, 0x02, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52,
-	0x02, 0x49, 0x44, 0x22, 0x07, 0x0a, 0x05, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x42, 0x06, 0x5a, 0x04,
-	0x2e, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x22, 0x34, 0x0a, 0x0a, 0x46, 0x6c, 0x61, 0x67, 0x54, 0x6f, 0x67, 0x67, 0x6c, 0x65, 0x12, 0x0e,
+	0x0a, 0x02, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x02, 0x49, 0x44, 0x12, 0x16,
+	0x0a, 0x06, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x06,
+	0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x22, 0x41, 0x0a, 0x09, 0x41, 0x75, 0x64, 0x55, 0x70, 0x64,
+	0x61, 0x74, 0x65, 0x12, 0x24, 0x0a, 0x07, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x73, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x0a, 0x2e, 0x41, 0x75, 0x64, 0x53, 0x75, 0x62, 0x6d, 0x69, 0x74,
+	0x52, 0x07, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x73, 0x12, 0x0e, 0x0a, 0x02, 0x49, 0x44, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x02, 0x49, 0x44, 0x22, 0x07, 0x0a, 0x05, 0x45, 0x6d, 0x70,
+	0x74, 0x79, 0x42, 0x06, 0x5a, 0x04, 0x2e, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x33,
 }
 
 var (
@@ -492,15 +551,16 @@ func file_requests_proto_rawDescGZIP() []byte {
 	return file_requests_proto_rawDescData
 }
 
-var file_requests_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_requests_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_requests_proto_goTypes = []interface{}{
 	(*FlagSubmit)(nil), // 0: FlagSubmit
 	(*AudSubmit)(nil),  // 1: AudSubmit
 	(*AttrSubmit)(nil), // 2: AttrSubmit
 	(*CondSubmit)(nil), // 3: CondSubmit
 	(*FlagUpdate)(nil), // 4: FlagUpdate
-	(*AudUpdate)(nil),  // 5: AudUpdate
-	(*Empty)(nil),      // 6: Empty
+	(*FlagToggle)(nil), // 5: FlagToggle
+	(*AudUpdate)(nil),  // 6: AudUpdate
+	(*Empty)(nil),      // 7: Empty
 }
 var file_requests_proto_depIdxs = []int32{
 	3, // 0: AudSubmit.Conditions:type_name -> CondSubmit
@@ -580,7 +640,7 @@ func file_requests_proto_init() {
 			}
 		}
 		file_requests_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AudUpdate); i {
+			switch v := v.(*FlagToggle); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -592,6 +652,18 @@ func file_requests_proto_init() {
 			}
 		}
 		file_requests_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AudUpdate); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_requests_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Empty); i {
 			case 0:
 				return &v.state
@@ -610,7 +682,7 @@ func file_requests_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_requests_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

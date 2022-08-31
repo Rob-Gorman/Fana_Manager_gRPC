@@ -19,6 +19,7 @@ service Fana {
   rpc CreateAttribute(AttrSubmit) returns (AttributeResp);
 
   rpc UpdateFlag(FlagUpdate) returns (FlagFullResp);
+  rpc ToggleFlag(FlagToggle) returns (Empty);
   rpc UpdateAudience(AudUpdate) returns (AudienceFullResp);
 
   rpc RegenerateSDK(ID) returns (SDKKey);

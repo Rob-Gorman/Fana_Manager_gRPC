@@ -1,11 +1,27 @@
 package handlers
 
 import (
+	"fmt"
 	"manager/models"
 	"manager/pb"
 
 	"gorm.io/gorm"
 )
+
+func (h *Handler) ToggleFlagR(in *pb.FlagToggle) error {
+	id := in.ID
+	status := in.Status
+
+	var flag models.Flag
+	h.DB.Find(&flag, id)
+	flag.Status = status
+	flag.DisplayName = fmt.Sprintf("__%v", flag.Status) // hacky way to clue it's a toggle action, see flag update hook
+	err := h.DB.Select("status").Updates(&flag).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
 func (h *Handler) UpdateFlagR(in *pb.FlagSubmit, id uint) (*models.Flag, error) {
 	flag, err := h.FlagFromReq(in)

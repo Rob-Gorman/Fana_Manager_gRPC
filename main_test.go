@@ -1,6 +1,7 @@
 package main
 
-// Just happy path integration tests to verify behavior during development
+// Just naive happy path integration tests to verify behavior during dev
+// Not even an approximation of comprehensive testing
 
 import (
 	"context"
@@ -247,4 +248,20 @@ func TestDeleteAttribute(t *testing.T) {
 	if err == nil || have2 != nil {
 		t.Fatalf("Why does this resource still exist? %v", have2)
 	}
+}
+
+func TestToggleFlag(t *testing.T) {
+	mc := *makeClient(t)
+	id := int32(2)
+	toggle := &pb.FlagToggle{ID: id, Status: true}
+	ctx := context.Background()
+	preToggle, _ := mc.GetFlag(ctx, &pb.ID{ID: id})
+	_, err := mc.ToggleFlag(ctx, toggle)
+	if err != nil {
+		fmt.Println("WHAT IS MY ERROR", err)
+		t.Fail()
+	}
+	postToggle, _ := mc.GetFlag(ctx, &pb.ID{ID: id})
+
+	fmt.Println("Pre, status, post:", preToggle.Status, toggle.Status, postToggle.Status)
 }
