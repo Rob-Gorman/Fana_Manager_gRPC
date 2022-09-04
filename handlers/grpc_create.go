@@ -19,6 +19,11 @@ func (h *Handler) CreateFlagR(in *pb.FlagSubmit) (flag *models.Flag, err error) 
 	}
 
 	h.DB.Preload("Audiences").Find(&flag)
+
+	pub := FlagUpdateForPublisher(h.DB, []models.Flag{*flag})
+	PublishContent(pub, "flag-update-channel")
+	RefreshCache(h.DB)
+
 	return flag, nil
 }
 
@@ -35,6 +40,9 @@ func (h *Handler) CreateAudienceR(in *pb.AudSubmit) (audience *models.Audience, 
 
 	h.DB.Model(&models.Audience{}).Preload("Conditions").Find(&audience)
 
+	PublishContent(&audience, "audience-update-channel")
+	RefreshCache(h.DB)
+
 	return audience, nil
 }
 
@@ -47,5 +55,8 @@ func (h *Handler) CreateAttributeR(in *pb.AttrSubmit) (attr *models.Attribute, e
 	}
 
 	h.DB.Find(&attr)
+
+	RefreshCache(h.DB)
+
 	return attr, nil
 }

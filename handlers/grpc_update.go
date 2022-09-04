@@ -20,6 +20,11 @@ func (h *Handler) ToggleFlagR(in *pb.FlagToggle) error {
 	if err != nil {
 		return err
 	}
+
+	pub := FlagUpdateForPublisher(h.DB, []models.Flag{flag})
+	PublishContent(&pub, "flag-toggle-channel")
+	RefreshCache(h.DB)
+
 	return nil
 }
 
@@ -40,6 +45,10 @@ func (h *Handler) UpdateFlagR(in *pb.FlagSubmit, id uint) (*models.Flag, error) 
 	if err != nil {
 		return nil, err
 	}
+
+	pub := FlagUpdateForPublisher(h.DB, []models.Flag{*flag})
+	PublishContent(&pub, "flag-update-channel")
+	RefreshCache(h.DB)
 
 	return flag, nil
 }
@@ -66,6 +75,10 @@ func (h *Handler) UpdateAudienceR(in *pb.AudSubmit, id uint) (*models.Audience, 
 
 	h.DB.Model(&models.Audience{}).Preload("Flags").Preload("Conditions").Find(&aud)
 
+	pub := FlagUpdateForPublisher(h.DB, aud.Flags)
+	PublishContent(&pub, "flag-update-channel")
+	RefreshCache(h.DB)
+
 	return aud, nil
 }
 
@@ -84,6 +97,8 @@ func (h *Handler) RegenSDK(id uint) (*models.Sdkkey, error) {
 	}
 
 	h.DB.Unscoped().Delete(&sdk)
+
+	RefreshCache(h.DB)
 
 	h.DB.Find(&newSDK)
 	return newSDK, nil

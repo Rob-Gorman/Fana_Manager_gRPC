@@ -1,18 +1,19 @@
 package handlers
 
 import (
+	"encoding/json"
 	"manager/cache"
-	"manager/utils"
 	"net/http"
 )
 
-
 func (h Handler) GetFlagset(w http.ResponseWriter, r *http.Request) {
 	fs := BuildFlagset(h.DB)
-	utils.PayloadResponse(w, r, &fs)
-	
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&fs)
+
 	flagCache := cache.InitFlagCache()
 	flagCache.FlushAllAsync()
 	flagCache.Set("data", &fs)
-
 }

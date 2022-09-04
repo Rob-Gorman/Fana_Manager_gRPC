@@ -10,7 +10,7 @@ import (
 type omit bool
 
 type Flagset struct {
-	Sdkkeys map[string]string     `json:"sdkKeys"`
+	Sdkkeys map[string]string   `json:"sdkKeys"`
 	Flags   map[string]Flagrule `json:"flags"`
 }
 
@@ -83,7 +83,7 @@ func buildFlagrules(db *gorm.DB, flIds []uint) (frs map[string]Flagrule) {
 
 func buildAudrule(aud models.Audience, db *gorm.DB) (ar *Audset) {
 	db.Preload("Conditions").First(&aud)
-	conds := getEmbeddedConds(aud, db)
+	conds := embeddedConds(aud, db)
 	ar = &Audset{
 		Combine:    aud.Combine,
 		Conditions: conds,
@@ -91,7 +91,7 @@ func buildAudrule(aud models.Audience, db *gorm.DB) (ar *Audset) {
 	return ar
 }
 
-func getEmbeddedConds(aud models.Audience, db *gorm.DB) []CondInst {
+func embeddedConds(aud models.Audience, db *gorm.DB) []CondInst {
 	conds := []CondInst{}
 	for ind := range aud.Conditions {
 		cond := aud.Conditions[ind]
