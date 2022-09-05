@@ -6,6 +6,7 @@ import (
 	"manager/configs"
 	"manager/dev"
 	"manager/publisher"
+	"net/http"
 	"os"
 )
 
@@ -17,8 +18,8 @@ func main() {
 	PORT := os.Getenv("PORT")
 
 	publisher.CreateRedisClient()
-	api.Init(&srv.H)
+	go api.Init(&srv.H)
 
 	fmt.Printf("\nServing flag configuration on PORT %s\n", PORT)
-	// http.ListenAndServe(fmt.Sprintf(":%s", PORT), srv)
+	http.ListenAndServe(fmt.Sprintf(":%s", PORT), srv)
 }
