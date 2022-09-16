@@ -14,3 +14,19 @@ The Fána Manager handles the following responsibilities:
 - Serving the gRPC API to the developer dashboard
 - Managing and executing operations on the PostgreSQL database
 - Publishing appropriate update messages from those data operations to Redis pub/sub
+
+---
+
+In leiu of `Makefiles`, the following deployment scripts can be run via Bash:
+
+Protofiles can be compiled by way of:
+
+```bash
+bash protobuf.sh
+```
+
+Deployment in local Docker network:
+
+```bash
+bash deploylocal.sh
+```
