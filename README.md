@@ -17,7 +17,7 @@ The Fána Manager handles the following responsibilities:
 
 ---
 
-In leiu of `Makefiles`, the following deployment scripts can be run via Bash:
+In lieu of `Makefiles`, the following deployment scripts can be run via Bash:
 
 Protofiles can be compiled by way of:
 
