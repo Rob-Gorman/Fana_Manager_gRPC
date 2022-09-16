@@ -24,8 +24,6 @@ func GetEnvVar(envKey string) string {
 	return val
 }
 
-// return type []interface... expected by Sprintf
-// (Does NOT want type []string...)
 func GetEnvVars(envVars ...string) (result []interface{}) {
 	for _, envKey := range envVars {
 		val := GetEnvVar(envKey)

@@ -12,7 +12,6 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
-// collection of fields
 type redisCache struct {
 	host    string
 	db      int           //index between 0 and 15
